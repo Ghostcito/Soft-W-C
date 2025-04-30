@@ -10,12 +10,13 @@ namespace Soft_W_C.Models
     public class DIreccion
     {
     [Key]
-    public int DireccionId { get; set; }
-    public int ClienteId { get; set; }
-    public string DireccionCalle { get; set; }
-    public string Ciudad { get; set; }
-    public string Provincia { get; set; }
-    public string Pais { get; set; }
+    public long DireccionId { get; set; }
+    public Cliente? ClienteId { get; set; }
+    /*La cambio por Descripción antes fue Dirección Calle*/
+    public string? Descripción { get; set; }
+    public string? Ciudad { get; set; }
+    public string? Provincia { get; set; }
+    public string? Pais { get; set; }
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
     }

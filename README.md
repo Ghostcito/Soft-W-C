@@ -1,3 +1,19 @@
 Proy empresa work and cleaning SAC..
 
 dotnet aspnet-codegenerator controller -name DireccionesController -m Direccion -dc TuDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+
+App con Autentificacion y Autorizacion (Login)
+dotnet new mvc --auth Individual
+
+Migration
+dotnet ef migrations add InitialMigration --context appfunko.Data.ApplicationDbContext -o "C:\Users\Inteligo\Code\netcore\usmp\2023\appfunko\Data\Migrations"
+
+dotnet tool update --global dotnet-ef --version 7.0.3
+
+dotnet ef database update
+
+Generacion del Codigo Login y Registrar Cuenta de Identity para modificarlo
+dotnet aspnet-codegenerator identity -dc appfunko.Data.ApplicationDbContext --files "Account.Register;Account.Login"
+
+Generacion de CRUD
+dotnet aspnet-codegenerator controller -name ProductoController -m Producto -dc appfunko.Data.ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
