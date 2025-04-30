@@ -11,11 +11,11 @@ namespace Soft_W_C.Models
     {
     [Key]
     public int IdGeolocalizacion { get; set; }
-    public int IdAsistencia { get; set; }
+    public Asistencia IdAsistencia { get; set; }
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
     public decimal DistanciaMetros { get; set; }
     public string EstadoValidacion { get; set; }
-    public DateTime Timestamp { get; set; }
+    public DateTime Timestamp { get; set; } //TIMESTAMP  para que sirve?
     }
 }
