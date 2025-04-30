@@ -15,6 +15,7 @@ namespace Soft_W_C.Models
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
     public decimal DistanciaMetros { get; set; }
+    //LEO ESTUVO AQUI
     public string EstadoValidacion { get; set; }
     public DateTime Timestamp { get; set; }
     }
