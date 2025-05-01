@@ -28,5 +28,27 @@ namespace Soft_W_C.Service
             return !await _context.Users
                 .AnyAsync(u => u.DNI == dni);
         }
+
+        public List<Usuario> GetAllUsers()
+        {
+            return _context.Users.ToList();
+        }
+
+        public List<Usuario> GetAllUsersForRole(string role)
+        {
+            return _context.Users
+                .Where(u => u.NivelAcceso == role)
+                .ToList();
+        }
+        public async Task<Usuario?> GetUserByIdAsync(string id)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+        
+        }
+
+       
+
+
     }
 }
