@@ -78,6 +78,13 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mi API v1");
 });
 
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Empleado}/{action=Index}/{id?}");
+});
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
