@@ -15,10 +15,10 @@ namespace Soft_W_C.Models
         public string IdEmpleado { get; set; } // Tipo string porque IdentityUser usa string para el Id
 
         [ForeignKey("IdEmpleado")]
-        public Usuario Empleado { get; set; }
+        public Usuario? Empleado { get; set; }
         public string TipoEmpleado { get; set; } // Tipo de empleado (Operario de limpieza)
         public DateTime FechaEvaluacion { get; set; }
-        public string Descripcion { get; set; } // Descripción de la evaluación
+        public string? Descripcion { get; set; } // Descripción de la evaluación
 
             // --- INDICADORES DE EVALUACIÓN --- //
         public Calificacion Responsabilidad { get; set; }

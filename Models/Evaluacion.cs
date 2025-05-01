@@ -15,7 +15,7 @@ namespace Soft_W_C.Models
         public Usuario IdEmpleado { get; set; }
         public string TipoEmpleado { get; set; } // Tipo de empleado (Ej: Operario, Administrativo, etc.)
         public DateTime FechaEvaluacion { get; set; }
-        public string Descripcion { get; set; } // Descripción de la evaluación
+        public string? Descripcion { get; set; } // Descripción de la evaluación
 
         /// Calificaciones - Hay que ver el tema de indicadores mas adelante
 

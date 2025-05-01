@@ -14,16 +14,16 @@ namespace Soft_W_C.Models
     {
         [Key]
         public int IdPermiso { get; set; }
-        public string IdEmpleado { get; set; }
+        public string? IdEmpleado { get; set; }
 
         [ForeignKey("IdEmpleado")]
-        public Usuario Empleado { get; set; }
+        public Usuario? Empleado { get; set; }
 
         // public Asistencia IdAsistencia { get; set; }
         public TimeSpan HoraSalida { get; set; }
         public TimeSpan HoraRetorno { get; set; }
-        public string Motivo { get; set; }
-        public string Estado { get; set; } // Aprobada, Rechazada, Pendiente
+        public string? Motivo { get; set; }
+        public string? Estado { get; set; } // Aprobada, Rechazada, Pendiente
 
     }
 }

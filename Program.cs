@@ -45,6 +45,13 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//configura los roles y el usuario admin
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await IdentityDataInitializer.SeedData(services); // Tu método estático
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

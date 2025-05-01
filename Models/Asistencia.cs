@@ -12,7 +12,7 @@ namespace Soft_W_C.Models
     [Key]
     public int IdAsistencia { get; set; }
     
-    public string IdEmpleado { get; set; } // Tipo string porque IdentityUser usa string para el Id
+    public string? IdEmpleado { get; set; } // Tipo string porque IdentityUser usa string para el Id
 
     [ForeignKey("IdEmpleado")]
     public Usuario Empleado { get; set; } //para la navegacion
