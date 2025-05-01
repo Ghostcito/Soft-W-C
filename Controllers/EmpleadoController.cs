@@ -5,11 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Soft_W_C.Service.UserService;
+using Soft_W_C.Service;
 
 namespace Soft_W_C.Controllers
 {
-    [Route("[controller]")]
     public class EmpleadoController : Controller
     {
         private readonly ILogger<EmpleadoController> _logger;
@@ -29,7 +28,7 @@ namespace Soft_W_C.Controllers
        public async Task<IActionResult> AllUsers()
         {
             var empleados = _userService.GetAllUsers();
-            return empleados; // Pasa los empleados a la vista
+            return View("Index", empleados); // Pasa los empleados a la vista
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
