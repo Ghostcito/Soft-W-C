@@ -11,11 +11,14 @@ namespace Soft_W_C.Models
     {
     [Key]
     public int IdGeolocalizacion { get; set; }
-    public Asistencia IdAsistencia { get; set; }
+    public int IdAsistencia { get; set; }
+
+    [ForeignKey("IdAsistencia")]
+    public Asistencia Asistencia { get; set; }
     public decimal Latitud { get; set; }
     public decimal Longitud { get; set; }
-    public decimal DistanciaMetros { get; set; }
-    public string EstadoValidacion { get; set; }
-    public DateTime Timestamp { get; set; } //TIMESTAMP  para que sirve?
+    public decimal DistanciaMetros { get; set; } // validar 12 metros para que se valida la asistencia
+    public string EstadoValidacion { get; set; } // true o false
+    public DateTime Timestamp { get; set; } //TIMESTAMP -> para la hora automatica de la geolocalizacion
     }
 }

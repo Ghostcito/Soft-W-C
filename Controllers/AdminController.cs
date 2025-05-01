@@ -4,11 +4,11 @@ using Soft_W_C.Models;
 
 namespace Soft_W_C.Controllers;
 
-public class IndexController : Controller
+public class AdminController : Controller
 {
-    private readonly ILogger<IndexController> _logger;
+    private readonly ILogger<AdminController> _logger;
 
-    public IndexController(ILogger<IndexController> logger)
+    public AdminController(ILogger<AdminController> logger)
     {
         _logger = logger;
     }

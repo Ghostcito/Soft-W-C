@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Soft_W_C.Models;
+using Soft_W_C.Service;
 
 namespace Soft_W_C.Areas.Identity.Pages.Account
 {
@@ -31,12 +32,15 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly UserService _userService;
+
         public RegisterModel(
             UserManager<Usuario> userManager,
             IUserStore<Usuario> userStore,
             SignInManager<Usuario> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            UserService userService)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _userService = userService;
         }
 
         /// <summary>
@@ -140,9 +145,23 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                // Validar que el DNI no exista usando el UserService
+                var existingUserWithDni = await _userService.FindByDniAsync(Input.DNI);
+                if (existingUserWithDni != null)
+                {
+                    ModelState.AddModelError(string.Empty, "El DNI ingresado ya está registrado.");
+                    return Page();
+                }
+
+                // if (!await _userService.IsDniAvailableAsync(Input.DNI))
+                // {
+                //     ModelState.AddModelError(string.Empty, "El DNI ingresado ya está registrado.");
+                //     return Page();
+                // }
+
                 var user = new Usuario  // Usa el constructor directamente
                 {
-                    UserName = Input.Email,
+                    UserName = Input.Nombre,
                     Email = Input.Email,
                     // Asigna todas las propiedades adicionales
                     Nombre = Input.Nombre,

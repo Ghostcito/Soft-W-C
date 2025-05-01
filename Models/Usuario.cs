@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Soft_W_C.Models
 {
+    //ya combinamos empleados y administrativos en un solo modelo
     public class Usuario : IdentityUser
     {
     public string? Nombre { get; set; }
@@ -16,10 +17,10 @@ namespace Soft_W_C.Models
     [Column(TypeName ="nvarchar(8)") ]
     public string? DNI { get; set; }
     public Sede? IdSede {get;set;}
-    public DateTime? FechaIngreso { get; set; }
+    public DateTime? FechaIngreso { get; set; } // fecha de ingreso a la empresa
     public DateTime? FechaNacimiento { get; set; }
     public string? NivelAcceso { get; set; }
-    public string? Estado { get; set; }
+    public string? Estado { get; set; } //activo o inactivo
     public decimal? Salario { get; set; }
     }
 }

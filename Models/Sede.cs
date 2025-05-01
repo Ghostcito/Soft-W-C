@@ -7,20 +7,23 @@ using System.Threading.Tasks;
 
 namespace Soft_W_C.Models
 {
-    /*Hace falta un entidad para manejar las sedes*/
     public class Sede
     {
-        [Key]
-        public long IdSede {get;set;}
-        //este atributo no es necesario, ya que el nombre de la propidad será el mismo
-        //public string? Nombre {get;set;}
-        public DIreccion? IdDireccion {get;set;}
-        [Column(TypeName = "nvarchar(20)")]
-        public SedeEnum estadoSede {get;set;}
+    [Key]
+    public int SedeId { get; set; }
+    public int ClienteId { get; set; }
 
+    [ForeignKey("ClienteId")]
+    public Cliente Cliente { get; set; }
 
+    public string? Nombre_local { get; set; } //para que puedan ubicar en caso la empresa tenga un local con nombre
+    public string? Direccion_local { get; set; }
+    public string? Ciudad { get; set; }
+    public string? Provincia { get; set; }
+    public decimal Latitud { get; set; }
+    public decimal Longitud { get; set; }
+    public SedeEnum estadoSede {get;set;}
 
-
-
+    // public string? Pais { get; set; } se borra pais por que trabaja solo en PERU
     }
 }
