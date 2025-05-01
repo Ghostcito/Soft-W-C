@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Soft_W_C.Models
 {
-    public class Geolocalizacion_asistencia
+    public class Geolocalizacion_asistencia //guardar intentos de geolocalizacion con asistencia
     {
     [Key]
     public int IdGeolocalizacion { get; set; }

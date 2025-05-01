@@ -25,11 +25,11 @@ namespace Soft_W_C.Controllers
             return View();
         }
 
-       public async Task<IActionResult> AllUsers()
-        {
-            var empleados = _userService.GetAllUsers();
-            return View("Index", empleados);
-        }
+    //    public async Task<IActionResult> AllUsers()
+    //     {
+    //         var empleados = _userService.GetAllUsers();
+    //         return View("Index", empleados);
+    //     }
 
         [HttpGet("Marca")]
         public IActionResult Marca()

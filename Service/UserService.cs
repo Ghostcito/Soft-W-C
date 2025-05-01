@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace Soft_W_C.Service
     public class UserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<Usuario> _userManager;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, UserManager<Usuario> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         public async Task<Usuario?> FindByDniAsync(string dni)
@@ -29,26 +32,30 @@ namespace Soft_W_C.Service
                 .AnyAsync(u => u.DNI == dni);
         }
 
-        public List<Usuario> GetAllUsers()
+
+        // Método para obtener todos los usuarios registrados
+        public async Task<List<Usuario>> GetAllUsersAsync()
         {
-            return _context.Users.ToList();
+            return await _userManager.Users.ToListAsync();
         }
 
-        public List<Usuario> GetAllUsersForRole(string role)
-        {
-            return _context.Users
-                .Where(u => u.NivelAcceso == role)
-                .ToList();
-        }
-        public async Task<Usuario?> GetUserByIdAsync(string id)
-        {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Id == id);
-        
-        }
+        // Método para obtener usuarios con información de roles
+        // public async Task<List<UsuarioConRolViewModel>> GetAllUsersWithRolesAsync()
+        // {
+        //     var usuarios = await _userManager.Users.ToListAsync();
+        //     var usuariosConRoles = new List<UsuarioConRolViewModel>();
 
-       
+        //     foreach (var usuario in usuarios)
+        //     {
+        //         var roles = await _userManager.GetRolesAsync(usuario);
+        //         usuariosConRoles.Add(new UsuarioConRolViewModel
+        //         {
+        //             Usuario = usuario,
+        //             Roles = roles.ToList()
+        //         });
+        //     }
 
-
+        //     return usuariosConRoles;
+        // }
     }
 }
