@@ -31,6 +31,12 @@ namespace Soft_W_C.Controllers
             return View("Index", empleados); // Pasa los empleados a la vista
         }
 
+        [HttpGet("Marca")]
+        public IActionResult Marca()
+        {
+            return View("Marca"); // Asegúrate de que la vista Marca exista en Views/Empleado/
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

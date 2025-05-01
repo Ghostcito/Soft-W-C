@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Marcar Asistencia";
+    string nombreUsuario = "Carlos";
+    string horaActual = DateTime.Now.ToString("hh:mm tt");
+    string fechaActual = DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy");
+    string direccion = "Av. Ejemplo 123, Ciudad";
+}
+
+<div style="max-width: 400px; margin: auto; font-family: Arial, sans-serif; padding: 20px; background-color: white; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center;">
+    <h2>Marcar Asistencia</h2>
+    <p><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
+
+    <div style="font-size: 32px; font-weight: bold; margin: 10px 0;">@horaActual</div>
+    <p>@fechaActual</p>
+
+    <p style="color: gray;">📍 @direccion</p>
+
+    <button style="background-color: #2d6cdf; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; margin: 15px 0;">
+        Marcar entrada
+    </button>
+
+    <div style="text-align: left; margin-top: 20px;">
+        <p style="color: green;">✅ Hora registrada correctamente</p>
+        <p style="color: green;">✅ Ubicación confirmada</p>
+        <p style="color: green;">✅ Foto tomada</p>
+    </div>
+
+    <div style="display: flex; align-items: center; margin-top: 15px;">
+        <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Foto" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;">
+        <span>Subir evidencia<br /><small style="color: gray;">de ingreso</small></span>
+    </div>
+
+    <div style="text-align: left; margin-top: 20px;">
+        <h4>Historial del día</h4>
+        <p><strong>Entrada:</strong> 08:17 AM</p>
+        <p><strong>Pausa:</strong> --</p>
+        <p><strong>Salida:</strong> --</p>
+        <p><strong>Tiempo trabajado:</strong> --</p>
+        <a href="#" style="color: #2d6cdf;">Ver historial</a>
+    </div>
+</div>
+
