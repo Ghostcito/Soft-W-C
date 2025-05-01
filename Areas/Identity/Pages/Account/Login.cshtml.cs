@@ -25,11 +25,14 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
         private readonly UserService _userService;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<Usuario> signInManager, ILogger<LoginModel> logger, UserService userService)
+        private readonly UserManager<Usuario> _userManager;
+
+        public LoginModel(SignInManager<Usuario> signInManager, ILogger<LoginModel> logger, UserService userService, UserManager<Usuario> userManager)
         {
             _userService = userService;
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = signInManager.UserManager;
         }
    
         /// <summary>
@@ -116,7 +119,29 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    var userIdentity = await _userManager.FindByNameAsync(user.UserName);
+
+                    // Obtén los roles del usuario
+                    var roles = await _userManager.GetRolesAsync(userIdentity);
+
+                    // Redirige según el rol
+                    if (roles.Contains("Administrador"))
+                    {
+                        return RedirectToAction("Index", "Admin"); // Asegúrate de tener este controlador y vista
+                    }
+                    else if (roles.Contains("Empleado"))
+                    {
+                        return RedirectToAction("Index", "Empleado"); // Asegúrate de tener este controlador y vista
+                    }
+                    else
+                    {
+                        // Rol no autorizado
+                        return RedirectToPage("AccessDenied", "Account"); 
+                        // esta vista es del mismo identiy, podriamos perfecionar la vista en Areas/Account/manage/AccessDenied.cshtml
+                        //por ahora no hay roles, falta implementar ASP.net roles
+                    }
+
+                    
                 }
                 if (result.RequiresTwoFactor)
                 {
