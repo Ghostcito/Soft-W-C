@@ -37,6 +37,12 @@ namespace Soft_W_C.Controllers
             return View("Marca");
         }
 
+        [HttpGet("Confirmacion")]
+        public IActionResult Confirmacion()
+        {
+            return View("Confirmacion");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
