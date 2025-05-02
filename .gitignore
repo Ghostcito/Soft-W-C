@@ -3,3 +3,5 @@
 Data/Migrations/
 .vscode
 .sln
+*.db-shm
+*.db-wal
