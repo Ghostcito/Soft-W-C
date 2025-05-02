@@ -20,9 +20,9 @@ namespace Soft_W_C.Controllers
         }
 
         // GET: Sede
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id)
         {
-            var applicationDbContext = _context.Sede.Include(s => s.Cliente);
+            var applicationDbContext = _context.Sede.Include(s => s.Cliente).Where(s => s.ClienteId == id);
             return View(await applicationDbContext.ToListAsync());
         }
 

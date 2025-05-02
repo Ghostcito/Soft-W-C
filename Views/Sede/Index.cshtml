@@ -40,38 +40,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente.ClienteId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre_local)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Direccion_local)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ciudad)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Provincia)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Latitud)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Longitud)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.estadoSede)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.SedeId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.SedeId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.SedeId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cliente.ClienteId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre_local)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direccion_local)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ciudad)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Provincia)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Latitud)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Longitud)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.estadoSede)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.SedeId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.SedeId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.SedeId">Delete</a> |
+                    <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId">Observar Empleados
+                        Asignados</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

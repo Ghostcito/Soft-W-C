@@ -25,6 +25,14 @@ namespace Soft_W_C.Controllers
             return View(await _context.Usuario.ToListAsync());
         }
 
+        public async Task<IActionResult> FindAllBySede(int id)
+        {
+            var usuarios = await _context.Usuario
+                .Where(u => u.IdSede.SedeId == id)
+                .ToListAsync();
+            return View("Index", usuarios);
+        }
+
         // GET: Usuario/Details/5
         public async Task<IActionResult> Details(string id)
         {
