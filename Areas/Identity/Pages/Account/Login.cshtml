@@ -1,75 +1,56 @@
 ﻿@page
-@model LoginModel
-
+@model Soft_W_C.Areas.Identity.Pages.Account.LoginModel
 @{
-    ViewData["Title"] = "Ingreso";
+    ViewData["Title"] = "Login - Work and Cleaning S.A.C.";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Acceso a empleados de Work and Cleaning SAC</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.DNI" class="form-control" autocomplete="DNI" aria-required="true" placeholder="DNI" />
-                    <label asp-for="Input.DNI" class="form-label">DNI</label>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="row shadow-lg rounded w-100 mx-2" style="max-width: 900px; background-color: white;">
+        
+        <!-- Lado Izquierdo -->
+        <div class="col-12 col-md-6 p-5 text-center" style="background-color: #eef3fc;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/appweb2-44bcb.appspot.com/o/game%2FCaptura%20de%20pantalla%202025-05-01%20231422.png?alt=media&token=e47b4245-bcd5-48d0-861c-bbf0ca6305cc" alt="Logo" style="max-height: 100px;" class="mb-4 img-fluid" />
+            <h4 class="mb-3 fw-bold">¡Bienvenido a la Plataforma de Tareos!</h4>
+            <p class="text-muted">
+                Registra, gestiona y consulta tus horas trabajadas de forma rápida y eficiente.
+                Inicia sesión para mantener tu información actualizada y al alcance de un clic.
+            </p>
+        </div>
+
+        <!-- Lado Derecho -->
+        <div class="col-12 col-md-6 p-5">
+            <a asp-action="Index" asp-controller="Home" class="text-decoration-none text-dark mb-4 d-block">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <h4 class="fw-bold">¡Le damos la bienvenida!</h4>
+            <p class="text-muted mb-4">Inicie sesión en su cuenta</p>
+
+            <form method="post">
+                <div class="mb-4">
+                    <label for="DNI" class="form-label fw-semibold">DNI:</label>
+                    <input asp-for="Input.DNI" class="form-control form-control-lg" placeholder="Introduzca DNI" />
                     <span asp-validation-for="Input.DNI" class="text-danger"></span>
                 </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" @*autocomplete="current-password"*@ aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
+                <div class="mb-4">
+                    <label for="Password" class="form-label fw-semibold">Password:</label>
+                    <input asp-for="Input.Password" class="form-control form-control-lg" placeholder="Introduzca Password" type="password" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
-                @* <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div> *@
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+
+                <div class="mb-4 d-flex justify-content-between">
+                    <a asp-page="./ForgotPassword" class="text-success fw-semibold">¿Olvidó su contraseña?</a>
                 </div>
-                @* <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>                  
-                </div> *@
+
+                <button type="submit" class="btn btn-primary btn-lg w-100">Iniciar sesión</button>
             </form>
-        </section>
+
+            <hr class="my-4" />
+            <p class="text-center text-muted">© 2023 Work and Cleaning S.A.C.</p>
+        </div>
     </div>
-    @* <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
-    </div> *@
 </div>
 
 @section Scripts {
