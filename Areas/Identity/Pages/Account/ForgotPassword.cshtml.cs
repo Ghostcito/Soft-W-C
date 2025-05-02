@@ -48,6 +48,11 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+
+            [Required(ErrorMessage = "El DNI es obligatorio.")]
+            [StringLength(8, ErrorMessage = "El DNI debe tener 8 caracteres.", MinimumLength = 8)]
+            [RegularExpression("^[0-9]*$", ErrorMessage = "El DNI solo debe contener números.")]
+            public string DNI { get; set; }
         }
 
         public async Task<IActionResult> OnPostAsync()
