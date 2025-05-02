@@ -14,7 +14,7 @@ namespace Soft_W_C.Models
     public int ClienteId { get; set; }
 
     [ForeignKey("ClienteId")]
-    public Cliente Cliente { get; set; }
+    public Cliente? Cliente { get; set; }
 
     public string? Nombre_local { get; set; } //para que puedan ubicar en caso la empresa tenga un local con nombre
     public string? Direccion_local { get; set; }
