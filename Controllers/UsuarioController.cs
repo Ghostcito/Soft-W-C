@@ -54,7 +54,7 @@ namespace Soft_W_C.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Usuario usuario)
+        public async Task<IActionResult> Create([Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,Email,PasswordHash,PhoneNumber")] Usuario usuario)
         {
             if (ModelState.IsValid)
             {
