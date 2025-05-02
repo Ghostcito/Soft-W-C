@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Ingreso";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -10,16 +10,16 @@
     <div class="col-md-4">
         <section>
             <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
+                <h2>Acceso a empleados de Work and Cleaning SAC</h2>
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.DNI" class="form-control" autocomplete="username" aria-required="true" placeholder="DNI" />
+                    <input asp-for="Input.DNI" class="form-control" autocomplete="DNI" aria-required="true" placeholder="DNI" />
                     <label asp-for="Input.DNI" class="form-label">DNI</label>
                     <span asp-validation-for="Input.DNI" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <input asp-for="Input.Password" class="form-control" @*autocomplete="current-password"*@ aria-required="true" placeholder="password" />
                     <label asp-for="Input.Password" class="form-label">Password</label>
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
@@ -32,11 +32,11 @@
                 <div>
                     <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                 </div>
-                <div>
+                @* <div>
                     <p>
                         <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
                     </p>                  
-                </div>
+                </div> *@
             </form>
         </section>
     </div>

@@ -24,45 +24,10 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">posible (apartado de contactanos)</a>
+                            <a class="nav-link text-dark" href="https://www.ejemplo.com/contacto" target="_blank">Contactanos</a>
                         </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-controller="Empleado" asp-action="Index">Modulo de empleados</a>
-                        </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Modulo de Sedes</a>
-                        </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-controller="Empleado" asp-action="Marca">Asistencia</a>
-                        </li>
-                        <li class="nav-item"></li>
-                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login"> <!-- Button in the start -->
-                            <div class="input-group mb-3">
-                                <button type="button" class="btn btn-outline-secondary">
-                                     Registradas
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                >
-                                    <span class="visually-hidden">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Action</a></li>
-                                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                    <li><hr class="dropdown-divider" /></li>
-                                    <li><a class="dropdown-item" href="#">Separated link</a></li>
-                                </ul>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    aria-label="Text input with segmented dropdown button"
-                                />
-                            </div>
-                            </a>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Modulo de empleados </a><!-- Button in the start -->
                         </li>
                     </ul>
                     @* <partial name="_LoginPartial" /> *@
@@ -78,7 +43,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - Soft_W_C - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - Soft_W_C 
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

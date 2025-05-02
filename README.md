@@ -41,5 +41,5 @@ dotnet ef database update -> crear bd actualmente local y en sqlite
 dotnet aspnet-codegenerator identity -dc appName.Data.ApplicationDbContext --files "Account.Register;Account.Login"
 
 Generacion de CRUD
-dotnet aspnet-codegenerator controller -name ProductoController -m Producto -dc appName.Data.ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
+dotnet aspnet-codegenerator controller -name ClienteController -m Cliente -dc ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries
 ```
