@@ -19,12 +19,19 @@ namespace Soft_W_C.Controllers
             _context = context;
         }
 
-        // GET: Sede
+        // GET: Sede By Cliente Id
         public async Task<IActionResult> Index(int id)
         {
             var applicationDbContext = _context.Sede.Include(s => s.Cliente).Where(s => s.ClienteId == id);
             return View(await applicationDbContext.ToListAsync());
         }
+
+        public async Task<IActionResult> Index()
+        {
+            var applicationDbContext = _context.Sede.Include(s => s.Cliente);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
 
         // GET: Sede/Details/5
         public async Task<IActionResult> Details(int? id)
