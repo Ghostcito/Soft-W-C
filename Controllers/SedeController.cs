@@ -20,12 +20,14 @@ namespace Soft_W_C.Controllers
         }
 
         // GET: Sede By Cliente Id
+        [HttpGet("Sede/Index/{id}")]
         public async Task<IActionResult> Index(int id)
         {
             var applicationDbContext = _context.Sede.Include(s => s.Cliente).Where(s => s.ClienteId == id);
             return View(await applicationDbContext.ToListAsync());
         }
 
+        [HttpGet("Sede/Index")]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Sede.Include(s => s.Cliente);
