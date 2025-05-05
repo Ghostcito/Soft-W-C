@@ -13,11 +13,14 @@ namespace Soft_W_C.Service
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<Usuario> _userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(ApplicationDbContext context, UserManager<Usuario> userManager)
+        public UserService(ApplicationDbContext context, UserManager<Usuario> userManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<Usuario?> FindByDniAsync(string dni)
@@ -39,6 +42,23 @@ namespace Soft_W_C.Service
             return await _userManager.Users.ToListAsync();
         }
 
+        public async Task<List<Usuario>> GetAllUsersByRol()
+        {
+            var userPrincipal = _httpContextAccessor.HttpContext?.User;
+            var usuario = await _userManager.GetUserAsync(userPrincipal);
+            var usuarios = await _userManager.Users.ToListAsync();
+
+            if (_userManager.GetRolesAsync(usuario).Result.Contains("Administrador"))
+            {
+                return usuarios.Where(u => !_userManager.GetRolesAsync(u).Result.Contains("Administrador")).ToList();
+            }
+            else
+            {
+                return usuarios.Where(u => _userManager.GetRolesAsync(u).Result.Contains("Empleado")).ToList();
+            }
+
+        }
+
         // Método para obtener usuarios con información de roles
         // public async Task<List<UsuarioConRolViewModel>> GetAllUsersWithRolesAsync()
         // {
@@ -57,5 +77,6 @@ namespace Soft_W_C.Service
 
         //     return usuariosConRoles;
         // }
+
     }
 }

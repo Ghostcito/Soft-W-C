@@ -22,14 +22,15 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var empleados = _userService.GetAllUsersByRol().Result;
+            return View(empleados);
         }
 
-    //    public async Task<IActionResult> AllUsers()
-    //     {
-    //         var empleados = _userService.GetAllUsers();
-    //         return View("Index", empleados);
-    //     }
+        //    public async Task<IActionResult> AllUsers()
+        //     {
+        //         var empleados = _userService.GetAllUsers();
+        //         return View("Index", empleados);
+        //     }
 
         [HttpGet("Marca")]
         public IActionResult Marca()
