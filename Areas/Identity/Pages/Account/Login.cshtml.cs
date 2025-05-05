@@ -34,7 +34,7 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
             _logger = logger;
             _userManager = signInManager.UserManager;
         }
-   
+
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -106,7 +106,7 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
             {
 
                 var user = await _userService.FindByDniAsync(Input.DNI);
-        
+
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Credenciales inválidas");
@@ -115,7 +115,7 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
@@ -125,7 +125,11 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
                     var roles = await _userManager.GetRolesAsync(userIdentity);
 
                     // Redirige según el rol
-                    if (roles.Contains("Administrador"))
+                    if (roles.Contains("Administrador") || roles.Contains("Supervisor"))
+                    {
+                        return RedirectToAction("Index", "Admin"); // Asegúrate de tener este controlador y vista
+                    }
+                    else if (roles.Contains("Supervisor"))
                     {
                         return RedirectToAction("Index", "Admin"); // Asegúrate de tener este controlador y vista
                     }
@@ -136,12 +140,12 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
                     else
                     {
                         // Rol no autorizado
-                        return RedirectToPage("AccessDenied", "Account"); 
+                        return RedirectToPage("AccessDenied", "Account");
                         // esta vista es del mismo identiy, podriamos perfecionar la vista en Areas/Account/manage/AccessDenied.cshtml
                         //por ahora no hay roles, falta implementar ASP.net roles
                     }
 
-                    
+
                 }
                 if (result.RequiresTwoFactor)
                 {
