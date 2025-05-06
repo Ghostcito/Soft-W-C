@@ -22,7 +22,8 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var usuario = _userService.GetAllUsersAsync();
+            return View(usuario);
         }
 
         //    public async Task<IActionResult> AllUsers()
