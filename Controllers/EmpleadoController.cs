@@ -14,11 +14,13 @@ namespace Soft_W_C.Controllers
     {
         private readonly ILogger<EmpleadoController> _logger;
         private readonly UserService _userService;
+        private readonly AsistenciaService _asistenciaService;
 
-        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService)
+        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService)
         {
-            _userService = userService;
+            _asistenciaService = asistenciaService;
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -33,10 +35,27 @@ namespace Soft_W_C.Controllers
         //         return View("Index", empleados);
         //     }
 
-        [HttpGet("Marca")]
-        public IActionResult Marca()
+        public IActionResult MarcaEntrada()
         {
-            return View("Marca");
+            Asistencia asis = _asistenciaService.AddEntrada().Result;
+            return View("Marca", asis);
+        }
+
+        public IActionResult MarcaSalida()
+        {
+            Asistencia asis = _asistenciaService.AddSalida().Result;
+            if (asis != null)
+            {
+                _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
+                return View("Marca");
+            }
+            else
+            {
+                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
+
+                return View("Error");
+            }
+
         }
 
         [HttpGet("Confirmacion")]
