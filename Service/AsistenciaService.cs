@@ -36,7 +36,7 @@ namespace Soft_W_C.Service
         public async Task<Asistencia?> AddSalida()
         {
             var userPrincipal = _userService.GetCurrentUserAsync();
-            var asistencia = GetAllAsistenciaByIdEmpleado(userPrincipal.Result.Id).FirstOrDefault(a => a.Fecha == DateTime.Now.Date);
+            var asistencia = GetAllAsistenciaByIdEmpleado(userPrincipal.Result.Id).FindLast(a => a.Fecha == DateTime.Now.Date);
             if (asistencia != null && asistencia.HoraEntrada.HasValue)
             {
                 asistencia.HoraSalida = DateTime.Now;
