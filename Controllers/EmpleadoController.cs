@@ -22,8 +22,7 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            var empleados = _userService.GetAllUsersByRol().Result;
-            return View(empleados);
+            return View();
         }
 
         //    public async Task<IActionResult> AllUsers()
