@@ -1,15 +1,16 @@
-﻿@model IEnumerable<Soft_W_C.Models.Usuario>
+﻿@model Soft_W_C.Models.Usuario
 @{
     ViewData["Title"] = "Home Page";
     Layout = "_layout";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Bienvenida al empleadoooooooc</h1>
-
+    <h1 class="display-4">Bienvenido @Model.Nombre @Model.Apellido</h1>
 </div>
 <main class="px-3">
 
-
-
+    <div class="d-flex justify-content-center">
+        <button type="button" class="btn btn-primary mx-2">Ver Asistencias</button>
+        <button type="button" class="btn btn-success mx-2">Marcar Asistencia</button>
+    </div>
 </main>

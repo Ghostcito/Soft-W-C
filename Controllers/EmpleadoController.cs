@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Soft_W_C.Models;
 using Soft_W_C.Service;
 
 namespace Soft_W_C.Controllers
@@ -22,7 +23,7 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            var usuario = _userService.GetAllUsersAsync();
+            Usuario usuario = _userService.GetCurrentUserAsync().Result;
             return View(usuario);
         }
 
