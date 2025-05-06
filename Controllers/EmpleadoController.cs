@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Soft_W_C.Models;
 using Soft_W_C.Service;
+using Soft_W_C.ViewModel;
 
 namespace Soft_W_C.Controllers
 {
@@ -33,7 +34,12 @@ namespace Soft_W_C.Controllers
         public IActionResult MarcaEntrada()
         {
             Asistencia asis = _asistenciaService.AddEntrada().Result;
-            return View("Marca", asis);
+            var viewModel = new MarcaViewModel
+            {
+                asistencia = asis,
+                usuario = _userService.GetCurrentUserAsync().Result
+            };
+            return View("Marca", viewModel);
         }
 
         public IActionResult MarcaSalida()
@@ -42,7 +48,12 @@ namespace Soft_W_C.Controllers
             if (asis != null)
             {
                 _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
-                return View("Marca");
+                var viewModel = new MarcaViewModel
+                {
+                    asistencia = asis,
+                    usuario = _userService.GetCurrentUserAsync().Result
+                };
+                return View("Marca", viewModel);
             }
             else
             {

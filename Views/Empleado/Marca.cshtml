@@ -1,4 +1,4 @@
-﻿@model Soft_W_C.Models.Asistencia
+﻿@model Soft_W_C.ViewModel.MarcaViewModel
 @{
     ViewBag.Title = "Marcar Asistencia";
 
@@ -13,10 +13,10 @@
     <div
         style="width: 600px; padding: 30px; background-color: white; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); text-align: center;">
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Asistencia</h2>
-        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
+        <p style="font-size: 18px;"><strong>Hola, @Model.usuario.Nombre 👋 ¡Listo para comenzar tu jornada?</strong></p>
 
-        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
-        <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
+        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@Model.asistencia.HoraEntrada</div>
+        <p style="font-size: 16px; margin-bottom: 20px;">@Model.asistencia.Fecha</p>
 
         <p style="color: gray; font-size: 18px;">📍 @direccion</p>
 
@@ -45,12 +45,17 @@
             <h4 style="font-size: 20px; margin-bottom: 5px;">Historial del día</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: left; gap: 0;">
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Entrada:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">08:17 AM</p>
+                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@Model.asistencia.HoraEntrada</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Pausa:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Salida:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
+                <p style="font-size: 16px; margin: 2px 0; text-align: right;"></p>
+                @Model.asistencia.HoraSalida != null ? <p style="font-size: 16px; margin: 2px 0; text-align: right;">
+                    @Model.asistencia.HoraSalida</p> : <p style="font-size: 16px; margin: 2px 0; text-align: right;">--
+                </p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
+                @Model.asistencia.HorasTrabajadas!= null ? <p
+                    style="font-size: 16px; margin: 2px 0; text-align: right;">@Model.asistencia.HorasTrabajadas</p> :
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
             </div>
             <a href="#" style="color: #2d6cdf; font-size: 14px; margin-top: 5px; display: inline-block;">Ver
