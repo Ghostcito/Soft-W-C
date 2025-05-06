@@ -1,0 +1,75 @@
+@model IEnumerable<Soft_W_C.Models.Asistencia>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Empleado)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoraEntrada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HoraSalida)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HorasTrabajadas)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Presente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observacion)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdEmpleado)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoraEntrada)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HoraSalida)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HorasTrabajadas)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Presente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observacion)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.IdAsistencia">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.IdAsistencia">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.IdAsistencia">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <a asp-controller="Empleado" asp-action="Index">Volver al inicio</a>
+</p>

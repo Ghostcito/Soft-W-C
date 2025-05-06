@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Soft_W_C.Models;
 using Soft_W_C.Service;
+using Soft_W_C.ViewModel;
 
 namespace Soft_W_C.Controllers
 {
@@ -14,11 +15,13 @@ namespace Soft_W_C.Controllers
     {
         private readonly ILogger<EmpleadoController> _logger;
         private readonly UserService _userService;
+        private readonly AsistenciaService _asistenciaService;
 
-        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService)
+        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService)
         {
-            _userService = userService;
+            _asistenciaService = asistenciaService;
             _logger = logger;
+            _userService = userService;
         }
 
         public IActionResult Index()
@@ -27,16 +30,38 @@ namespace Soft_W_C.Controllers
             return View(usuario);
         }
 
-        //    public async Task<IActionResult> AllUsers()
-        //     {
-        //         var empleados = _userService.GetAllUsers();
-        //         return View("Index", empleados);
-        //     }
 
-        [HttpGet("Marca")]
-        public IActionResult Marca()
+        public IActionResult MarcaEntrada()
         {
-            return View("Marca");
+            Asistencia asis = _asistenciaService.AddEntrada().Result;
+            var viewModel = new MarcaViewModel
+            {
+                asistencia = asis,
+                usuario = _userService.GetCurrentUserAsync().Result
+            };
+            return View("Marca", viewModel);
+        }
+
+        public IActionResult MarcaSalida()
+        {
+            Asistencia asis = _asistenciaService.AddSalida().Result;
+            if (asis != null)
+            {
+                _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
+                var viewModel = new MarcaViewModel
+                {
+                    asistencia = asis,
+                    usuario = _userService.GetCurrentUserAsync().Result
+                };
+                return View("Marca", viewModel);
+            }
+            else
+            {
+                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
+
+                return View("Error");
+            }
+
         }
 
         [HttpGet("Confirmacion")]
