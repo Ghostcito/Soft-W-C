@@ -59,6 +59,15 @@ namespace Soft_W_C.Service
 
         }
 
+        //Metodo para obtener usuario logeado
+        public Task<Usuario> GetCurrentUserAsync()
+        {
+            var userPrincipal = _httpContextAccessor.HttpContext?.User;
+            return _userManager.GetUserAsync(userPrincipal);
+        }
+
+
+
         // Método para obtener usuarios con información de roles
         // public async Task<List<UsuarioConRolViewModel>> GetAllUsersWithRolesAsync()
         // {
