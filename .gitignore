@@ -5,3 +5,4 @@ Data/Migrations/
 .sln
 *.db-shm
 *.db-wal
+appdata.db
