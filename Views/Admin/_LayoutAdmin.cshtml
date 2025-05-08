@@ -133,14 +133,19 @@
                         </a>
                     </li>
                     <li>
-                        <a asp-controller="Empleado" asp-action="Index" class="nav-link">
+                        <a asp-controller="Usuario" asp-action="FindAllBySupervisor" class="nav-link">
                             <i class="bi bi-people"></i> <span>Empleados</span>
                         </a>
                     </li>
-                    <li></li>
-                    <a asp-controller="Cliente" asp-action="Index" class="nav-link">
-                        <i class="bi bi-people"></i> <span>Clientes</span>
-                    </a>
+                    <li>
+                        <a asp-controller="Cliente" asp-action="Index" class="nav-link">
+                            <i class="bi bi-people"></i> <span>Clientes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-controller="Supervision" asp-action="Index" class="nav-link">
+                            <i class="bi bi-people"></i> <span>Supervisiones</span>
+                        </a>
                     </li>
                 </ul>
             </div>

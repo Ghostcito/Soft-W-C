@@ -65,6 +65,25 @@ namespace Soft_W_C.Service
             var userPrincipal = _httpContextAccessor.HttpContext?.User;
             return _userManager.GetUserAsync(userPrincipal);
         }
+        //Metodo para obtener rol de usuario logeado
+        public Task<IList<string>> GetRolCurrentUserAsync()
+        {
+            var userPrincipal = GetCurrentUserAsync().Result;
+            return _userManager.GetRolesAsync(userPrincipal);
+        }
+
+        public async Task<List<Usuario>> GetEmployeesBySupervisor(string id)
+        {
+            var supervisiones = await _context.Supervision
+                .Where(s => s.SupervisorId == id)
+                .ToListAsync();
+
+            var empleadosIds = supervisiones.Select(s => s.EmpleadoId).ToList();
+            var empleados = await _context.Users
+                .Where(u => empleadosIds.Contains(u.Id))
+                .ToListAsync();
+            return empleados;
+        }
 
 
 

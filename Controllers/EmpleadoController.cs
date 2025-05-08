@@ -26,7 +26,7 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            Usuario usuario = _userService.GetCurrentUserAsync().Result;
+            List<Usuario> usuario = _userService.;
             return View(usuario);
         }
 

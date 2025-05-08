@@ -7,17 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Soft_W_C.Data;
 using Soft_W_C.Models;
+using Soft_W_C.Service;
 
 namespace Soft_W_C.Controllers
 {
     public class UsuarioController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserService _userService;
 
-        public UsuarioController(ApplicationDbContext context)
+        public UsuarioController(ApplicationDbContext context, UserService userService)
         {
+            _userService = userService;
             _context = context;
         }
+
 
         // GET: Usuario
         public async Task<IActionResult> Index()
@@ -31,6 +35,13 @@ namespace Soft_W_C.Controllers
                 .Where(u => u.IdSede.SedeId == id)
                 .ToListAsync();
             return View("Index", usuarios);
+        }
+
+        public async Task<IActionResult> FindAllBySupervisor()
+        {
+            var user = _userService.GetCurrentUserAsync().Result;
+            var empleadosFilter = _userService.GetEmployeesBySupervisor(user.Id).Result;
+            return View("Index", empleadosFilter);
         }
 
         // GET: Usuario/Details/5
