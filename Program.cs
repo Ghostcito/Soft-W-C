@@ -33,6 +33,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Registrar servicios
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AsistenciaService>();
+builder.Services.AddScoped<EmpleadoService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();

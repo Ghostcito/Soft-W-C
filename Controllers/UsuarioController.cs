@@ -7,17 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Soft_W_C.Data;
 using Soft_W_C.Models;
+using Soft_W_C.Service;
 
 namespace Soft_W_C.Controllers
 {
     public class UsuarioController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserService _userService;
 
-        public UsuarioController(ApplicationDbContext context)
+        public UsuarioController(ApplicationDbContext context, UserService userService)
         {
+            _userService = userService;
             _context = context;
         }
+
 
         // GET: Usuario
         public async Task<IActionResult> Index()

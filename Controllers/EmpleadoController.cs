@@ -16,18 +16,20 @@ namespace Soft_W_C.Controllers
         private readonly ILogger<EmpleadoController> _logger;
         private readonly UserService _userService;
         private readonly AsistenciaService _asistenciaService;
+        private readonly EmpleadoService _empleadoService;
 
-        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService)
+        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService)
         {
             _asistenciaService = asistenciaService;
             _logger = logger;
             _userService = userService;
+            _empleadoService = empleadoService;
         }
 
         public IActionResult Index()
         {
-            Usuario usuario = _userService.GetCurrentUserAsync().Result;
-            return View(usuario);
+            var usuarios = _empleadoService.GetEmpleados().Result;
+            return View("~/Views/Usuario/Index.cshtml", usuarios);
         }
 
 

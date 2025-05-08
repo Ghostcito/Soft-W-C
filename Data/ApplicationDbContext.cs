@@ -18,4 +18,23 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
     public DbSet<Soft_W_C.Models.Geolocalizacion_asistencia> Geo_asis { get; set; }
     public DbSet<Soft_W_C.Models.Asistencia> Asistencia { get; set; }
     public DbSet<Soft_W_C.Models.Usuario> Usuario { get; set; }
+    public DbSet<Soft_W_C.Models.Supervision> Supervision { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        // Configuración de la relación entre Usuario y Supervision
+        modelBuilder.Entity<Supervision>()
+            .HasOne(s => s.Supervisor)
+            .WithMany(u => u.EmpleadosSupervisados)
+            .HasForeignKey(s => s.SupervisorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Supervision>()
+            .HasOne(s => s.Empleado)
+            .WithMany(u => u.SupervisoresAsignados)
+            .HasForeignKey(s => s.EmpleadoId)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
 }

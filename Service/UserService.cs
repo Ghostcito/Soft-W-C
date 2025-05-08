@@ -65,6 +65,14 @@ namespace Soft_W_C.Service
             var userPrincipal = _httpContextAccessor.HttpContext?.User;
             return _userManager.GetUserAsync(userPrincipal);
         }
+        //Metodo para obtener rol de usuario logeado
+        public Task<IList<string>> GetRolCurrentUserAsync()
+        {
+            var userPrincipal = GetCurrentUserAsync().Result;
+            return _userManager.GetRolesAsync(userPrincipal);
+        }
+
+
 
 
 
