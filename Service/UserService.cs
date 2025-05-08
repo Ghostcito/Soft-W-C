@@ -72,18 +72,7 @@ namespace Soft_W_C.Service
             return _userManager.GetRolesAsync(userPrincipal);
         }
 
-        public async Task<List<Usuario>> GetEmployeesBySupervisor(string id)
-        {
-            var supervisiones = await _context.Supervision
-                .Where(s => s.SupervisorId == id)
-                .ToListAsync();
 
-            var empleadosIds = supervisiones.Select(s => s.EmpleadoId).ToList();
-            var empleados = await _context.Users
-                .Where(u => empleadosIds.Contains(u.Id))
-                .ToListAsync();
-            return empleados;
-        }
 
 
 

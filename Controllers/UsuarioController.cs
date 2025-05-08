@@ -37,13 +37,6 @@ namespace Soft_W_C.Controllers
             return View("Index", usuarios);
         }
 
-        public async Task<IActionResult> FindAllBySupervisor()
-        {
-            var user = _userService.GetCurrentUserAsync().Result;
-            var empleadosFilter = _userService.GetEmployeesBySupervisor(user.Id).Result;
-            return View("Index", empleadosFilter);
-        }
-
         // GET: Usuario/Details/5
         public async Task<IActionResult> Details(string id)
         {
