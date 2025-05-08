@@ -28,8 +28,8 @@ namespace Soft_W_C.Controllers
 
         public IActionResult Index()
         {
-            List<Usuario> usuarios = _empleadoService.GetEmpleados().Result;
-            return View(usuarios);
+            var usuarios = _empleadoService.GetEmpleados().Result;
+            return View("~/Views/Usuario/Index.cshtml", usuarios);
         }
 
 

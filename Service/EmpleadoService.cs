@@ -24,7 +24,7 @@ namespace Soft_W_C.Service
             _userService = userService;
         }
 
-        public async Task<List<Usuario>> GetEmpleados()
+        public async Task<IEnumerable<Usuario>> GetEmpleados()
         {
             var userPrincipal = _userService.GetCurrentUserAsync().Result;
             var usuarios = await _userManager.Users.ToListAsync();
@@ -38,7 +38,7 @@ namespace Soft_W_C.Service
             }
         }
 
-        public async Task<List<Usuario>> GetEmpleadosOfSuper(string id)
+        public async Task<IEnumerable<Usuario>> GetEmpleadosOfSuper(string id)
         {
             var supervisiones = await _context.Supervision
                 .Where(s => s.SupervisorId == id)
