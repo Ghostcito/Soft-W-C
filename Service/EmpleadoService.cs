@@ -30,7 +30,7 @@ namespace Soft_W_C.Service
             var usuarios = await _userManager.Users.ToListAsync();
             if (_userManager.GetRolesAsync(userPrincipal).Result.Contains("Administrador"))
             {
-                return usuarios.Where(u => _userManager.GetRolesAsync(u).Result.Contains("Empleado")).ToList();
+                return usuarios.Where(u => !_userManager.GetRolesAsync(u).Result.Contains("Administrador")).ToList();
             }
             else
             {

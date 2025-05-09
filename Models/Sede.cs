@@ -22,6 +22,7 @@ namespace Soft_W_C.Models
         public string? Provincia { get; set; }
         public decimal Latitud { get; set; }
         public decimal Longitud { get; set; }
+        public decimal Radio { get; set; } //radio de la sede
         public SedeEnum estadoSede { get; set; }
 
         // public string? Pais { get; set; } se borra pais por que trabaja solo en PERU
