@@ -4,8 +4,8 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-Soft_W_C-5744d178-4914-4616-9ed0-940baf5e74f3</UserSecretsId>
-    <RootNamespace>Soft_W_C</RootNamespace>
+    <UserSecretsId>aspnet-SoftWC-5744d178-4914-4616-9ed0-940baf5e74f3</UserSecretsId>
+    <RootNamespace>SoftWC</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

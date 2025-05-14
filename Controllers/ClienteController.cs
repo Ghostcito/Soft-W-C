@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Soft_W_C.Data;
-using Soft_W_C.Models;
+using SoftWC.Data;
+using SoftWC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace Soft_W_C.Controllers
+namespace SoftWC.Controllers
 {
     [Authorize]
     public class ClienteController : Controller

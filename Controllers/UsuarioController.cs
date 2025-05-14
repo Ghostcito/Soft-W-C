@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Soft_W_C.Data;
-using Soft_W_C.Models;
-using Soft_W_C.Service;
+using SoftWC.Data;
+using SoftWC.Models;
+using SoftWC.Service;
 
-namespace Soft_W_C.Controllers
+namespace SoftWC.Controllers
 {
     public class UsuarioController : Controller
     {

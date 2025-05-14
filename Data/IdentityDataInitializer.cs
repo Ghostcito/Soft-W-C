@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
-using Soft_W_C.Models;
+using SoftWC.Models;
 
-namespace Soft_W_C.Data
+namespace SoftWC.Data
 {
     public static class IdentityDataInitializer
     {

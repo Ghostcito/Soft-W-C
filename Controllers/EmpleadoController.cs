@@ -5,13 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Soft_W_C.Models;
-using Soft_W_C.Service;
-using Soft_W_C.ViewModel;
+using SoftWC.Models;
+using SoftWC.Service;
+using SoftWC.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace Soft_W_C.Controllers
+namespace SoftWC.Controllers
 {
     [Authorize]
     public class EmpleadoController : Controller

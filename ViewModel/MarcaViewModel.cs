@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Soft_W_C.Models;
+using SoftWC.Models;
 
-namespace Soft_W_C.ViewModel
+namespace SoftWC.ViewModel
 {
     public class MarcaViewModel
     {

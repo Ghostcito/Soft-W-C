@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Soft_W_C.Models;
+using SoftWC.Models;
 
-namespace Soft_W_C.Areas.Identity.Pages.Account.Manage
+namespace SoftWC.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {

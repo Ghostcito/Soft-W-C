@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace Soft_W_C.Models
+namespace SoftWC.Models
 {
     //ya combinamos empleados y administrativos en un solo modelo
     public class Usuario : IdentityUser

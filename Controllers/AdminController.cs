@@ -1,11 +1,11 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Soft_W_C.Models;
-using Soft_W_C.Service;
+using SoftWC.Models;
+using SoftWC.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace Soft_W_C.Controllers;
+namespace SoftWC.Controllers;
 
 [Authorize(Roles = "Administrador,Supervisor")]
 public class AdminController : Controller

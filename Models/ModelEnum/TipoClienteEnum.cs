@@ -1,4 +1,4 @@
-namespace Soft_W_C.Models
+namespace SoftWC.Models
 {
     public enum TipoClienteEnum
     {

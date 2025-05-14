@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Soft_W_C.Data;
-using Soft_W_C.Models;
+using SoftWC.Data;
+using SoftWC.Models;
 
-namespace Soft_W_C.Service
+namespace SoftWC.Service
 {
     public class AsistenciaService
     {

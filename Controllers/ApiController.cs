@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
-namespace Soft_W_C.Controllers
+namespace SoftWC.Controllers
 {
     [Authorize(Roles = "Administrador")]
     [ApiController]

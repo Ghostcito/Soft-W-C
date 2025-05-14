@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Soft_W_C.Models
+namespace SoftWC.Models
 {
     //cliente para manejarlo como sede
     public class Cliente

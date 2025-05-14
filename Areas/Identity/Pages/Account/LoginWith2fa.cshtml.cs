@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using Soft_W_C.Models;
+using SoftWC.Models;
 
-namespace Soft_W_C.Areas.Identity.Pages.Account
+namespace SoftWC.Areas.Identity.Pages.Account
 {
     public class LoginWith2faModel : PageModel
     {
