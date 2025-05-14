@@ -26,8 +26,10 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;    
 });
 
 // Registrar servicios
@@ -52,7 +54,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await IdentityDataInitializer.SeedData(services); // Tu método estático
+    await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
 }
 
 // Configure the HTTP request pipeline.
@@ -67,6 +69,14 @@ else
     app.UseHsts();
 }
 
+//evitan que el navegador sirva la vista desde su caché.
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    context.Response.Headers["Pragma"] = "no-cache";
+    context.Response.Headers["Expires"] = "0";
+    await next();
+});
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

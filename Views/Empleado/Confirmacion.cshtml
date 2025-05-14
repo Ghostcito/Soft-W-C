@@ -1,5 +1,6 @@
 @{
     ViewBag.Title = "Confirmación de Asistencia";
+    Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
 }
 
 <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background-color: #D5D9FF; font-family: Arial, sans-serif;">
@@ -10,9 +11,7 @@
             <p style="font-size: 18px; margin: 5px 0;">ASISTENCIA REGISTRADA</p>
             <p style="font-size: 18px; margin: 5px 0;">HOY @DateTime.Now.ToString("dddd dd 'de' MMMM 'de' yyyy")</p>
         </div>
-        <button onclick="location.href='@Url.Action("Marca", "Empleado")'" 
-                style="background-color: black; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px;">
-            VOLVER
-        </button>
+        <a class="nav-link text-dark fw-bold" style="background-color: black; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px;" asp-area="" asp-controller="Empleado" asp-action="Index">Volver</a>
+
     </div>
 </div>

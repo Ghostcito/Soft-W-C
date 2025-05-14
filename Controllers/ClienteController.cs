@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Soft_W_C.Data;
 using Soft_W_C.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Soft_W_C.Controllers
 {
+    [Authorize]
     public class ClienteController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -28,16 +28,15 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            if (returnUrl != null)
-            {
-                return LocalRedirect(returnUrl);
-            }
-            else
-            {
-                // This needs to be a redirect so that the browser performs a new
-                // request and the identity for the user gets updated.
-                return RedirectToPage();
-            }
+            TempData["LogoutSuccess"] = true; // para usar en alerta
+            _logger.LogInformation(TempData["LogoutSuccess"].ToString());
+            
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    return LocalRedirect(returnUrl);
+                }
+
+            return Redirect("~/Identity/Account/Login"); // redirige a Login
         }
     }
 }

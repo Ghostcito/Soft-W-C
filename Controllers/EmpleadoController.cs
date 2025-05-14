@@ -8,28 +8,33 @@ using Microsoft.Extensions.Logging;
 using Soft_W_C.Models;
 using Soft_W_C.Service;
 using Soft_W_C.ViewModel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace Soft_W_C.Controllers
 {
+    [Authorize]
     public class EmpleadoController : Controller
     {
         private readonly ILogger<EmpleadoController> _logger;
         private readonly UserService _userService;
         private readonly AsistenciaService _asistenciaService;
         private readonly EmpleadoService _empleadoService;
+        private readonly SignInManager<Usuario> _signInManager;
 
-        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService)
+        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService, SignInManager<Usuario> signInManager)
         {
             _asistenciaService = asistenciaService;
             _logger = logger;
             _userService = userService;
             _empleadoService = empleadoService;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
         {
-            var usuarios = _empleadoService.GetEmpleados().Result;
-            return View("~/Views/Usuario/Index.cshtml", usuarios);
+            
+            return View();
         }
 
 
@@ -70,6 +75,20 @@ namespace Soft_W_C.Controllers
         public IActionResult Confirmacion()
         {
             return View("Confirmacion");
+        }
+
+        public IActionResult LogoutConfirmado()
+        {
+            return View();
+        }
+
+
+        //metodo para verificar el logout
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            TempData["LogoutSuccess"] = true; // Se guarda en TempData
+            return Redirect("~/Identity/Account/Login");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

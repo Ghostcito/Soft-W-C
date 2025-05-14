@@ -1,17 +1,30 @@
-﻿@model Soft_W_C.Models.Usuario
+﻿@using Microsoft.AspNetCore.Identity
+@using Soft_W_C.Models
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
+
 @{
     ViewData["Title"] = "Home Page";
-    Layout = "_layout";
+    Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml"; // RUTA CORRECTA
+    string nombre = "Invitado";
+    string apellido = "";
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        var empleado = await UserManager.GetUserAsync(User); // usa await
+        if (empleado != null)
+        {
+            nombre = empleado.Nombre;
+            apellido = empleado.Apellido;
+        }
+    }
 }
-
 <div class="text-center">
-    <h1 class="display-4">Bienvenido @Model.Nombre @Model.Apellido</h1>
+    <h1 class="display-4">Bienvenido @nombre @apellido</h1>
 </div>
-<main class="px-3">
 
+<main class="px-3">
     <div class="d-flex justify-content-center">
-        <a asp-controller="Asistencia" asp-action="Index" asp-route-id=@Model.Id class="btn btn-primary mx-2">Ver
-            Asistencias</a>
         <a asp-controller="Empleado" asp-action="MarcaEntrada" class="btn btn-success mx-2">Marcar Entrada</a>
         <a asp-controller="Empleado" asp-action="MarcaSalida" class="btn btn-warning mx-2">Marcar Salida</a>
     </div>

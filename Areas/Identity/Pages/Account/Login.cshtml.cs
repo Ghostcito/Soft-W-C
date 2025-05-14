@@ -127,15 +127,15 @@ namespace Soft_W_C.Areas.Identity.Pages.Account
                     // Redirige según el rol
                     if (roles.Contains("Administrador") || roles.Contains("Supervisor"))
                     {
-                        return RedirectToAction("Index", "Admin"); // Asegúrate de tener este controlador y vista
+                        return RedirectToAction("Index", "Admin"); 
                     }
                     else if (roles.Contains("Supervisor"))
                     {
-                        return RedirectToAction("Index", "Admin"); // Asegúrate de tener este controlador y vista
+                        return RedirectToAction("Index", "Admin"); 
                     }
                     else if (roles.Contains("Empleado"))
                     {
-                        return RedirectToAction("Index", "Empleado"); // Asegúrate de tener este controlador y vista
+                        return RedirectToAction("Index", "Empleado"); 
                     }
                     else
                     {
