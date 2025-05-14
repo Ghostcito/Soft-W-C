@@ -22,4 +22,4 @@ EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
 # Cambia esto si tu DLL tiene otro nombre
-ENTRYPOINT ["dotnet", "Prueba_Geolocalizacion.dll"]
+ENTRYPOINT ["dotnet", "Soft W&C.dll"]
