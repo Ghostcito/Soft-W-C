@@ -54,6 +54,12 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
                 throw new InvalidOperationException($"Cannot generate recovery codes for user because they do not have 2FA enabled.");
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Empleado"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+
             return Page();
         }
 

@@ -1,8 +1,13 @@
 ﻿@page
 @model AccessDeniedModel
+
 @{
-    ViewData["Title"] = "Access denied";
+    Layout = User.IsInRole("Empleado")
+        ? "~/Views/Empleado/_LayoutEmpleado.cshtml"
+        : "~/Views/Shared/_Layout.cshtml"; // o cualquier otro layout por defecto
+    ViewData["Title"] = "Acceso Denegado";
 }
+
 
 <header>
     <h1 class="text-danger">@ViewData["Title"]</h1>

@@ -80,6 +80,7 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
 
         public async Task<IActionResult> OnGetAsync()
         {
+            
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
@@ -92,6 +93,11 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
                 return RedirectToPage("./SetPassword");
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Empleado"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
             return Page();
         }
 

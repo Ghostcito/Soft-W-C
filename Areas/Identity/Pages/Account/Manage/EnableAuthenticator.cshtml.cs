@@ -93,6 +93,12 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Empleado"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+
             await LoadSharedKeyAndQrCodeUriAsync(user);
 
             return Page();

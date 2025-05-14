@@ -75,6 +75,12 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
                 passwordHash = await userPasswordStore.GetPasswordHashAsync(user, HttpContext.RequestAborted);
             }
 
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Empleado"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+
             ShowRemoveButton = passwordHash != null || CurrentLogins.Count > 1;
             return Page();
         }

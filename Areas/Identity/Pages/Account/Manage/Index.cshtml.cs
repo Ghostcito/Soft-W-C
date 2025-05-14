@@ -85,7 +85,7 @@ namespace SoftWC.Areas.Identity.Pages.Account.Manage
             var roles = await _userManager.GetRolesAsync(user);
             if (roles.Contains("Empleado"))
             {
-                return RedirectToPage("AccessDenied", "Account");
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
             }
 
             await LoadAsync(user); 
