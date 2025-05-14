@@ -10,16 +10,16 @@ namespace SoftWC.Models
     //cliente para manejarlo como sede
     public class Cliente
     {
-    [Key]
-    public int ClienteId { get; set; }
-    public string? Nombre { get; set; }
-    public string? Apellido { get; set; }
-    public string? Telefono { get; set; }
-    public string? Correo { get; set; }
-    [Column(TypeName = "nvarchar(120)")]
-    public TipoClienteEnum TipoCliente { get; set; }
+        [Key]
+        public int ClienteId { get; set; }
+        public string? Nombre { get; set; }
+        public string? Apellido { get; set; }
+        public string? Telefono { get; set; }
+        public string? Correo { get; set; }
 
-    //Estado para que seria? podria ser Activo, Inactivo, Bloqueado, etc. pero no lo veo muy significativo
-    public bool Estado { get; set; } // activo o inactivo    
+        public TipoClienteEnum TipoCliente { get; set; }
+
+        //Estado para que seria? podria ser Activo, Inactivo, Bloqueado, etc. pero no lo veo muy significativo
+        public bool Estado { get; set; } // activo o inactivo    
     }
 }

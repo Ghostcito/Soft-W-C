@@ -13,8 +13,6 @@ namespace SoftWC.Models
     {
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
-
-        [Column(TypeName = "nvarchar(8)")]
         public string? DNI { get; set; }
         public Sede? IdSede { get; set; }
         public DateTime? FechaIngreso { get; set; } // fecha de ingreso a la empresa

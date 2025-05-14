@@ -8,18 +8,18 @@ using SoftWC.Service;
 var builder = WebApplication.CreateBuilder(args);
 
 //Conexion SQLite
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found."); ;
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found."); ;
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=appdata.db"));
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//options.UseSqlite("Data Source=appdata.db"));
 
 //Conexion PostgreSQL
 
 // var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
 
 // // Agregar DbContext con soporte para PostgreSQL
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString));
 
 
 builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
@@ -34,7 +34,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-    options.SlidingExpiration = true;    
+    options.SlidingExpiration = true;
 });
 
 // Registrar servicios
