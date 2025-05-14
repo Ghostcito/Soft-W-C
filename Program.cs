@@ -6,15 +6,20 @@ using Soft_W_C.Models;
 using Soft_W_C.Service;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Conexion SQLite
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found."); ;
 
-// Add services to the container.
-// var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-// builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//     options.UseSqlite(connectionString));
-// builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite("Data Source=appdata.db"));
+
+//Conexion PostgreSQL
+
+// var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
+
+// // Agregar DbContext con soporte para PostgreSQL
+// builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//     options.UseNpgsql(connectionString));
 
 
 builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
