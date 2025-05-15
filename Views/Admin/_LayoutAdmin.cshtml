@@ -70,6 +70,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-left: 0.41em;
         }
 
         #sidebarToggle:hover {
@@ -85,10 +86,10 @@
 
         .nav-link {
             font-size: 1rem;
-            color: #343a40;
+            color: #343a40 !important;
             display: flex;
             align-items: center;
-            padding: 0.75rem 1rem;
+            padding: 0.60rem 1rem !important;
             border-radius: 0.5rem;
             transition: all 0.2s ease;
             white-space: nowrap;
@@ -242,7 +243,7 @@
                     <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-house nav-icon"></i><span class="nav-text">Inicio</span></a></li>
                     <li class="nav-item"><a href="#" class="nav-link"><i class="bi bi-list-task nav-icon"></i><span class="nav-text">Tareos</span></a></li>
                     <li class="nav-item"><a asp-controller="Sede" asp-action="Index" class="nav-link"><i class="bi bi-geo-alt nav-icon"></i><span class="nav-text">Sedes</span></a></li>
-                    <li class="nav-item"><a asp-controller="Empleado" asp-action="Index" class="nav-link"><i class="bi bi-people nav-icon"></i><span class="nav-text">Empleados</span></a></li>
+                    <li class="nav-item"><a asp-controller="Usuario" asp-action="Index" class="nav-link"><i class="bi bi-people nav-icon"></i><span class="nav-text">Empleados</span></a></li>
                     <li class="nav-item"><a asp-controller="Cliente" asp-action="Index" class="nav-link"><i class="bi bi-people nav-icon"></i><span class="nav-text">Clientes</span></a></li>
                     <li class="nav-item"><a asp-controller="Supervision" asp-action="Index" class="nav-link"><i class="bi bi-people nav-icon"></i><span class="nav-text">Supervisiones</span></a></li>
                 </ul>

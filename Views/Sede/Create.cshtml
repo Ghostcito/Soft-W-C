@@ -1,10 +1,62 @@
 @model SoftWC.Models.Sede
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
 
 @{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
     ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+    ViewData["Title"] = "Crear Sede";
+
 }
 
-<h1>Create</h1>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+@* mapa *@
+<script>
+    var map = L.map('map').setView([-12.0464, -77.0428], 13); // Por defecto Lima, Perú
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker;
+
+    map.on('click', function (e) {
+        if (marker) {
+            map.removeLayer(marker);
+        }
+
+        marker = L.marker(e.latlng).addTo(map);
+
+        document.getElementById("Latitud").value = e.latlng.lat.toFixed(6);
+        document.getElementById("Longitud").value = e.latlng.lng.toFixed(6);
+    });
+</script>
 
 <h4>Sede</h4>
 <hr />
@@ -14,13 +66,15 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="ClienteId" class="control-label"></label>
-                <select asp-for="ClienteId" class ="form-control" asp-items="ViewBag.ClienteId"></select>
+                <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.ClienteId">
+                    <option value="">-- Seleccione un cliente --</option>
+                </select>                
             </div>
             <div class="form-group">
                 <label asp-for="Nombre_local" class="control-label"></label>
                 <input asp-for="Nombre_local" class="form-control" />
                 <span asp-validation-for="Nombre_local" class="text-danger"></span>
-            </div>
+            </div>            
             <div class="form-group">
                 <label asp-for="Direccion_local" class="control-label"></label>
                 <input asp-for="Direccion_local" class="form-control" />
@@ -36,6 +90,8 @@
                 <input asp-for="Provincia" class="form-control" />
                 <span asp-validation-for="Provincia" class="text-danger"></span>
             </div>
+
+            <div id="map" style="height: 400px;"></div>
             <div class="form-group">
                 <label asp-for="Latitud" class="control-label"></label>
                 <input asp-for="Latitud" class="form-control" />
@@ -47,8 +103,17 @@
                 <span asp-validation-for="Longitud" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="estadoSede" class="control-label"></label>
-                <select asp-for="estadoSede" class="form-control"></select>
+                <label asp-for="estadoSede" class="control-label">Estado de la Sede</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" asp-for="estadoSede" value="@SedeEnum.ACTIVA" checked>
+                        <label class="form-check-label" for="estadoSede">Activa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" asp-for="estadoSede" value="@SedeEnum.INACTIVA">
+                        <label class="form-check-label" for="estadoSede">Inactiva</label>
+                    </div>
+                </div>
                 <span asp-validation-for="estadoSede" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -62,6 +127,9 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+

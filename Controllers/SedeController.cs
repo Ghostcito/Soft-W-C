@@ -8,8 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using SoftWC.Data;
 using SoftWC.Models;
 
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+
 namespace SoftWC.Controllers
 {
+    [Authorize]
     public class SedeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -57,7 +61,7 @@ namespace SoftWC.Controllers
         // GET: Sede/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Cliente, "ClienteId", "ClienteId");
+            ViewData["ClienteId"] = new SelectList(_context.Cliente, "ClienteId", "Nombre");
             return View();
         }
 
@@ -69,15 +73,15 @@ namespace SoftWC.Controllers
         public async Task<IActionResult> Create([Bind("SedeId,ClienteId,Nombre_local,Direccion_local,Ciudad,Provincia,Latitud,Longitud,estadoSede")] Sede sede)
         {
             if (ModelState.IsValid)
-            {
+                {
                 _context.Add(sede);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+                    return RedirectToAction(nameof(Index));
+                }
             ViewData["ClienteId"] = new SelectList(_context.Cliente, "ClienteId", "ClienteId", sede.ClienteId);
-            return View(sede);
+                return View(sede);
         }
-
+        
         // GET: Sede/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

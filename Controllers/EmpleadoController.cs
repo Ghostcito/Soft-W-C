@@ -82,7 +82,6 @@ namespace SoftWC.Controllers
             return View();
         }
 
-
         //metodo para verificar el logout
         public async Task<IActionResult> Logout()
         {

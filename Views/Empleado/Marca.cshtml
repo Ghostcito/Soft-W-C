@@ -1,4 +1,5 @@
 ﻿@model SoftWC.ViewModel.MarcaViewModel
+
 @{
     ViewBag.Title = "Marcar Asistencia";
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
@@ -19,7 +20,7 @@
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@Model.asistencia.HoraEntrada</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@Model.asistencia.Fecha</p>
 
-        <p style="color: gray; font-size: 18px;">📍 @direccion</p>
+        <p style="color: gray; font-size: 18px;">📍 </p>
 
         <form method="get" action="@Url.Action("Confirmacion", "Empleado")">
             <button type="submit"
@@ -72,7 +73,7 @@
                     {
                         @("0")
                     }
-                </p>
+                </p> *@
             </div>
             <a asp-controller="Asistencia" asp-action="Index" asp-route-id=@Model.asistencia.IdEmpleado
                 style="color: #2d6cdf; font-size: 14px; margin-top: 5px; display: inline-block;">Ver
