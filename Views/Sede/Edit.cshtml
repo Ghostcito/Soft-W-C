@@ -62,8 +62,17 @@
                 <span asp-validation-for="Longitud" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="estadoSede" class="control-label"></label>
-                <select asp-for="estadoSede" class="form-control"></select>
+                <label asp-for="estadoSede" class="control-label">Estado de la Sede</label>
+                <div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" asp-for="estadoSede" value="@SedeEnum.ACTIVA" checked>
+                        <label class="form-check-label" for="estadoSede">Activa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" asp-for="estadoSede" value="@SedeEnum.INACTIVA">
+                        <label class="form-check-label" for="estadoSede">Inactiva</label>
+                    </div>
+                </div>
                 <span asp-validation-for="estadoSede" class="text-danger"></span>
             </div>
             <div class="form-group">
