@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SoftWC.Data;
 using SoftWC.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace SoftWC.Controllers
 {
@@ -47,10 +48,55 @@ namespace SoftWC.Controllers
         }
 
         // GET: Supervision/Create
-        public IActionResult Create()
-        {
-            ViewData["EmpleadoId"] = new SelectList(_context.Usuario, "Id", "Id");
-            ViewData["SupervisorId"] = new SelectList(_context.Usuario, "Id", "Id");
+        public async Task<IActionResult> Create()
+        {   
+            // Obtener el ID del rol "Empleado"
+            var empleadoRole = await _context.Roles
+                .Where(r => r.Name == "Empleado")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            // Obtener los IDs de los usuarios que tienen el rol "Administrador"
+            var adminUserIds = await _context.UserRoles
+                .Where(ur => ur.RoleId == empleadoRole)
+                .Select(ur => ur.UserId)
+                .ToListAsync();
+
+            // Crear SelectList con Nombre + Apellido solo para administradores
+            ViewData["EmpleadoId"] = new SelectList(
+                _context.Users
+                    .Where(u => adminUserIds.Contains(u.Id))
+                    .Select(u => new
+                    {
+                        u.Id,
+                        NombreCompleto = u.Nombre + " " + u.Apellido
+                    }),
+                "Id", "NombreCompleto");
+
+            // Obtener el ID del rol "Empleado"
+            var supervisorRole = await _context.Roles
+                .Where(r => r.Name == "Supervisor")
+                .Select(r => r.Id)
+                .FirstOrDefaultAsync();
+
+            // Obtener los IDs de los usuarios que tienen el rol "Administrador"
+            var supervisorUserIds = await _context.UserRoles
+                .Where(ur => ur.RoleId == supervisorRole)
+                .Select(ur => ur.UserId)
+                .ToListAsync();
+
+
+            // Supervisores: todos los usuarios
+            ViewData["SupervisorId"] = new SelectList(
+                _context.Users
+                    .Where(u => supervisorUserIds.Contains(u.Id))
+                    .Select(u => new
+                    {
+                        u.Id,
+                        NombreCompleto = u.Nombre + " " + u.Apellido
+                    }),
+                "Id", "NombreCompleto");
+
             return View();
         }
 
@@ -67,8 +113,8 @@ namespace SoftWC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmpleadoId"] = new SelectList(_context.Usuario, "Id", "Id", supervision.EmpleadoId);
-            ViewData["SupervisorId"] = new SelectList(_context.Usuario, "Id", "Id", supervision.SupervisorId);
+            ViewData["EmpleadoId"] = new SelectList(_context.Usuario, "Id", "Nombre", supervision.EmpleadoId);
+            ViewData["SupervisorId"] = new SelectList(_context.Usuario, "Id", "Nombre", supervision.SupervisorId);
             return View(supervision);
         }
 
