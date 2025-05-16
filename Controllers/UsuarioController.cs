@@ -15,9 +15,11 @@ namespace SoftWC.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserService _userService;
+        private readonly EmpleadoService _empleadoService;
 
-        public UsuarioController(ApplicationDbContext context, UserService userService)
+        public UsuarioController(ApplicationDbContext context, UserService userService, EmpleadoService empleadoService)
         {
+            _empleadoService = empleadoService;
             _userService = userService;
             _context = context;
         }
@@ -26,7 +28,8 @@ namespace SoftWC.Controllers
         // GET: Usuario
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Usuario.ToListAsync());
+            var usuarios = await _empleadoService.GetEmpleados();
+            return View(usuarios);
         }
 
         public async Task<IActionResult> FindAllBySede(int id)
