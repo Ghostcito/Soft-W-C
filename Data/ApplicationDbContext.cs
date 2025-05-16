@@ -35,6 +35,12 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
             .WithMany(u => u.SupervisoresAsignados)
             .HasForeignKey(s => s.EmpleadoId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Sede>()
+            .HasOne(s => s.Usuario)
+            .WithMany(u => u.Sedes)
+            .HasForeignKey(s => s.UsuarioId);
+
     }
 
 }
