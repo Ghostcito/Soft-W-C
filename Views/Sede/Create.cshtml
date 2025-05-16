@@ -3,7 +3,6 @@
 @using SoftWC.Models
 @inject SignInManager<SoftWC.Models.Usuario> SignInManager
 @inject UserManager<SoftWC.Models.Usuario> UserManager
-
 @{
     var user = await UserManager.GetUserAsync(User);
     var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
@@ -14,9 +13,9 @@
         
     }
     ViewData["Title"] = "Crear Sede";
+    
 
 }
-
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -30,33 +29,6 @@
         @TempData["ErrorMessage"]
     </div>
 }
-<!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-@* mapa *@
-<script>
-    var map = L.map('map').setView([-12.0464, -77.0428], 13); // Por defecto Lima, Perú
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    var marker;
-
-    map.on('click', function (e) {
-        if (marker) {
-            map.removeLayer(marker);
-        }
-
-        marker = L.marker(e.latlng).addTo(map);
-
-        document.getElementById("Latitud").value = e.latlng.lat.toFixed(6);
-        document.getElementById("Longitud").value = e.latlng.lng.toFixed(6);
-    });
-</script>
 
 <h4>Sede</h4>
 <hr />
@@ -74,34 +46,43 @@
                 <label asp-for="Nombre_local" class="control-label"></label>
                 <input asp-for="Nombre_local" class="form-control" />
                 <span asp-validation-for="Nombre_local" class="text-danger"></span>
-            </div>            
+            </div>   
+            
+            <label class="control-label">Almacenamiento de coordenadas en el mapa, Busca la direccion y se actualizaran los campos (Direccion, Ciudad y Provincia), antes de guardar revisa la direccion</search></label>
+            <!-- Ver mapa -->
+            <div id="map"></div>
+                      
+            <!-- Campos ocultos para latitud y longitud -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Latitud" class="control-label"></label>
+                        <input asp-for="Latitud" class="form-control" id="latitud-input" readonly />
+                        <span asp-validation-for="Latitud" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Longitud" class="control-label"></label>
+                        <input asp-for="Longitud" class="form-control" id="longitud-input" readonly />
+                    </div> 
+                </div>   
+            </div>             
             <div class="form-group">
                 <label asp-for="Direccion_local" class="control-label"></label>
                 <input asp-for="Direccion_local" class="form-control" />
-                <span asp-validation-for="Direccion_local" class="text-danger"></span>
+                <span asp-validation-for="Direccion_local" id="Direccion_local" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Ciudad" class="control-label"></label>
-                <input asp-for="Ciudad" class="form-control" />
+                <input asp-for="Ciudad" class="form-control" id="Ciudad"/>
                 <span asp-validation-for="Ciudad" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Provincia" class="control-label"></label>
-                <input asp-for="Provincia" class="form-control" />
+                <input asp-for="Provincia" class="form-control" id="Provincia" />
                 <span asp-validation-for="Provincia" class="text-danger"></span>
-            </div>
-
-            <div id="map" style="height: 400px;"></div>
-            <div class="form-group">
-                <label asp-for="Latitud" class="control-label"></label>
-                <input asp-for="Latitud" class="form-control" />
-                <span asp-validation-for="Latitud" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Longitud" class="control-label"></label>
-                <input asp-for="Longitud" class="form-control" />
-                <span asp-validation-for="Longitud" class="text-danger"></span>
-            </div>
+            </div>           
             <div class="form-group">
                 <label asp-for="estadoSede" class="control-label">Estado de la Sede</label>
                 <div>
@@ -127,9 +108,12 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>    
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
 
+    <script src="@Url.Content("~/js/MapaRegistro.js")" asp-append-version="true"></script>
+}

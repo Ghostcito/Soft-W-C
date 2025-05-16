@@ -1,7 +1,20 @@
 @model SoftWC.Models.Sede
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
 
 @{
-    ViewData["Title"] = "Edit";
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+    ViewData["Title"] = "Editar Sede";
+
 }
 
 <h1>Edit</h1>

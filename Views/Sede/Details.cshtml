@@ -1,7 +1,19 @@
 @model SoftWC.Models.Sede
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
 
 @{
-    ViewData["Title"] = "Details";
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+    ViewData["Title"] = "Ver Sede";
 }
 
 <h1>Details</h1>
@@ -60,7 +72,67 @@
         </dd>
     </dl>
 </div>
+<div class="col-md-6">
+            <h4>Ubicación</h4>
+            <div id="map" style="height: 400px; width: 100%; border: 1px solid #ddd; border-radius: 5px;"></div>
+            <div class="mt-2">
+                <strong>Coordenadas:</strong>
+                <span id="coords">
+                    @Model.Latitud.ToString("0.000000"), @Model.Longitud.ToString("0.000000")                    
+                </span>
+            </div>
+        </div>
+    </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.SedeId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>   
+
+@section Scripts {
+    
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+        // Verificar que las coordenadas existen
+        @if(Model != null && Model.Latitud != 0 && Model.Longitud != 0)
+        {
+            <text>
+            // Configurar el mapa con las coordenadas correctas
+            const map = L.map('map').setView([@Model.Latitud, @Model.Longitud], 16);
+            
+            
+            // Añadir capa base
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // Añadir marcador con las coordenadas
+            const marker = L.marker([@Model.Latitud, @Model.Longitud]).addTo(map)
+                .bindPopup(`
+                    <b>@Html.Raw(Model.Nombre_local)</b><br>
+                    @Html.Raw(Model.Direccion_local)<br>
+                    Lat: @Model.Latitud.ToString("0.000000")<br>
+                    Lng: @Model.Longitud.ToString("0.000000")
+                `)
+                .openPopup();
+
+            // Forzar actualización del mapa
+            setTimeout(() => {
+                map.invalidateSize();
+                map.setView([@Model.Latitud, @Model.Longitud], 16);
+            }, 100);
+            </text>
+        }
+        else
+        {
+            <text>
+            document.getElementById('map').innerHTML = 
+                '<div class="alert alert-warning p-4 text-center">No hay coordenadas registradas para esta sede</div>';
+            </text>
+        }
+    </script>
+}

@@ -1,10 +1,23 @@
 @model IEnumerable<SoftWC.Models.Sede>
 
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
+
 @{
-    ViewData["Title"] = "Index";
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+    ViewData["Title"] = "Listado Sedes";
 }
 
-<h1>Index</h1>
+<h1>Listado de sedes, (empresas clientes)</h1>
 
 <p>
     <a asp-action="Create">Crear Nueva Sede</a>
@@ -82,3 +95,6 @@
 <p>
     <a asp-controller="Admin" asp-action="Index">Regresar</a>
 </p>
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
