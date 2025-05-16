@@ -21,6 +21,10 @@ namespace SoftWC.Models
         public string? Estado { get; set; } //activo o inactivo
         public decimal? Salario { get; set; }
 
+        //un usuario puede tener varias sedes
+        public ICollection<Sede> Sedes { get; set; } = new List<Sede>();
+
+
         //RELACIONES EMPLEADO - SUPERVISOR
         public ICollection<Supervision> EmpleadosSupervisados { get; set; } // Si es Supervisor
         public ICollection<Supervision> SupervisoresAsignados { get; set; } // Si es Empleado
