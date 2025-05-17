@@ -19,16 +19,16 @@ namespace SoftWC.Service
 
         public async Task<Asistencia> AddEntrada()
         {
-            var userPrincipal = _userService.GetCurrentUserAsync();
+            var userPrincipal = await _userService.GetCurrentUserAsync();
             var asistencia = new Asistencia
             {
-                IdEmpleado = userPrincipal.Result.Id,
-                Empleado = userPrincipal.Result,
-                Fecha = DateTime.Now.Date,
-                HoraEntrada = DateTime.Now,
+                IdEmpleado = userPrincipal.Id,
+                Empleado = userPrincipal,
+                Fecha = DateTime.UtcNow.Date,
+                HoraEntrada = DateTime.UtcNow,
                 Presente = true,
             };
-            AddAsistencia(asistencia);
+            await AddAsistencia(asistencia);
             return asistencia;
 
         }
@@ -36,7 +36,7 @@ namespace SoftWC.Service
         public async Task<Asistencia?> AddSalida()
         {
             var userPrincipal = _userService.GetCurrentUserAsync();
-            var asistencia = GetAllAsistenciaByIdEmpleado(userPrincipal.Result.Id).FindLast(a => a.Fecha == DateTime.Now.Date);
+            var asistencia = GetAllAsistenciaByIdEmpleado(userPrincipal.Result.Id).FindLast(a => a.Fecha == DateTime.UtcNow.Date);
             if (asistencia != null && asistencia.HoraEntrada.HasValue)
             {
                 asistencia.HoraSalida = DateTime.Now;
@@ -59,10 +59,17 @@ namespace SoftWC.Service
                 UpdateAsistencia(asistencia);
             }
         }
-        public Asistencia AddAsistencia(Asistencia asistencia)
+        public async Task<Asistencia> AddAsistencia(Asistencia asistencia)
         {
             _context.Asistencia.Add(asistencia);
-            _context.SaveChanges();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al guardar asistencia: " + ex.InnerException?.Message, ex);
+            }
             return asistencia;
         }
 
