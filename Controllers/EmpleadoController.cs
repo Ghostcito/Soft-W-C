@@ -33,7 +33,7 @@ namespace SoftWC.Controllers
 
         public IActionResult Index()
         {
-            
+
             return View();
         }
 
@@ -52,7 +52,7 @@ namespace SoftWC.Controllers
         public IActionResult MarcaAsistencia()
         {
             var user = _userService.GetCurrentUserAsync().Result;
-            Console.WriteLine($"Usuario: {user.Nombre} {user.Apellido}, DNI: {user.DNI}, ID: {user.Id}");
+            //Console.WriteLine($"Usuario: {user.Nombre} {user.Apellido}, DNI: {user.DNI}, ID: {user.Id}");
 
             // if (empleado == null || empleado.Result.Sede == null)
 
@@ -75,7 +75,7 @@ namespace SoftWC.Controllers
             // // Aquí podrías comparar con la ubicación de la sede o simplemente guardar en BD.
             // // Console.WriteLine($"Ubicación recibida: {ubicacion.Latitud}, {ubicacion.Longitud}, {ubicacion.EmpleadoId}");
             // return Ok($"Ubicación recibida: Latitud {ubicacion.Latitud}, Longitud {ubicacion.Longitud}, EmpleadoId {ubicacion.EmpleadoId}, ASISTENCIA REGISTRADA");
-            return Redirect ("/Empleado/Index");
+            return Redirect("/Empleado/MarcaEntrada");
         }
 
         public IActionResult MarcaSalida()

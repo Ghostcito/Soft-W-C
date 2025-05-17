@@ -20,12 +20,17 @@ namespace SoftWC.Service
         public async Task<Asistencia> AddEntrada()
         {
             var userPrincipal = await _userService.GetCurrentUserAsync();
+
+            //CAMBIANDO ZONA HORARIO
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var horaPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+
             var asistencia = new Asistencia
             {
                 IdEmpleado = userPrincipal.Id,
                 Empleado = userPrincipal,
-                Fecha = DateTime.UtcNow.Date,
-                HoraEntrada = DateTime.UtcNow,
+                Fecha = horaPeru.Date,
+                HoraEntrada = horaPeru,
                 Presente = true,
             };
             await AddAsistencia(asistencia);
