@@ -26,8 +26,43 @@
 <main class="px-3">
     <div class="d-flex justify-content-center">
         <a asp-controller="Empleado" asp-action="Confirmacion" class="btn btn-success mx-2">Marcar Entrada</a>
+
+        <button onclick="obtenerUbicacion()" class="btn btn-success mx-2">Marcar Entrada</button>
+
         <a asp-controller="Empleado" asp-action="MarcaSalida" class="btn btn-warning mx-2">Marcar Salida</a>
+
+        <button onclick="obtenerUbicacion()" class="btn btn-success mx-2">Marcar Salida</button>
 
         <!-- <a asp-controller="Empleado" asp-action="MarcaAsistencia" class="btn btn-warning mx-2">Registro entrada con geolocalizacion </a>-->
     </div>
 </main>
+
+<script>
+
+    function obtenerUbicacion() {
+        console.log("Intentando obtener ubicación...");
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    alert("Tu ubicación es:\nLatitud: " + lat + "\nLongitud: " + lon);
+
+                    // Enviar a backend si deseas
+                    fetch('/Home/GuardarUbicacion', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: 1 })
+                    }).then(res => res.text())
+                        .then(msg => alert(msg));
+                },
+                function (error) {
+                    alert("No se pudo obtener ubicación: " + error.message);
+                }
+            );
+        } else {
+            alert("Geolocalización no soportada en este navegador.");
+        }
+    }
+</script>
