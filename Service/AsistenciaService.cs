@@ -90,18 +90,21 @@ namespace SoftWC.Service
 
         }
 
-        public async Task<bool> DetectarSede(decimal latitud, decimal longitud)
+        public async Task<Sede?> DetectarSede(decimal latitud, decimal longitud)
         {
             var empleado = await _userService.GetCurrentUserAsync();
-
+            double distMin = double.MaxValue;
+            Sede sedeCercana = empleado.Sedes.FirstOrDefault();
             foreach (var sede in empleado.Sedes)
             {
-                var distancia = GeoUtils.CalcularDistancia(latitud, longitud, sede.Latitud, sede.Longitud);
-                if (distancia <= 100) // 100 metros
+                var distancia = GeoUtils.CalcularDistancia(Convert.ToDouble(latitud), Convert.ToDouble(longitud), Convert.ToDouble(sede.Latitud), Convert.ToDouble(sede.Longitud));
+                if (distancia < distMin)
                 {
-                    return true;
+                    sedeCercana = sede;
+                    distMin = distancia;
                 }
             }
+            return sedeCercana;
         }
 
         public List<Asistencia> GetAllAsistencias()
