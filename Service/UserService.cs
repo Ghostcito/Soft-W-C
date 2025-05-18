@@ -72,6 +72,13 @@ namespace SoftWC.Service
             return _userManager.GetRolesAsync(userPrincipal);
         }
 
+        // Método para obtener un usuario por su ID
+        public async Task<Usuario> GetUserByIdAsync(string id)
+        {
+            return await _userManager.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
 
 
 

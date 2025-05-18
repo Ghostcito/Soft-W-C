@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Prueba_Geolocalizacion.Utils;
 using SoftWC.Data;
 using SoftWC.Models;
 
@@ -77,6 +78,30 @@ namespace SoftWC.Service
                 throw new Exception("Error al guardar asistencia: " + ex.InnerException?.Message, ex);
             }
             return asistencia;
+        }
+
+        public async Task<bool> ValidarDistancia(Geolocalizacion_asistencia ubicacion)
+        {
+            var empleado = await _userService.GetCurrentUserAsync();
+
+
+
+
+
+        }
+
+        public async Task<bool> DetectarSede(decimal latitud, decimal longitud)
+        {
+            var empleado = await _userService.GetCurrentUserAsync();
+
+            foreach (var sede in empleado.Sedes)
+            {
+                var distancia = GeoUtils.CalcularDistancia(latitud, longitud, sede.Latitud, sede.Longitud);
+                if (distancia <= 100) // 100 metros
+                {
+                    return true;
+                }
+            }
         }
 
         public List<Asistencia> GetAllAsistencias()

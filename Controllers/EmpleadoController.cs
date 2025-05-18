@@ -21,6 +21,7 @@ namespace SoftWC.Controllers
         private readonly AsistenciaService _asistenciaService;
         private readonly EmpleadoService _empleadoService;
         private readonly SignInManager<Usuario> _signInManager;
+        
 
         public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService, SignInManager<Usuario> signInManager)
         {
@@ -100,10 +101,12 @@ namespace SoftWC.Controllers
 
         }
 
-        [HttpGet("Confirmacion")]
-        public IActionResult Confirmacion()
+        public IActionResult Confirmacion(string id)
         {
-            return View("Confirmacion");
+            var entrada=_asistenciaService.AddEntrada();
+            
+
+            return View();
         }
 
         public IActionResult LogoutConfirmado()
