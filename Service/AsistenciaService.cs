@@ -80,22 +80,17 @@ namespace SoftWC.Service
             return asistencia;
         }
 
-        public async Task<bool> ValidarDistancia(Geolocalizacion_asistencia ubicacion)
+        public async Task<(Sede?, bool)> ValidarDistancia(Geolocalizacion_asistencia ubicacion)
         {
             var empleado = await _userService.GetCurrentUserAsync();
-
-
-
-
-
+            return DetectarSede(ubicacion.Latitud, ubicacion.Longitud, empleado.Sedes).Result;
         }
 
-        public async Task<Sede?> DetectarSede(decimal latitud, decimal longitud)
+        public async Task<(Sede?, bool)> DetectarSede(decimal latitud, decimal longitud, ICollection<Sede> sedes)
         {
-            var empleado = await _userService.GetCurrentUserAsync();
             double distMin = double.MaxValue;
-            Sede sedeCercana = empleado.Sedes.FirstOrDefault();
-            foreach (var sede in empleado.Sedes)
+            Sede sedeCercana = sedes.FirstOrDefault();
+            foreach (var sede in sedes)
             {
                 var distancia = GeoUtils.CalcularDistancia(Convert.ToDouble(latitud), Convert.ToDouble(longitud), Convert.ToDouble(sede.Latitud), Convert.ToDouble(sede.Longitud));
                 if (distancia < distMin)
@@ -104,7 +99,11 @@ namespace SoftWC.Service
                     distMin = distancia;
                 }
             }
-            return sedeCercana;
+            if (distMin <= Convert.ToDouble(sedeCercana.Radio))
+            {
+                return (sedeCercana, true);
+            }
+            return (sedeCercana, false);
         }
 
         public List<Asistencia> GetAllAsistencias()
