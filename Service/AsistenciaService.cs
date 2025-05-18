@@ -24,6 +24,7 @@ namespace SoftWC.Service
             //CAMBIANDO ZONA HORARIO
             var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
             var horaPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+            horaPeru = DateTime.SpecifyKind(horaPeru, DateTimeKind.Utc);
 
             var asistencia = new Asistencia
             {
