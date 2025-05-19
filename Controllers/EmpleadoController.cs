@@ -39,15 +39,19 @@ namespace SoftWC.Controllers
             return View();
         }
 
-        public IActionResult MarcaAsistencia()
+        [HttpGet]
+        public async Task<IActionResult> ConfirmarEntrada()
         {
+            Console.WriteLine("ConfirmarEntrada");
             //Obtener Usuario
             var user = _userService.GetCurrentUserAsync().Result;
             //Generar Asistencia
+            Asistencia asistencia = _asistenciaService.AddEntrada().Result;
+            _asistenciaService.AddAsistencia(asistencia);
+            ViewData["HoraRegistrada"] = asistencia.HoraEntrada?.ToString("HH:mm");
+            ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
 
-
-
-            return Redirect("/Empleado/MarcaEntrada");
+            return View("Confirmacion");
         }
 
         public IActionResult MarcaSalida()
@@ -87,6 +91,7 @@ namespace SoftWC.Controllers
                 fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
+            Console.WriteLine("MarcaEntrada");
 
             return View(viewModel);
         }

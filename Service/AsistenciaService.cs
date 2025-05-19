@@ -81,7 +81,7 @@ namespace SoftWC.Service
             return asistencia;
         }
 
-        public async Task<(Sede?, bool)> ValidarDistancia(UbicacionDTO ubicacion)
+        public async Task<(Sede, bool)> ValidarDistancia(UbicacionDTO ubicacion)
         {
             var empleado = await _context.Usuario
             .Include(u => u.Sedes)
@@ -89,7 +89,7 @@ namespace SoftWC.Service
             return DetectarSede(Convert.ToDecimal(ubicacion.Latitud), Convert.ToDecimal(ubicacion.Longitud), empleado.Sedes).Result;
         }
 
-        public async Task<(Sede?, bool)> DetectarSede(decimal latitud, decimal longitud, ICollection<Sede> sedes)
+        public async Task<(Sede, bool)> DetectarSede(decimal latitud, decimal longitud, ICollection<Sede> sedes)
         {
             if (sedes == null || !sedes.Any()) throw new Exception("El usuario no tiene sedes asignadas.");
             double distMin = double.MaxValue;

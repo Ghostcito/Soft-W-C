@@ -30,7 +30,7 @@
         <p style="color: gray; font-size: 18px;">📍 </p>
 
 
-        <form method="get" action="@Url.Action("MarcarEntrada", "Empleado")">
+        <form method="get" action="@Url.Action("ConfirmarEntrada", "Empleado")">
             <button type="submit"
                 style="background-color: @(locVerificado ? "#2d6cdf" : "#cccccc"); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: @(locVerificado ? "pointer" : "not-allowed"); margin: 20px 0; font-size: 16px;"
                 @(locVerificado ? "" : "disabled")>
