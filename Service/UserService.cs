@@ -60,10 +60,10 @@ namespace SoftWC.Service
         }
 
         //Metodo para obtener usuario logeado
-        public Task<Usuario> GetCurrentUserAsync()
+        public async Task<Usuario> GetCurrentUserAsync()
         {
             var userPrincipal = _httpContextAccessor.HttpContext?.User;
-            return _userManager.GetUserAsync(userPrincipal);
+            return await _userManager.GetUserAsync(userPrincipal);
         }
         //Metodo para obtener rol de usuario logeado
         public Task<IList<string>> GetRolCurrentUserAsync()

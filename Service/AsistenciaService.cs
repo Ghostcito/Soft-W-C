@@ -43,8 +43,9 @@ namespace SoftWC.Service
 
         public async Task<Asistencia?> AddSalida()
         {
-            var userPrincipal = _userService.GetCurrentUserAsync();
-            var asistencia = GetAllAsistenciaByIdEmpleado(userPrincipal.Result.Id).FindLast(a => a.Fecha == DateTime.UtcNow.Date);
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            var asistencias = await GetAllAsistenciaByIdEmpleado(userPrincipal.Id);
+            var asistencia = asistencias.FindLast(a => a.Fecha == DateTime.UtcNow.Date);
             if (asistencia != null && asistencia.HoraEntrada.HasValue)
             {
                 asistencia.HoraSalida = DateTime.Now;
@@ -121,9 +122,9 @@ namespace SoftWC.Service
             return await _context.Asistencia.FindAsync(id);
         }
 
-        public List<Asistencia> GetAllAsistenciaByIdEmpleado(string id)
+        public async Task<List<Asistencia>> GetAllAsistenciaByIdEmpleado(string id)
         {
-            return _context.Asistencia.Where(a => a.IdEmpleado == id).ToList();
+            return await _context.Asistencia.Where(a => a.IdEmpleado == id).ToListAsync();
         }
 
         public void UpdateAsistencia(Asistencia asistencia)
