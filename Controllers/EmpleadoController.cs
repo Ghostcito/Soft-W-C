@@ -44,19 +44,19 @@ namespace SoftWC.Controllers
         {
             Console.WriteLine("ConfirmarEntrada");
             //Obtener Usuario
-            var user = _userService.GetCurrentUserAsync().Result;
+            var user = await _userService.GetCurrentUserAsync();
             //Generar Asistencia
-            Asistencia asistencia = _asistenciaService.AddEntrada().Result;
-            _asistenciaService.AddAsistencia(asistencia);
+            Asistencia asistencia = await _asistenciaService.AddEntrada();
+            await _asistenciaService.AddAsistencia(asistencia);
             ViewData["HoraRegistrada"] = asistencia.HoraEntrada?.ToString("HH:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
 
             return View("Confirmacion");
         }
 
-        public IActionResult MarcaSalida()
+        public async Task<IActionResult> MarcaSalida()
         {
-            Asistencia asis = _asistenciaService.AddSalida().Result;
+            Asistencia asis = await _asistenciaService.AddSalida();
             if (asis != null)
             {
                 _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
@@ -75,7 +75,7 @@ namespace SoftWC.Controllers
 
         }
 
-        public IActionResult MarcaEntrada()
+        public async Task<IActionResult> MarcaEntrada()
         {
             UbicacionDTO ubicacion = new UbicacionDTO
             {
@@ -83,7 +83,7 @@ namespace SoftWC.Controllers
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
-            var verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result;
+            var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
@@ -106,7 +106,7 @@ namespace SoftWC.Controllers
             return Json(new { redirectUrl = Url.Action("MarcaEntrada") }); ;
         }
 
-        public IActionResult LogoutConfirmado()
+        public async Task<IActionResult> LogoutConfirmado()
         {
             return View();
         }
