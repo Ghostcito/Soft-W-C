@@ -96,7 +96,6 @@ namespace SoftWC.Service
             Sede sedeCercana = sedes.FirstOrDefault();
             foreach (var sede in sedes)
             {
-                Console.WriteLine($"Sede: {sede.Nombre_local}, Latitud: {sede.Latitud}, Longitud: {sede.Longitud}");
                 var distancia = GeoUtils.CalcularDistancia(Convert.ToDouble(latitud), Convert.ToDouble(longitud), Convert.ToDouble(sede.Latitud), Convert.ToDouble(sede.Longitud));
                 if (distancia < distMin)
                 {

@@ -90,19 +90,14 @@ namespace SoftWC.Controllers
 
         }
 
-        [HttpGet]
         public IActionResult MarcaEntrada()
         {
-
-            return View(TempData["MarcaViewModel"] as MarcaViewModel);
-        }
-
-        [HttpPost]
-        public IActionResult MarcaEntrada([FromBody] UbicacionDTO ubicacion)
-        {
-            if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
-            if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
-
+            UbicacionDTO ubicacion = new UbicacionDTO
+            {
+                Latitud = Convert.ToDouble(TempData["Latitud"]),
+                Longitud = Convert.ToDouble(TempData["Longitud"]),
+                EmpleadoId = TempData["EmpleadoId"]?.ToString()
+            };
             Asistencia asis = _asistenciaService.AddEntrada().Result;
             var viewModel = new MarcaViewModel
             {
@@ -111,8 +106,18 @@ namespace SoftWC.Controllers
                 verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result
 
             };
-            TempData["MarcaViewModel"] = viewModel;
-            return RedirectToAction();
+
+            return View(viewModel);
+        }
+
+        public IActionResult PostEntrada([FromBody] UbicacionDTO ubicacion)
+        {
+            if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
+            if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
+            TempData["Latitud"] = ubicacion.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["Longitud"] = ubicacion.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["EmpleadoId"] = ubicacion.EmpleadoId;
+            return Json(new { redirectUrl = Url.Action("MarcaEntrada") }); ;
         }
 
         public IActionResult LogoutConfirmado()
