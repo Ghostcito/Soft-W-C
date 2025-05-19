@@ -57,8 +57,7 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: empleadoId })
-                    }).then(res => res.text())
-                        .then(msg => alert(msg));
+                    });
                 },
                 function (error) {
                     alert("No se pudo obtener ubicación: " + error.message);

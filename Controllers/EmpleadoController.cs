@@ -90,13 +90,20 @@ namespace SoftWC.Controllers
 
         }
 
-        public IActionResult MarcarEntrada([FromBody] UbicacionDTO ubicacion)
+        [HttpGet]
+        public IActionResult MarcaEntrada()
+        {
+
+            return View(TempData["MarcaViewModel"] as MarcaViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult MarcaEntrada([FromBody] UbicacionDTO ubicacion)
         {
             if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
             if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
 
             Asistencia asis = _asistenciaService.AddEntrada().Result;
-            Console.WriteLine($"Ubicacion: {ubicacion.EmpleadoId}, Latitud: {ubicacion.Latitud}, Longitud: {ubicacion.Longitud}");
             var viewModel = new MarcaViewModel
             {
                 asistencia = asis,
@@ -104,7 +111,8 @@ namespace SoftWC.Controllers
                 verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result
 
             };
-            return View("MarcaEntrada", viewModel);
+            TempData["MarcaViewModel"] = viewModel;
+            return RedirectToAction();
         }
 
         public IActionResult LogoutConfirmado()
