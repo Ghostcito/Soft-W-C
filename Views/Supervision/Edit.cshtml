@@ -6,13 +6,13 @@
 @inject UserManager<SoftWC.Models.Usuario> UserManager
 @{
     var user = await UserManager.GetUserAsync(User);
-    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();      
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
     @if (roles.Contains("Administrador"))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
-        
+
     }
-    ViewData["Title"] = "Supervision WC";    
+    ViewData["Title"] = "Supervision WC";
 
 }
 
@@ -57,5 +57,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

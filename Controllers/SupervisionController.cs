@@ -49,7 +49,7 @@ namespace SoftWC.Controllers
 
         // GET: Supervision/Create
         public async Task<IActionResult> Create()
-        {   
+        {
             // Obtener el ID del rol "Empleado"
             var empleadoRole = await _context.Roles
                 .Where(r => r.Name == "Empleado")

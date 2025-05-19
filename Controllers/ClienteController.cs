@@ -116,6 +116,7 @@ namespace SoftWC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["TipoCliente"] = new SelectList(Enum.GetValues(typeof(TipoClienteEnum)).ToString());
             return View(cliente);
         }
 

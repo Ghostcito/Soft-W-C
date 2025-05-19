@@ -50,10 +50,10 @@
                     @Html.DisplayFor(modelItem => item.Empleado.Nombre)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio.ToString("dd/MM/yyyy"))
+                    @item.FechaInicio.ToString("dd 'de' MM 'del' yyyy")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FechaFin)
+                    @(item.FechaFin != null ? item.FechaFin.Value.ToString("dd 'de' MM 'del 'yyyy") : "")
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
