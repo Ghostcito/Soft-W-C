@@ -10,6 +10,6 @@ namespace SoftWC.Models.Dto
         public double Latitud { get; set; }
         public double Longitud { get; set; }
 
-        public int EmpleadoId { get; set; }
+        public string EmpleadoId { get; set; }
     }
 }

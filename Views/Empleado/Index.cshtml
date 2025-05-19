@@ -43,6 +43,7 @@
 
     function obtenerUbicacion() {
         console.log("Intentando obtener ubicación...");
+        var empleadoId = "@id"; // Asegúrate de que el id del empleado esté disponible aquí
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 function (position) {
@@ -55,7 +56,7 @@
                     fetch('/Empleado/MarcarEntrada', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: "@id" })
+                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: empleadoId })
                     }).then(res => res.text())
                         .then(msg => alert(msg));
                 },
