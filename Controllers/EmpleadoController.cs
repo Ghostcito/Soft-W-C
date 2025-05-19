@@ -41,30 +41,12 @@ namespace SoftWC.Controllers
 
         public IActionResult MarcaAsistencia()
         {
+            //Obtener Usuario
             var user = _userService.GetCurrentUserAsync().Result;
-            //Console.WriteLine($"Usuario: {user.Nombre} {user.Apellido}, DNI: {user.DNI}, ID: {user.Id}");
+            //Generar Asistencia
 
-            // if (empleado == null || empleado.Result.Sede == null)
 
-            //     return BadRequest("Empleado o sede no encontrados.");
 
-            //     var distancia = GeoUtils.CalcularDistancia(
-            //     empleado.Result.Sede.Latitud,
-            //     empleado.Result.Sede.Longitud,
-            //     ubicacion.Latitud,
-            //     ubicacion.Longitud
-            // );
-
-            // if (distancia > empleado.Result.Sede.RadioValidacion)
-            // {
-            //     Console.WriteLine($"Distancia: {distancia} metros, FUERA DEL RANGO");
-            //     return BadRequest("Estás fuera del rango permitido para marcar asistencia.");
-            // }
-            // Console.WriteLine($"Distancia: {distancia} metros, dentro del rango");
-
-            // // Aquí podrías comparar con la ubicación de la sede o simplemente guardar en BD.
-            // // Console.WriteLine($"Ubicación recibida: {ubicacion.Latitud}, {ubicacion.Longitud}, {ubicacion.EmpleadoId}");
-            // return Ok($"Ubicación recibida: Latitud {ubicacion.Latitud}, Longitud {ubicacion.Longitud}, EmpleadoId {ubicacion.EmpleadoId}, ASISTENCIA REGISTRADA");
             return Redirect("/Empleado/MarcaEntrada");
         }
 
