@@ -1,14 +1,18 @@
-﻿@model SoftWC.ViewModel.MarcaViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@model SoftWC.ViewModel.MarcaViewModel
+@inject UserManager<Usuario> UserManager
+
 
 @{
     ViewBag.Title = "Marcar Asistencia";
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
 
-    string nombreUsuario = Model.usuario.Nombre;
-    string horaActual = Model.asistencia.HoraEntrada?.ToString("HH:mm");
-    string fechaActual = Model.asistencia.Fecha.ToString("dd/MM/yyyy");
-    string direccion = Model.verificacion.Item1.Direccion_local;
-    bool locVerificado = Model.verificacion.Item2;
+    var user = await UserManager.GetUserAsync(User);
+    string nombreUsuario = user.Nombre;
+    string horaActual = Model.horaActual;
+    string fechaActual = Model.fechaActual;
+    string sede = Model.NombreSede;
+    bool locVerificado = Model.localizacionExitosa.Value;
 }
 
 <div
@@ -43,7 +47,7 @@
                 {
                     <p style="color: red; font-size: 14px; margin: 3px 0;">❌ Ubicación fuera del rango permitido</p>
                 }
-                
+
                 <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Foto tomada</p>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
@@ -64,7 +68,7 @@
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Salida:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @{
+                    @*{
                         if (Model.asistencia.HoraSalida != null)
                         {
                             @Model.asistencia.HoraSalida
@@ -73,21 +77,21 @@
                         {
                             @("--")
                         }
-                    }
+                    }*@
                 </p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @if (Model.asistencia.HorasTrabajadas != null)
+                    @*if (Model.asistencia.HorasTrabajadas != null)
                     {
                         @Model.asistencia.HorasTrabajadas
                     }
                     else
                     {
                         @("0")
-                    }
+                    }*@
                 </p>
             </div>
-            <a asp-controller="Asistencia" asp-action="Index" asp-route-id=@Model.asistencia.IdEmpleado
+            <a asp-controller="Asistencia" asp-action="Index" @*asp-route-id=@Model.asistencia.IdEmpleado*@
                 style="color: #2d6cdf; font-size: 14px; margin-top: 5px; display: inline-block;">Ver
                 historial</a>
         </div>

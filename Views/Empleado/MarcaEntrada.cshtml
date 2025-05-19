@@ -1,15 +1,18 @@
-﻿@model SoftWC.ViewModel.MarcaViewModel
+﻿@using Microsoft.AspNetCore.Identity
+@model SoftWC.ViewModel.MarcaViewModel
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
 
 @{
     ViewBag.Title = "Marcar Asistencia";
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
 
-    string nombreUsuario = Model.usuario.Nombre;
-    string horaActual = DateTime.Now.ToString("HH:mm");
-    string fechaActual = DateTime.Now.ToString("dd 'de' MM 'de' yyyy");
-    string direccion = Model.verificacion.Item1.Direccion_local;
-    string sedeDetectada = Model.verificacion.Item1.Nombre_local;
-    bool locVerificado = Model.verificacion.Item2;
+    var user = await UserManager.GetUserAsync(User);
+    string nombreUsuario = user.Nombre;
+    string horaActual = Model.horaActual;
+    string fechaActual = Model.fechaActual;
+    string sede = Model.NombreSede;
+    bool locVerificado = Model.localizacionExitosa.Value;
 }
 
 <div
@@ -19,7 +22,8 @@
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Entrada</h2>
         <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
 
-        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">Sede cercana detectada: @sedeDetectada</div>
+        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">Sede cercana detectada: @sede
+        </div>
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 

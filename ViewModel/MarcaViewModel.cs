@@ -8,6 +8,10 @@ namespace SoftWC.ViewModel
 {
     public class MarcaViewModel
     {
-
+        public string? NombreSede { get; set; }
+        public string? horaActual { get; set; }
+        public string? fechaActual { get; set; }
+        public string? NombreEmpleado { get; set; }
+        public bool? localizacionExitosa { get; set; }
     }
 }

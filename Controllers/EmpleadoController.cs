@@ -79,9 +79,16 @@ namespace SoftWC.Controllers
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
+            var verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result;
+            MarcaViewModel viewModel = new MarcaViewModel
+            {
+                NombreSede = verificacion.Item1.Nombre_local,
+                horaActual = DateTime.Now.ToString("HH:mm"),
+                fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
+                localizacionExitosa = verificacion.Item2
+            };
 
-
-            return View();
+            return View(viewModel);
         }
 
         public IActionResult PostEntrada([FromBody] UbicacionDTO ubicacion)
