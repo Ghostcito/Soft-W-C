@@ -14,14 +14,14 @@ namespace SoftWC.Models
         [Key]
         public int SedeId { get; set; }
         public int ClienteId { get; set; }
-        
+
         [ValidateNever]
         [ForeignKey("ClienteId")]
         public Cliente Cliente { get; set; }
 
         //añadido para la relacion de usuario y sede
         public string? UsuarioId { get; set; }
-        
+
         [ValidateNever]
         [ForeignKey("UsuarioId")]
         public Usuario? Usuario { get; set; }
@@ -38,6 +38,8 @@ namespace SoftWC.Models
         public decimal Longitud { get; set; }
         public decimal Radio { get; set; } //radio de la sede
         public SedeEnum estadoSede { get; set; }
+
+
 
         // public string? Pais { get; set; } se borra pais por que trabaja solo en PERU
     }

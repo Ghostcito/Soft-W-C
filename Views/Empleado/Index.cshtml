@@ -52,10 +52,10 @@
                     alert("Tu ubicación es:\nLatitud: " + lat + "\nLongitud: " + lon);
 
                     // Enviar a backend si deseas
-                    fetch('/Empleado/Confirmacion', {
+                    fetch('/Empleado/MarcarEntrada', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: @id })
+                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: "@id" })
                     }).then(res => res.text())
                         .then(msg => alert(msg));
                 },
