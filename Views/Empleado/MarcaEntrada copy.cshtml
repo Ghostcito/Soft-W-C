@@ -8,6 +8,7 @@
     string horaActual = Model.asistencia.HoraEntrada?.ToString("HH:mm");
     string fechaActual = Model.asistencia.Fecha.ToString("dd/MM/yyyy");
     string direccion = Model.verificacion.Item1.Direccion_local;
+    string sedeDetectada = Model.verificacion.Item1.Nombre_local;
     bool locVerificado = Model.verificacion.Item2;
 }
 
@@ -18,6 +19,7 @@
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Entrada</h2>
         <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
 
+        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">Sede cercana detectada: @sedeDetectada</div>
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
@@ -26,7 +28,8 @@
 
         <form method="get" action="@Url.Action("MarcarEntrada", "Empleado")">
             <button type="submit"
-                style="background-color: #2d6cdf; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin: 20px 0; font-size: 16px;">
+                style="background-color: #2d6cdf; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin: 20px 0; font-size: 16px;"
+                @(locVerificado ? "" : "disabled")>
                 Marcar entrada
             </button>
         </form>
@@ -52,44 +55,6 @@
                 <span style="font-size: 14px;">Subir evidencia<br /><small style="color: gray;">de
                         ingreso</small></span>
             </div>
-        </div>
-
-        <div style="margin-top: 20px; text-align: center;">
-            <h4 style="font-size: 20px; margin-bottom: 5px;">Historial del día</h4>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: left; gap: 0;">
-                <p style="font-size: 16px; margin: 2px 0;"><strong>Entrada:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@horaActual</p>
-                if
-                <p style="font-size: 16px; margin: 2px 0;"><strong>Pausa:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
-                <p style="font-size: 16px; margin: 2px 0;"><strong>Salida:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @{
-                        if (Model.asistencia.HoraSalida != null)
-                        {
-                            @Model.asistencia.HoraSalida
-                        }
-                        else
-                        {
-                            @("--")
-                        }
-                    }
-                </p>
-                <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @if (Model.asistencia.HorasTrabajadas != null)
-                    {
-                        @Model.asistencia.HorasTrabajadas
-                    }
-                    else
-                    {
-                        @("0")
-                    }
-                </p>
-            </div>
-            <a asp-controller="Asistencia" asp-action="Index" asp-route-id=@Model.asistencia.IdEmpleado
-                style="color: #2d6cdf; font-size: 14px; margin-top: 5px; display: inline-block;">Ver
-                historial</a>
         </div>
     </div>
 </div>
