@@ -17,9 +17,14 @@ namespace SoftWC.Models
 
         public string EmpleadoId { get; set; }
         [ForeignKey("EmpleadoId")]
+
+        [Display(Name = "Empleados asignados")]
         public Usuario Empleado { get; set; }
 
+        [Display(Name = "Fecha Inicio actividades")]
         public DateTime FechaInicio { get; set; }
+
+        [Display(Name = "Fecha de fin actividades")]
         public DateTime? FechaFin { get; set; } // NULL si sigue activo
     }
 }

@@ -19,9 +19,9 @@
     
 
 }
-<h1>Delete</h1>
+<h1>Eliminar</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>¿Estas seguro de eliminar todos estos datos de la entidad seleccionada?</h3>
 <div>
     <h4>Usuario</h4>
     <hr />
@@ -97,7 +97,11 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Regresar a la lista</a>
     </form>
 </div>
+@* para aparezca el logout *@
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>

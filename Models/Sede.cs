@@ -19,7 +19,10 @@ namespace SoftWC.Models
         [ForeignKey("ClienteId")]
         public Cliente Cliente { get; set; }
 
+        [Display(Name = "Nombre local")]
         public string? Nombre_local { get; set; } //para que puedan ubicar en caso la empresa tenga un local con nombre
+
+        [Display(Name = "Direccion local")]
         public string? Direccion_local { get; set; }
         public string? Ciudad { get; set; }
         public string? Provincia { get; set; }
@@ -30,6 +33,8 @@ namespace SoftWC.Models
         [Column(TypeName = "decimal(9,6)")]
         public decimal Longitud { get; set; }
         public decimal Radio { get; set; } //radio de la sede
+
+        [Display(Name = "Servicio")]
         public SedeEnum estadoSede { get; set; }
 
         public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();

@@ -105,7 +105,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Regresar a la lista</a>
 </div>
 
     <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
@@ -114,6 +114,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script src="@Url.Content("~/js/MapaRegistro.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/js/MapaRegistro.js")" asp-append-version="true"></script>    
 }

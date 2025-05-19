@@ -16,10 +16,12 @@
     ViewData["Title"] = "Ver Sede";
 }
 
-<h1>Details</h1>
+<h1>Detalles</h1>
 
 <div>
     <h4>Sede</h4>
+    <a asp-action="Edit" asp-route-id="@Model?.SedeId">Editar</a> |
+    <a asp-action="Index">Regresar a la lista</a>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -83,11 +85,6 @@
             </div>
         </div>
     </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.SedeId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
-
     <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
     <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
     <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>   

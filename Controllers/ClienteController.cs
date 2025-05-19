@@ -9,6 +9,8 @@ using SoftWC.Data;
 using SoftWC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
+using System.ComponentModel.DataAnnotations;
 
 namespace SoftWC.Controllers
 {
@@ -81,7 +83,21 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
-            return View(cliente);
+
+            // Guardando datos TipoCliente dropdown list
+            ViewData["TipoCliente"] = new SelectList(
+                Enum.GetValues(typeof(TipoClienteEnum))
+                    .Cast<TipoClienteEnum>()
+                    .Select(e => new {
+                        Value = (int)e,
+                        Text = e.GetType()
+                            .GetMember(e.ToString())[0]
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .Name ?? e.ToString()
+                    }),
+                "Value", 
+                "Text");
+            return View(cliente); 
         }
 
         // POST: Cliente/Edit/5
@@ -116,7 +132,19 @@ namespace SoftWC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TipoCliente"] = new SelectList(Enum.GetValues(typeof(TipoClienteEnum)).ToString());
+            // Guardando datos TipoCliente dropdown list
+            ViewData["TipoCliente"] = new SelectList(
+                Enum.GetValues(typeof(TipoClienteEnum))
+                    .Cast<TipoClienteEnum>()
+                    .Select(e => new {
+                        Value = (int)e,
+                        Text = e.GetType()
+                            .GetMember(e.ToString())[0]
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .Name ?? e.ToString()
+                    }),
+                "Value", 
+                "Text");
             return View(cliente);
         }
 

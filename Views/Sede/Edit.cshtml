@@ -17,7 +17,7 @@
 
 }
 
-<h1>Edit</h1>
+<h1>Editar</h1>
 
 <h4>Sede</h4>
 <hr />
@@ -36,6 +36,11 @@
                 <input asp-for="Nombre_local" class="form-control" />
                 <span asp-validation-for="Nombre_local" class="text-danger"></span>
             </div>
+            
+            <label class="control-label">Almacenamiento de coordenadas en el mapa, Busca la direccion y se actualizaran los campos (Direccion, Ciudad y Provincia), antes de guardar revisa la direccion</search></label>
+            <!-- Ver mapa -->
+            <div id="map"></div>
+
             <div class="form-group">
                 <label asp-for="Direccion_local" class="control-label"></label>
                 <input asp-for="Direccion_local" class="form-control" />
@@ -51,16 +56,22 @@
                 <input asp-for="Provincia" class="form-control" />
                 <span asp-validation-for="Provincia" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Latitud" class="control-label"></label>
-                <input asp-for="Latitud" class="form-control" />
-                <span asp-validation-for="Latitud" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Longitud" class="control-label"></label>
-                <input asp-for="Longitud" class="form-control" />
-                <span asp-validation-for="Longitud" class="text-danger"></span>
-            </div>
+             <!-- Campos ocultos para latitud y longitud -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Latitud" class="control-label"></label>
+                        <input asp-for="Latitud" class="form-control" id="latitud-input" readonly />
+                        <span asp-validation-for="Latitud" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Longitud" class="control-label"></label>
+                        <input asp-for="Longitud" class="form-control" id="longitud-input" readonly />
+                    </div> 
+                </div>   
+            </div>  
             <div class="form-group">
                 <label asp-for="estadoSede" class="control-label">Estado de la Sede</label>
                 <div>
@@ -83,9 +94,87 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Regresar a la lista</a>
 </div>
+
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>    
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    
+    <script>        
+    // Verificar que las coordenadas existen
+    @if(Model != null && Model.Latitud != 0 && Model.Longitud != 0)
+    {
+        <text>
+        // Configurar el mapa con las coordenadas correctas
+        const map = L.map('map').setView([@Model.Latitud, @Model.Longitud], 16);
+
+        // Añadir capa base
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Añadir marcador movible con las coordenadas iniciales
+        const marker = L.marker([@Model.Latitud, @Model.Longitud], {
+            draggable: true  // Hacer el marcador movible
+        }).addTo(map)
+            .bindPopup(`
+                <b>@Html.Raw(Model.Nombre_local)</b><br>
+                @Html.Raw(Model.Direccion_local)<br>
+                Lat: @Model.Latitud.ToString("0.000000")<br>
+                Lng: @Model.Longitud.ToString("0.000000")
+            `)
+            .openPopup();
+
+        // Actualizar campos de coordenadas cuando se mueve el marcador
+        marker.on('dragend', function(e) {
+            const newLatLng = e.target.getLatLng();
+            document.getElementById('latitud-input').value = newLatLng.lat.toFixed(6);
+            document.getElementById('longitud-input').value = newLatLng.lng.toFixed(6);
+            
+            // Actualizar también el popup con las nuevas coordenadas
+            marker.setPopupContent(`
+                <b>@Html.Raw(Model.Nombre_local)</b><br>
+                @Html.Raw(Model.Direccion_local)<br>
+                Lat: ${newLatLng.lat.toFixed(6)}<br>
+                Lng: ${newLatLng.lng.toFixed(6)}
+            `).openPopup();
+        });
+
+        // Permitir añadir nuevos marcadores haciendo click
+        map.on('click', function(e) {
+            // Mover el marcador existente a la nueva posición
+            marker.setLatLng(e.latlng);
+            
+            // Actualizar campos y popup
+            document.getElementById('latitud-input').value = e.latlng.lat.toFixed(6);
+            document.getElementById('longitud-input').value = e.latlng.lng.toFixed(6);
+            
+            marker.setPopupContent(`
+                <b>@Html.Raw(Model.Nombre_local)</b><br>
+                @Html.Raw(Model.Direccion_local)<br>
+                Lat: ${e.latlng.lat.toFixed(6)}<br>
+                Lng: ${e.latlng.lng.toFixed(6)}
+            `).openPopup();
+        });
+
+        // Forzar actualización del mapa
+        setTimeout(() => {
+            map.invalidateSize();
+            map.setView([@Model.Latitud, @Model.Longitud], 16);
+        }, 100);
+        </text>
+    }
+    else
+    {
+        <text>
+        document.getElementById('map').innerHTML = 
+            '<div class="alert alert-warning p-4 text-center">No hay coordenadas registradas para esta sede</div>';
+        </text>
+    }
+</script>
 }

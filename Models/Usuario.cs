@@ -14,8 +14,14 @@ namespace SoftWC.Models
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
         public string? DNI { get; set; }
+
+        [Display(Name = "Fecha de ingreso")]
         public DateTime? FechaIngreso { get; set; } // fecha de ingreso a la empresa
+
+        [Display(Name = "Fecha de nacimiento")]
         public DateTime? FechaNacimiento { get; set; }
+
+        [Display(Name = "Nivel de acceso")]
         public string? NivelAcceso { get; set; }
         public string? Estado { get; set; } //activo o inactivo
         public decimal? Salario { get; set; }
@@ -27,5 +33,6 @@ namespace SoftWC.Models
         //RELACIONES EMPLEADO - SUPERVISOR
         public ICollection<Supervision> EmpleadosSupervisados { get; set; } // Si es Supervisor
         public ICollection<Supervision> SupervisoresAsignados { get; set; } // Si es Empleado
-    }
+
+    }   
 }
