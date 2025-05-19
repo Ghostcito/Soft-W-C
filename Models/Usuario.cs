@@ -14,7 +14,6 @@ namespace SoftWC.Models
         public string? Nombre { get; set; }
         public string? Apellido { get; set; }
         public string? DNI { get; set; }
-        public Sede? IdSede { get; set; }
         public DateTime? FechaIngreso { get; set; } // fecha de ingreso a la empresa
         public DateTime? FechaNacimiento { get; set; }
         public string? NivelAcceso { get; set; }

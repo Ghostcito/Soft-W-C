@@ -19,13 +19,6 @@ namespace SoftWC.Models
         [ForeignKey("ClienteId")]
         public Cliente Cliente { get; set; }
 
-        //añadido para la relacion de usuario y sede
-        public string? UsuarioId { get; set; }
-
-        [ValidateNever]
-        [ForeignKey("UsuarioId")]
-        public Usuario? Usuario { get; set; }
-
         public string? Nombre_local { get; set; } //para que puedan ubicar en caso la empresa tenga un local con nombre
         public string? Direccion_local { get; set; }
         public string? Ciudad { get; set; }
