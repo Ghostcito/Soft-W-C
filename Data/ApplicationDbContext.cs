@@ -36,10 +36,11 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
             .HasForeignKey(s => s.EmpleadoId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Sede>()
-            .HasOne(s => s.Usuario)
-            .WithMany(u => u.Sedes)
-            .HasForeignKey(s => s.UsuarioId);
+
+        modelBuilder.Entity<Usuario>()
+           .HasMany(u => u.Sedes)
+           .WithMany(s => s.Usuarios)
+           .UsingEntity(j => j.ToTable("UsuarioSede"));
 
     }
 

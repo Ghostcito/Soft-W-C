@@ -39,6 +39,9 @@ namespace SoftWC.Models
         public decimal Radio { get; set; } //radio de la sede
         public SedeEnum estadoSede { get; set; }
 
+        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+
+
 
 
         // public string? Pais { get; set; } se borra pais por que trabaja solo en PERU
