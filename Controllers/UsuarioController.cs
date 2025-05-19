@@ -34,10 +34,12 @@ namespace SoftWC.Controllers
 
         public async Task<IActionResult> FindAllBySede(int id)
         {
-            /*var usuarios = await _context.Usuario
-                .Where(u => u.IdSede.SedeId == id)
-                .ToListAsync();*/
-            return View("Index");
+            var usuarios = await _context.Usuario
+            .Include(u => u.Sedes)
+            .Where(u => u.Sedes.Any(s => s.SedeId == id) &&
+                        (u.NivelAcceso == "1" || u.NivelAcceso == "2"))
+            .ToListAsync();
+            return View("Index", usuarios);
         }
 
         // GET: Usuario/Details/5

@@ -6,13 +6,13 @@
 @inject UserManager<SoftWC.Models.Usuario> UserManager
 @{
     var user = await UserManager.GetUserAsync(User);
-    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();      
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
     @if (roles.Contains("Administrador"))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
-        
+
     }
-    ViewData["Title"] = "Supervision WC";    
+    ViewData["Title"] = "Supervision WC";
 
 }
 
@@ -40,26 +40,27 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Supervisor.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Empleado.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaFin)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supervisor.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Empleado.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio.ToString("dd/MM/yyyy"))
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaFin)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
