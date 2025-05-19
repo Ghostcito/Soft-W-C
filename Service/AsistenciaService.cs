@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Prueba_Geolocalizacion.Utils;
 using SoftWC.Data;
 using SoftWC.Models;
+using SoftWC.Models.Dto;
 
 namespace SoftWC.Service
 {
@@ -35,7 +36,6 @@ namespace SoftWC.Service
                 HoraEntrada = horaPeru,
                 Presente = true,
             };
-            await AddAsistencia(asistencia);
             return asistencia;
 
         }
@@ -80,10 +80,10 @@ namespace SoftWC.Service
             return asistencia;
         }
 
-        public async Task<(Sede?, bool)> ValidarDistancia(Geolocalizacion_asistencia ubicacion)
+        public async Task<(Sede?, bool)> ValidarDistancia(UbicacionDTO ubicacion)
         {
             var empleado = await _userService.GetCurrentUserAsync();
-            return DetectarSede(ubicacion.Latitud, ubicacion.Longitud, empleado.Sedes).Result;
+            return DetectarSede(Convert.ToDecimal(ubicacion.Latitud), Convert.ToDecimal(ubicacion.Longitud), empleado.Sedes).Result;
         }
 
         public async Task<(Sede?, bool)> DetectarSede(decimal latitud, decimal longitud, ICollection<Sede> sedes)

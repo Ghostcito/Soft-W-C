@@ -7,6 +7,9 @@ namespace SoftWC.Models.Dto
 {
     public class UbicacionDTO
     {
-        
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
+
+        public int EmpleadoId { get; set; }
     }
 }

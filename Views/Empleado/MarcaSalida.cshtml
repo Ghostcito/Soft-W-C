@@ -4,10 +4,11 @@
     ViewBag.Title = "Marcar Asistencia";
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
 
-    string nombreUsuario = "Oscar";
-    string horaActual = DateTime.Now.ToString("hh:mm tt");
-    string fechaActual = DateTime.Now.ToString("dddd, dd 'de' MMMM 'de' yyyy");
-    string direccion = "Av. Ejemplo 123, Ciudad";
+    string nombreUsuario = Model.usuario.Nombre;
+    string horaActual = Model.asistencia.HoraEntrada?.ToString("HH:mm");
+    string fechaActual = Model.asistencia.Fecha.ToString("dd/MM/yyyy");
+    string direccion = Model.verificacion.Item1.Direccion_local;
+    bool locVerificado = Model.verificacion.Item2;
 }
 
 <div
@@ -15,14 +16,15 @@
     <div
         style="width: 600px; padding: 30px; background-color: white; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); text-align: center;">
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Entrada</h2>
-        <p style="font-size: 18px;"><strong>Hola, @Model.usuario.Nombre 👋 ¡Listo para comenzar tu jornada?</strong></p>
+        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
 
-        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@Model.asistencia.HoraEntrada</div>
-        <p style="font-size: 16px; margin-bottom: 20px;">@Model.asistencia.Fecha</p>
+        <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
+        <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
         <p style="color: gray; font-size: 18px;">📍 </p>
 
-        <form method="get" action="@Url.Action("Confirmacion", "Empleado")">
+
+        <form method="get" action="@Url.Action("MarcarEntrada", "Empleado")">
             <button type="submit"
                 style="background-color: #2d6cdf; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin: 20px 0; font-size: 16px;">
                 Marcar entrada
@@ -32,7 +34,16 @@
         <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px; gap: 15px;">
             <div style="text-align: left;">
                 <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Hora registrada correctamente</p>
-                <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Ubicación confirmada</p>
+
+                @if (locVerificado)
+                {
+                    <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Ubicación confirmada</p>
+                }
+                else
+                {
+                    <p style="color: red; font-size: 14px; margin: 3px 0;">❌ Ubicación fuera del rango permitido</p>
+                }
+                
                 <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Foto tomada</p>
             </div>
             <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
@@ -47,7 +58,8 @@
             <h4 style="font-size: 20px; margin-bottom: 5px;">Historial del día</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: left; gap: 0;">
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Entrada:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@Model.asistencia.HoraEntrada</p>
+                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@horaActual</p>
+                if
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Pausa:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Salida:</strong></p>
@@ -73,7 +85,7 @@
                     {
                         @("0")
                     }
-                </p> 
+                </p>
             </div>
             <a asp-controller="Asistencia" asp-action="Index" asp-route-id=@Model.asistencia.IdEmpleado
                 style="color: #2d6cdf; font-size: 14px; margin-top: 5px; display: inline-block;">Ver

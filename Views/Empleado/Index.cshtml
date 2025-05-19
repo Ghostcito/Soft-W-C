@@ -8,12 +8,14 @@
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml"; // RUTA CORRECTA
     string nombre = "Invitado";
     string apellido = "";
+    string id = "";
 
     if (SignInManager.IsSignedIn(User))
     {
         var empleado = await UserManager.GetUserAsync(User); // usa await
         if (empleado != null)
         {
+            id = empleado.Id;
             nombre = empleado.Nombre;
             apellido = empleado.Apellido;
         }
@@ -50,10 +52,10 @@
                     alert("Tu ubicación es:\nLatitud: " + lat + "\nLongitud: " + lon);
 
                     // Enviar a backend si deseas
-                    fetch('/Home/GuardarUbicacion', {
+                    fetch('/Empleado/Confirmacion', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: 1 })
+                        body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: @id })
                     }).then(res => res.text())
                         .then(msg => alert(msg));
                 },

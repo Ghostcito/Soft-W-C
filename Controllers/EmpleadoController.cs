@@ -10,6 +10,7 @@ using SoftWC.Service;
 using SoftWC.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using SoftWC.Models.Dto;
 
 namespace SoftWC.Controllers
 {
@@ -21,7 +22,7 @@ namespace SoftWC.Controllers
         private readonly AsistenciaService _asistenciaService;
         private readonly EmpleadoService _empleadoService;
         private readonly SignInManager<Usuario> _signInManager;
-        
+
 
         public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService, SignInManager<Usuario> signInManager)
         {
@@ -36,18 +37,6 @@ namespace SoftWC.Controllers
         {
 
             return View();
-        }
-
-
-        public IActionResult MarcaEntrada()
-        {
-            Asistencia asis = _asistenciaService.AddEntrada().Result;
-            var viewModel = new MarcaViewModel
-            {
-                asistencia = asis,
-                usuario = _userService.GetCurrentUserAsync().Result
-            };
-            return View("Marca", viewModel);
         }
 
         public IActionResult MarcaAsistencia()
@@ -101,12 +90,17 @@ namespace SoftWC.Controllers
 
         }
 
-        public IActionResult Confirmacion(string id)
+        public IActionResult MarcarEntrada([FromBody] UbicacionDTO ubicacion)
         {
-            var entrada=_asistenciaService.AddEntrada();
-            
+            Asistencia asis = _asistenciaService.AddEntrada().Result;
+            var viewModel = new MarcaViewModel
+            {
+                asistencia = asis,
+                usuario = _userService.GetCurrentUserAsync().Result,
+                verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result
 
-            return View();
+            };
+            return View("Marca", viewModel);
         }
 
         public IActionResult LogoutConfirmado()

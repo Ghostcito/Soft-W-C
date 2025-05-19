@@ -10,5 +10,6 @@ namespace SoftWC.ViewModel
     {
         public Asistencia asistencia { get; set; }
         public Usuario usuario { get; set; }
+        public (Sede, bool) verificacion { get; set; }
     }
 }
