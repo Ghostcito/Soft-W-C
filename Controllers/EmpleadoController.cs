@@ -58,8 +58,7 @@ namespace SoftWC.Controllers
                 _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
                 var viewModel = new MarcaViewModel
                 {
-                    asistencia = asis,
-                    usuario = _userService.GetCurrentUserAsync().Result
+
                 };
                 return View("Marca", viewModel);
             }
@@ -80,16 +79,9 @@ namespace SoftWC.Controllers
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
-            Asistencia asis = _asistenciaService.AddEntrada().Result;
-            var viewModel = new MarcaViewModel
-            {
-                asistencia = asis,
-                usuario = _userService.GetCurrentUserAsync().Result,
-                verificacion = _asistenciaService.ValidarDistancia(ubicacion).Result
 
-            };
 
-            return View(viewModel);
+            return View();
         }
 
         public IActionResult PostEntrada([FromBody] UbicacionDTO ubicacion)

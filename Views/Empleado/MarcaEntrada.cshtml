@@ -5,8 +5,8 @@
     Layout = "~/Views/Empleado/_LayoutEmpleado.cshtml";
 
     string nombreUsuario = Model.usuario.Nombre;
-    string horaActual = Model.asistencia.HoraEntrada?.ToString("HH:mm");
-    string fechaActual = Model.asistencia.Fecha.ToString("dd/MM/yyyy");
+    string horaActual = DateTime.Now.ToString("HH:mm");
+    string fechaActual = DateTime.Now.ToString("dd 'de' MM 'de' yyyy");
     string direccion = Model.verificacion.Item1.Direccion_local;
     string sedeDetectada = Model.verificacion.Item1.Nombre_local;
     bool locVerificado = Model.verificacion.Item2;
