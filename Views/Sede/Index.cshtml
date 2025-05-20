@@ -16,23 +16,76 @@
     }
     ViewData["Title"] = "Listado Sedes";
 }
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-11">
-            <div class="card shadow border-0">
-                <div class="card-header bg-gradient bg-primary text-white text-center py-3 rounded-top">
-                    <h2 class="mb-0 fw-bold">Listado de Sedes (Empresas Clientes)</h2>
+<style>
+    .table-sede-bg {
+        background-color: #D5D9FF !important;
+    }
+    .table-sede thead th {
+        background-color: #bfc3f7 !important;
+        color: #222;
+        border-bottom: 2px solid #aab0e6;
+    }
+    .table-sede tbody tr:nth-child(even) {
+        background-color: #e7e9fb !important;
+    }
+    .table-sede tbody tr:nth-child(odd) {
+        background-color: #f6f7ff !important;
+    }
+    .table-sede {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    .btn-action {
+        background-color: #bfc3f7;
+        color: #2d357a;
+        border: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-action:hover, .btn-action:focus {
+        background-color: #4b5cbf;
+        color: #fff;
+    }
+    .btn-action-danger {
+        background-color: #e7e9fb;
+        color: #a94442;
+        border: none;
+    }
+    .btn-action-danger:hover, .btn-action-danger:focus {
+        background-color: #c7c9e6;
+        color: #fff;
+    }
+    .btn-success, .btn-success:focus, .btn-success:active {
+        background-color: #4b5cbf !important;
+        border: none !important;
+        color: #fff !important;
+    }
+    .btn-success:hover {
+        background-color: #2d357a !important;
+        color: #fff !important;
+    }
+</style>
+
+<div class="container-fluid" style="padding:0;margin:0;">
+    <div class="row justify-content-center g-0">
+        <div class="col-xl-10 col-lg-11 g-0">
+            <div class="card shadow border-0 m-0">
+                <div class="card-header bg-gradient bg-primary text-white text-center py-2 rounded-top m-0">
+                    <h2 class="mb-0 fw-bold" style="font-size:1.6rem;">
+                        <i class="bi bi-building me-2"></i>Listado de Sedes (Empresas Clientes)
+                    </h2>
                 </div>
-                <div class="card-body">
-                    <div class="mb-3 text-end">
-                        <a asp-action="Create" class="btn btn-success">
+                <div class="card-body bg-light p-2">
+                    <div class="mb-2 text-end">
+                        <a asp-action="Create" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-circle"></i> Crear Nueva Sede
                         </a>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered align-middle text-center bg-white rounded shadow-sm">
-                            <thead class="table-light">
+                        <table class="table table-sede table-sede-bg table-bordered align-middle text-center shadow-sm mb-0">
+                            <thead>
                                 <tr>
                                     <th>@Html.DisplayNameFor(model => model.Cliente)</th>
                                     <th>@Html.DisplayNameFor(model => model.Nombre_local)</th>
@@ -52,9 +105,7 @@
                                                 @Html.DisplayFor(modelItem => item.Cliente.ClienteId)
                                             </span>
                                         </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => item.Nombre_local)
-                                        </td>
+                                        <td>@Html.DisplayFor(modelItem => item.Nombre_local)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Direccion_local)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Ciudad)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Provincia)</td>
@@ -65,16 +116,16 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a asp-action="Edit" asp-route-id="@item.SedeId" class="btn btn-warning" title="Editar">
+                                                <a asp-action="Edit" asp-route-id="@item.SedeId" class="btn btn-action" title="Editar">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a asp-action="Details" asp-route-id="@item.SedeId" class="btn btn-info text-white" title="Ver">
+                                                <a asp-action="Details" asp-route-id="@item.SedeId" class="btn btn-action" title="Ver">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a asp-action="Delete" asp-route-id="@item.SedeId" class="btn btn-danger" title="Eliminar">
+                                                <a asp-action="Delete" asp-route-id="@item.SedeId" class="btn btn-action-danger" title="Eliminar">
                                                     <i class="bi bi-trash"></i>
                                                 </a>
-                                                <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId" class="btn btn-primary" title="Empleados">
+                                                <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId" class="btn btn-action" title="Empleados">
                                                     <i class="bi bi-people"></i>
                                                 </a>
                                             </div>
@@ -97,4 +148,3 @@
 <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
 <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
 <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
