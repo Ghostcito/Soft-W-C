@@ -24,11 +24,19 @@
         background-color: #D5D9FF !important;
     }
     .table-sede thead th {
-        background-color: #bfc3f7 !important;
+        background-color: #D5D9FF !important;
         color: #222;
         border-bottom: 2px solid #aab0e6;
-        font-size: 1rem;
+        font-size: 1.08rem;
         vertical-align: middle;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    .table-sede tbody td {
+        padding-top: 0.85rem !important;
+        padding-bottom: 0.85rem !important;
+        padding-left: 0.7rem !important;
+        padding-right: 0.7rem !important;
     }
     .table-sede tbody tr:nth-child(even) {
         background-color: #e7e9fb !important;
@@ -41,75 +49,82 @@
         transition: background 0.2s;
     }
     .table-sede {
-        border-radius: 12px;
+        border-radius: 16px;
         overflow: hidden;
-        font-size: 0.97rem;
+        font-size: 1.01rem;
+        margin-bottom: 2rem;
     }
     .btn-action, .btn-action-danger {
-        min-width: 32px;
-        min-height: 32px;
+        min-width: 38px;
+        min-height: 38px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
-        border-radius: 7px !important;
-        margin-right: 0.12rem;
+        font-size: 1.18rem;
+        margin-right: 0.18rem;
+        margin-bottom: 0.18rem;
+        border-radius: 8px !important;
+    }
+    .btn-action:last-child, .btn-action-danger:last-child {
+        margin-right: 0;
     }
     .btn-action {
         background-color: #bfc3f7;
         color: #2d357a;
-        border: 1px solid #aab0e6;
+        border: none;
         transition: background 0.2s, color 0.2s;
     }
     .btn-action:hover, .btn-action:focus {
-        background-color: #7e89d6;
+        background-color: #4b5cbf;
         color: #fff;
-        border-color: #7e89d6;
     }
     .btn-action-danger {
-        background-color: #f7d5d5;
+        background-color: #e7e9fb;
         color: #a94442;
-        border: 1px solid #e6bcbc;
+        border: none;
     }
     .btn-action-danger:hover, .btn-action-danger:focus {
-        background-color: #e6bcbc;
+        background-color: #c7c9e6;
         color: #fff;
-        border-color: #e6bcbc;
     }
     .btn-success, .btn-success:focus, .btn-success:active {
-        background-color: #7e89d6 !important;
+        background-color: #4b5cbf !important;
         border: none !important;
         color: #fff !important;
-        border-radius: 7px !important;
+        border-radius: 8px !important;
         padding: 0.6rem 1.2rem !important;
         font-size: 1.08rem !important;
         margin-bottom: 0.5rem;
     }
     .btn-success:hover {
-        background-color: #4b5cbf !important;
+        background-color: #2d357a !important;
         color: #fff !important;
     }
-    .btn-outline-secondary {
-        border-color: #bfc3f7 !important;
-        color: #4b5cbf !important;
-        background: #fff !important;
-    }
-    .btn-outline-secondary:hover {
-        background: #bfc3f7 !important;
-        color: #2d357a !important;
-    }
     .badge {
-        font-size: 0.95rem;
-        background: #bfc3f7;
-        color: #2d357a;
+        font-size: 1.01rem;
+        padding: 0.55em 1.1em;
+        border-radius: 8px;
     }
-    .badge.bg-success {
-        background: #7ed6a6 !important;
-        color: #22543d !important;
+    .card-header, .card-body {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
-    .badge.bg-secondary {
-        background: #bfc3f7 !important;
-        color: #2d357a !important;
+    .card-header {
+        padding-top: 1.2rem !important;
+        padding-bottom: 1.2rem !important;
+    }
+    .card-body {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+    .mb-2.text-end {
+        margin-bottom: 1.3rem !important;
+    }
+    .container-fluid {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        padding-top: 2.2rem !important;
+        padding-bottom: 2.2rem !important;
     }
 </style>
 
@@ -117,7 +132,8 @@
     <div class="row justify-content-center g-0">
         <div class="col-xl-10 col-lg-11 g-0">
             <div class="card shadow border-0 m-0">
-                <div class="card-header bg-gradient bg-primary text-white text-center py-2 rounded-top m-0">
+                <div class="card-header bg-gradient"
+                     style="background-color:#4b5cbf !important; color:white !important; text-align:center; padding:0.7rem 0;">
                     <h2 class="mb-0 fw-bold" style="font-size:1.6rem;">
                         <i class="bi bi-building me-2"></i>Listado de Sedes (Empresas Clientes)
                     </h2>
