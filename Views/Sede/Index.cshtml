@@ -27,6 +27,8 @@
         background-color: #bfc3f7 !important;
         color: #222;
         border-bottom: 2px solid #aab0e6;
+        font-size: 1rem;
+        vertical-align: middle;
     }
     .table-sede tbody tr:nth-child(even) {
         background-color: #e7e9fb !important;
@@ -34,37 +36,80 @@
     .table-sede tbody tr:nth-child(odd) {
         background-color: #f6f7ff !important;
     }
+    .table-sede tbody tr:hover {
+        background-color: #c3c7f0 !important;
+        transition: background 0.2s;
+    }
     .table-sede {
         border-radius: 12px;
         overflow: hidden;
+        font-size: 0.97rem;
+    }
+    .btn-action, .btn-action-danger {
+        min-width: 32px;
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        border-radius: 7px !important;
+        margin-right: 0.12rem;
     }
     .btn-action {
         background-color: #bfc3f7;
         color: #2d357a;
-        border: none;
+        border: 1px solid #aab0e6;
         transition: background 0.2s, color 0.2s;
     }
     .btn-action:hover, .btn-action:focus {
-        background-color: #4b5cbf;
+        background-color: #7e89d6;
         color: #fff;
+        border-color: #7e89d6;
     }
     .btn-action-danger {
-        background-color: #e7e9fb;
+        background-color: #f7d5d5;
         color: #a94442;
-        border: none;
+        border: 1px solid #e6bcbc;
     }
     .btn-action-danger:hover, .btn-action-danger:focus {
-        background-color: #c7c9e6;
+        background-color: #e6bcbc;
         color: #fff;
+        border-color: #e6bcbc;
     }
     .btn-success, .btn-success:focus, .btn-success:active {
-        background-color: #4b5cbf !important;
+        background-color: #7e89d6 !important;
         border: none !important;
         color: #fff !important;
+        border-radius: 7px !important;
+        padding: 0.6rem 1.2rem !important;
+        font-size: 1.08rem !important;
+        margin-bottom: 0.5rem;
     }
     .btn-success:hover {
-        background-color: #2d357a !important;
+        background-color: #4b5cbf !important;
         color: #fff !important;
+    }
+    .btn-outline-secondary {
+        border-color: #bfc3f7 !important;
+        color: #4b5cbf !important;
+        background: #fff !important;
+    }
+    .btn-outline-secondary:hover {
+        background: #bfc3f7 !important;
+        color: #2d357a !important;
+    }
+    .badge {
+        font-size: 0.95rem;
+        background: #bfc3f7;
+        color: #2d357a;
+    }
+    .badge.bg-success {
+        background: #7ed6a6 !important;
+        color: #22543d !important;
+    }
+    .badge.bg-secondary {
+        background: #bfc3f7 !important;
+        color: #2d357a !important;
     }
 </style>
 
@@ -97,40 +142,44 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @{
+                                    int clienteIndex = 1;
+                                }
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td>
+                                        <td class="align-middle">
                                             <span class="fw-semibold">
-                                                @Html.DisplayFor(modelItem => item.Cliente.ClienteId)
+                                                @clienteIndex
                                             </span>
                                         </td>
-                                        <td>@Html.DisplayFor(modelItem => item.Nombre_local)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Direccion_local)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Ciudad)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Provincia)</td>
-                                        <td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Nombre_local)</td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Direccion_local)</td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Ciudad)</td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Provincia)</td>
+                                        <td class="align-middle">
                                             <span class="badge rounded-pill @(item.estadoSede == SedeEnum.ACTIVA ? "bg-success" : "bg-secondary") px-3 py-2 fs-6">
                                                 @Html.DisplayFor(modelItem => item.estadoSede)
                                             </span>
                                         </td>
-                                        <td>
+                                        <td class="align-middle">
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a asp-action="Edit" asp-route-id="@item.SedeId" class="btn btn-action" title="Editar">
+                                                <a asp-action="Edit" asp-route-id="@item.SedeId" class="btn btn-action" title="Editar" data-bs-toggle="tooltip">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a asp-action="Details" asp-route-id="@item.SedeId" class="btn btn-action" title="Ver">
+                                                <a asp-action="Details" asp-route-id="@item.SedeId" class="btn btn-action" title="Ver" data-bs-toggle="tooltip">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a asp-action="Delete" asp-route-id="@item.SedeId" class="btn btn-action-danger" title="Eliminar">
+                                                <a asp-action="Delete" asp-route-id="@item.SedeId" class="btn btn-action-danger" title="Eliminar" data-bs-toggle="tooltip">
                                                     <i class="bi bi-trash"></i>
                                                 </a>
-                                                <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId" class="btn btn-action" title="Empleados">
+                                                <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId" class="btn btn-action" title="Empleados" data-bs-toggle="tooltip">
                                                     <i class="bi bi-people"></i>
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
+                                    clienteIndex++;
                                 }
                             </tbody>
                         </table>
@@ -148,3 +197,9 @@
 <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
 <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
 <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>
