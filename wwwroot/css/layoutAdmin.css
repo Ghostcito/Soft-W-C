@@ -55,7 +55,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-left: 0.41em;
+            margin-top: 0.81em;
         }
 
         #sidebarToggle:hover {
@@ -92,6 +92,10 @@
             min-width: 24px;
             text-align: center;
             transition: margin var(--transition-speed) ease;
+        }
+
+        .nav, .nav-pills, .flex-column{
+            padding-top: 3.1rem;
         }
 
         .nav-text {
