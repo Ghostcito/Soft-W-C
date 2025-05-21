@@ -125,6 +125,7 @@ namespace SoftWC.Controllers
                     }
                     else
                     {
+                        Console.WriteLine("Error al actualizar el usuario: " + usuario.Id);
                         throw;
                     }
                 }

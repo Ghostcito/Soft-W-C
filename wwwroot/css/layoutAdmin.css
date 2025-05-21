@@ -1,6 +1,7 @@
 :root {
             --sidebar-width: 250px;
             --sidebar-collapsed-width: 70px;
+            --sidebar-collapsed-width-phone: 50px;  
             --sidebar-bg-color: #D5D9FF;
             --sidebar-hover-color: #b0b4e3;
             --transition-speed: 0.3s;
@@ -95,7 +96,7 @@
         }
 
         .nav, .nav-pills, .flex-column{
-            padding-top: 3.1rem;
+            padding-top: 3.5rem;
         }
 
         .nav-text {
@@ -170,16 +171,25 @@
                 transform: translateX(-100%);
             }
 
+            .top-navbar {
+                padding: 0 0.5rem !important;
+            }
+
             #sidebar.show {
                 transform: translateX(0);
             }
 
             #sidebar.collapsed {
                 transform: translateX(0);
+                width: var(--sidebar-collapsed-width-phone) !important;
+            }
+
+            #sidebar.collapsed .sidebar-inner {
+                padding: 0.95rem 0.2rem;
             }
 
             .main-content {
-                margin-left: 0 !important;
+                padding-left: 5rem;
             }
 
             .sidebar-overlay {
