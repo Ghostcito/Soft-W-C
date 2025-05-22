@@ -8,50 +8,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Mi Aplicación</title>
 
-    <!-- Nuetros estilos -->
+    <!-- Nuestros estilos -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/layoutAdmin.css" asp-append-version="true" />
-
+   
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Implementacion mapa leaftet -->
+    <!-- Implementación mapa Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 
     <style>
         #map { height: 300px; }
+
+        /* Margen para contenido principal debajo del navbar */
+        .main-content {
+            margin-top: 4rem;
+        }
+
+        .top-navbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #fff; /* Mantener color blanco */
+            border-bottom: 1px solid #dee2e6;
+            z-index: 1050;
+        }
+
+        .top-navbar .user-info {
+            font-weight: 500;
+            color: #333;
+        }
     </style>
 </head>
 <body>
+    <!-- NUEVA BARRA SUPERIOR -->
+    <nav class="top-navbar">
+        <div class="d-flex align-items-center">
+            <button id="sidebarToggle" class="btn me-3" aria-label="Toggle sidebar">
+                <i class="bi bi-list fs-4"></i>
+            </button>
+            <span class="fs-5 fw-semibold">Work and Cleaning</span>
+        </div>
+
+        <!-- Usuario -->
+        <div class="dropdown">
+            <a href="#" id="dropdownUserTop" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person-circle fs-5 me-1"></i>
+                <span class="user-info">@User.Identity?.Name</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end text-small shadow">
+                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Perfil</a></li>
+                <li><a class="dropdown-item" href="#">Configuración</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="dropdown-item p-0 m-0">
+                        <button type="submit" class="dropdown-item bg-transparent border-0 w-100 text-start">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="app-container">
         <!-- Sidebar -->
         <div id="sidebar">
             <div class="sidebar-inner">
-                <button id="sidebarToggle" class="btn" aria-label="Toggle sidebar">
-                    <i class="bi bi-list"></i>
-                </button>
-
-                <!-- Usuario -->
-                <div class="dropdown user-dropdown">
-                    <a href="#" id="dropdownUser" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-gear nav-icon"></i>
-                        <span class="nav-text user-info">@User.Identity?.Name</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                        <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Perfil</a></li>
-                        <li><a class="dropdown-item" href="#">Configuración</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li>
-                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" class="dropdown-item p-0 m-0">
-                                <button type="submit" class="dropdown-item bg-transparent border-0 w-100 text-start">
-                                    <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                                </button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-
+                <!-- Ya no es necesario el botón aquí porque está arriba -->
                 <!-- Menú -->
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item"><a asp-controller="Admin" asp-action="Index" class="nav-link"><i class="bi bi-house nav-icon"></i><span class="nav-text">Inicio</span></a></li>
@@ -75,20 +108,15 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+    <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
     <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
-    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
-    <!-- Configuracion toogle -->
+    <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+
+    <!-- Script del toogle -->
     <script src="@Url.Content("~/js/toogle.js")" asp-append-version="true"></script>
-    
+
     <!-- Leaflet -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-
-    @* <--! Implementación del mapa --> *@
-    <script>
-            <!-- Incluir geocoder -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 
     @RenderSection("Scripts", required: false)

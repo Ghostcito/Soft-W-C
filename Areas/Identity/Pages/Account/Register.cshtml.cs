@@ -34,13 +34,15 @@ namespace SoftWC.Areas.Identity.Pages.Account
 
         private readonly UserService _userService;
 
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         public RegisterModel(
             UserManager<Usuario> userManager,
             IUserStore<Usuario> userStore,
             SignInManager<Usuario> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            UserService userService)
+            UserService userService, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -49,6 +51,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _userService = userService;
+            _roleManager = roleManager;
         }
 
         /// <summary>
@@ -56,7 +59,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -80,7 +83,6 @@ namespace SoftWC.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -104,13 +106,16 @@ namespace SoftWC.Areas.Identity.Pages.Account
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
-              // Campos adicionales (opcionales)
+            // Campos adicionales (opcionales)
             [Display(Name = "Nombre")]
             public string Nombre { get; set; }
 
             [Display(Name = "Apellido")]
             public string Apellido { get; set; }
 
+            [Required]
+            [StringLength(8, MinimumLength = 8, ErrorMessage = "El DNI debe tener exactamente 8 dígitos")]
+            [RegularExpression(@"^\d+$", ErrorMessage = "El DNI solo debe contener números")]
             [Display(Name = "DNI")]
             public string DNI { get; set; }
 
@@ -129,15 +134,26 @@ namespace SoftWC.Areas.Identity.Pages.Account
             [Display(Name = "Salario")]
             public decimal? Salario { get; set; }
 
+            [StringLength(9, MinimumLength = 9, ErrorMessage = "El celular debe tener exactamente 9 dígitos")]
+            [RegularExpression(@"^\d+$", ErrorMessage = "debe contener números")]
             [Display(Name = "Telefono")]
             public string Telefono { get; set; }
+            
+            [Required(ErrorMessage = "Debe seleccionar un rol")]
+            public string RolSeleccionado { get; set; }
+            
+            [BindProperty]
+            public List<string> RolesDisponibles { get; set; } = new List<string>();
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-        }
+
+            Input.RolesDisponibles = new List<string> { "Administrador", "Supervisor", "Empleado" };
+        }   
+
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
@@ -149,6 +165,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
                 var existingUserWithDni = await _userService.FindByDniAsync(Input.DNI);
                 if (existingUserWithDni != null)
                 {
+                    Input.RolesDisponibles = new List<string> { "Administrador", "Supervisor", "Empleado" };
                     ModelState.AddModelError(string.Empty, "El DNI ingresado ya está registrado.");
                     return Page();
                 }
@@ -161,27 +178,32 @@ namespace SoftWC.Areas.Identity.Pages.Account
 
                 var user = new Usuario  // Usa el constructor directamente
                 {
-                    UserName = Input.Nombre,
+                    UserName = Input.Nombre.Replace(" ", "_"),
                     Email = Input.Email,
                     // Asigna todas las propiedades adicionales
                     Nombre = Input.Nombre,
                     Apellido = Input.Apellido,
                     DNI = Input.DNI,
                     PhoneNumber = Input.Telefono,  // Identity usa PhoneNumber, no Telefono
-                    FechaIngreso = Input.FechaIngreso,
-                    FechaNacimiento = Input.FechaNacimiento,
+                    FechaIngreso = Input.FechaIngreso?.ToUniversalTime(),
+                    FechaNacimiento = Input.FechaNacimiento?.ToUniversalTime(),
                     NivelAcceso = Input.NivelAcceso,
                     Estado = Input.Estado,
                     Salario = Input.Salario
                 };
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if (!string.IsNullOrEmpty(Input.RolSeleccionado))
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.RolSeleccionado);
+                    }
 
                     // var userId = await _userManager.GetUserIdAsync(user);
                     // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -201,12 +223,12 @@ namespace SoftWC.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        //await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl); // modificar cuando se implemente el dashboard
+                        return RedirectToAction("Index", "Usuario"); // modificar cuando se implemente el dashboard
                     }
                 }
                 foreach (var error in result.Errors)
                 {
+                    Input.RolesDisponibles = new List<string> { "Administrador", "Supervisor", "Empleado" };
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }

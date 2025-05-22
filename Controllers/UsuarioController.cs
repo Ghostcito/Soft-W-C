@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using SoftWC.Data;
 using SoftWC.Models;
 using SoftWC.Service;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SoftWC.Controllers
 {
@@ -16,12 +20,16 @@ namespace SoftWC.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserService _userService;
         private readonly EmpleadoService _empleadoService;
+        private readonly UserManager<Usuario> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsuarioController(ApplicationDbContext context, UserService userService, EmpleadoService empleadoService)
+        public UsuarioController(ApplicationDbContext context, UserService userService, EmpleadoService empleadoService, UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager)
         {
             _empleadoService = empleadoService;
             _userService = userService;
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
 
@@ -75,11 +83,8 @@ namespace SoftWC.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (usuario.FechaIngreso.HasValue && usuario.FechaIngreso.Value.Kind != DateTimeKind.Utc)
-                    usuario.FechaIngreso = DateTime.SpecifyKind(usuario.FechaIngreso.Value, DateTimeKind.Utc);
-
-                if (usuario.FechaNacimiento.HasValue && usuario.FechaNacimiento.Value.Kind != DateTimeKind.Utc)
-                    usuario.FechaNacimiento = DateTime.SpecifyKind(usuario.FechaNacimiento.Value, DateTimeKind.Utc);
+                var nombreUsuario = usuario.Nombre + " " + usuario.Apellido;
+                usuario.UserName = nombreUsuario;
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -100,6 +105,7 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
+            ViewData["RoleDisponibles"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
             return View(usuario);
         }
 
@@ -108,35 +114,109 @@ namespace SoftWC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] Usuario usuario)
+        public async Task<IActionResult> Edit(string id, [Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,Email,PhoneNumber")] Usuario usuario, string PasswordActual, string NuevaContrasena, string ConfirmarContrasena, string RolSeleccionado)
         {
+            Console.WriteLine("Editando usuario: " + usuario.Id);
+            ViewData["RoleDisponibles"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
             if (id != usuario.Id)
-            {
                 return NotFound();
-            }
+
+            var usuarioActual = await _userService.FindByDniAsync(usuario.DNI);
+            if (usuarioActual == null)
+                return NotFound();
+
+            ModelState.Remove("PasswordActual");
+            ModelState.Remove("NuevaContrasena");
+            ModelState.Remove("ConfirmarContrasena");
+            ModelState.Remove("RolSeleccionado");
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(usuario);
+                    // Actualizar campos comunes
+                    usuarioActual.Nombre = usuario.Nombre;
+                    usuarioActual.Apellido = usuario.Apellido;
+                    usuarioActual.DNI = usuario.DNI;
+                    usuarioActual.FechaIngreso = usuario.FechaIngreso.HasValue
+                    ? DateTime.SpecifyKind(usuario.FechaIngreso.Value, DateTimeKind.Local).ToUniversalTime()
+                    : null;
+
+                    usuarioActual.FechaNacimiento = usuario.FechaNacimiento.HasValue
+                        ? DateTime.SpecifyKind(usuario.FechaNacimiento.Value, DateTimeKind.Local).ToUniversalTime()
+                        : null;
+
+                    usuarioActual.NivelAcceso = usuario.NivelAcceso;
+                    usuarioActual.Estado = usuario.Estado;
+                    usuarioActual.Salario = usuario.Salario;
+                    usuarioActual.UserName = usuario.Nombre;
+                    usuarioActual.Email = usuario.Email;
+                    usuarioActual.PhoneNumber = usuario.PhoneNumber;
+
+                    // Validar y cambiar la contraseña
+                    if (!string.IsNullOrWhiteSpace(PasswordActual) &&
+                        !string.IsNullOrWhiteSpace(NuevaContrasena) &&
+                        !string.IsNullOrWhiteSpace(ConfirmarContrasena))
+                    {
+                        if (NuevaContrasena != ConfirmarContrasena)
+                        {
+                            ModelState.AddModelError("", "La nueva contraseña y la confirmación no coinciden.");
+                            return View(usuario);
+                        }
+
+                        var passwordCorrecta = await _userManager.CheckPasswordAsync(usuarioActual, PasswordActual);
+                        if (!passwordCorrecta)
+                        {
+                            ModelState.AddModelError("", "La contraseña actual no es correcta.");
+                            return View(usuario);
+                        }
+
+                        var resultado = await _userManager.ChangePasswordAsync(usuarioActual, PasswordActual, NuevaContrasena);
+                        if (!resultado.Succeeded)
+                        {
+                            if (!string.IsNullOrEmpty(RolSeleccionado))
+                            {
+                                await _userManager.AddToRoleAsync(usuarioActual, RolSeleccionado);
+                            }
+
+                            foreach (var error in resultado.Errors)
+                            {
+                                ModelState.AddModelError("", error.Description);
+                            }
+                            return View(usuario);
+                        }
+                    }
+
+                    Console.WriteLine("Editando usuario x33: " + usuario.Id);
+                    _context.Update(usuarioActual);
                     await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!UsuarioExists(usuario.Id))
-                    {
                         return NotFound();
-                    }
                     else
-                    {
                         throw;
+                }
+            }
+            else
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"Error en {key}: {error.ErrorMessage}");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return View(usuario);
             }
+
             return View(usuario);
         }
+
 
         // GET: Usuario/Delete/5
         public async Task<IActionResult> Delete(string id)

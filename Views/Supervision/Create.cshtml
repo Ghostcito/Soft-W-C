@@ -6,53 +6,113 @@
 @inject UserManager<SoftWC.Models.Usuario> UserManager
 @{
     var user = await UserManager.GetUserAsync(User);
-    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();      
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
     @if (roles.Contains("Administrador"))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
-        
     }
-    ViewData["Title"] = "Supervision WC";    
-
+    ViewData["Title"] = "Supervision WC";
 }
 
-<h1>Create</h1>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<h4>Supervision</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SupervisorId" class="control-label"></label>
-                <select asp-for="SupervisorId" class ="form-control" asp-items="ViewBag.SupervisorId"></select>
+<style>
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(44,62,80,0.07);
+        padding: 2rem 2.5rem 1.5rem 2.5rem;
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-section h2 {
+        color: #4b5cbf;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+        font-size: 1.5rem;
+    }
+    .form-label {
+        font-weight: 500;
+        color: #2d357a;
+    }
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #bfc3f7;
+        font-size: 1.05rem;
+        margin-bottom: 1rem;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #4b5cbf;
+        box-shadow: 0 0 0 0.15rem #bfc3f7;
+    }
+    .btn-primary, .btn-primary:focus, .btn-primary:active {
+        background-color: #4b5cbf !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        padding: 0.55rem 1.3rem !important;
+        font-size: 1.08rem !important;
+        margin-top: 0.5rem;
+    }
+    .btn-primary:hover {
+        background-color: #2d357a !important;
+        color: #fff !important;
+    }
+    .back-link {
+        margin-top: 1.5rem;
+        display: inline-block;
+        color: #4b5cbf;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .back-link:hover {
+        color: #2d357a;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="form-section">
+                <h2><i class="bi bi-person-plus"></i> Nueva Supervisión</h2>
+                <form asp-action="Create" autocomplete="off">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <div class="mb-3">
+                        <label asp-for="SupervisorId" class="form-label"></label>
+                        <select asp-for="SupervisorId" class="form-select" asp-items="ViewBag.SupervisorId"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="EmpleadoId" class="form-label"></label>
+                        <select asp-for="EmpleadoId" class="form-select" asp-items="ViewBag.EmpleadoId"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="FechaInicio" class="form-label"></label>
+                        <input asp-for="FechaInicio" class="form-control" type="date" />
+                        <span asp-validation-for="FechaInicio" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="FechaFin" class="form-label"></label>
+                        <input asp-for="FechaFin" class="form-control" type="date" />
+                        <span asp-validation-for="FechaFin" class="text-danger"></span>
+                    </div>
+                    <div class="text-end">
+                        <input type="submit" value="Guardar" class="btn btn-primary" />
+                    </div>
+                </form>
+                <a asp-action="Index" class="back-link">
+                    <i class="bi bi-arrow-left"></i> Regresar a la lista
+                </a>
             </div>
-            <div class="form-group">
-                <label asp-for="EmpleadoId" class="control-label"></label>
-                <select asp-for="EmpleadoId" class ="form-control" asp-items="ViewBag.EmpleadoId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control" />
-                <span asp-validation-for="FechaInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FechaFin" class="control-label"></label>
-                <input asp-for="FechaFin" class="form-control" />
-                <span asp-validation-for="FechaFin" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Regresar a la lista</a>
-</div>
-
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+<script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
