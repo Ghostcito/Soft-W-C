@@ -29,6 +29,7 @@ namespace SoftWC.Service
             var horaPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
             horaPeru = DateTime.SpecifyKind(horaPeru, DateTimeKind.Utc);
 
+
             var asistencia = new Asistencia
             {
                 IdEmpleado = userPrincipal.Id,

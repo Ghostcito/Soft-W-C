@@ -75,6 +75,11 @@ namespace SoftWC.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (usuario.FechaIngreso.HasValue && usuario.FechaIngreso.Value.Kind != DateTimeKind.Utc)
+                    usuario.FechaIngreso = DateTime.SpecifyKind(usuario.FechaIngreso.Value, DateTimeKind.Utc);
+
+                if (usuario.FechaNacimiento.HasValue && usuario.FechaNacimiento.Value.Kind != DateTimeKind.Utc)
+                    usuario.FechaNacimiento = DateTime.SpecifyKind(usuario.FechaNacimiento.Value, DateTimeKind.Utc);
                 _context.Add(usuario);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
