@@ -70,6 +70,7 @@ namespace SoftWC.Controllers
             var user = await _userService.GetCurrentUserAsync();
             //Generar Asistencia
             Asistencia asistencia = await _asistenciaService.AddEntrada();
+
             await _asistenciaService.AddAsistencia(asistencia);
             ViewData["HoraRegistrada"] = asistencia.HoraEntrada?.ToString("HH:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
