@@ -13,6 +13,9 @@
     string fechaActual = Model.fechaActual;
     string sede = Model.NombreSede;
     bool locVerificado = Model.localizacionExitosa.Value;
+    string horaEntrada = Model.HoraEntrada;
+    string horasTrabajadas = Model.HorasTrabajadas.ToString();
+
 }
 
 <div
@@ -20,7 +23,8 @@
     <div
         style="width: 600px; padding: 30px; background-color: white; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); text-align: center;">
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Entrada</h2>
-        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para comenzar tu jornada?</strong></p>
+        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para irte a tu jato, pues que lastima, marca
+                tu salida primero XD</strong></p>
 
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
@@ -28,12 +32,19 @@
         <p style="color: gray; font-size: 18px;">📍 </p>
 
 
-        <form method="get" action="@Url.Action("MarcarEntrada", "Empleado")">
+        <form method="get" action="@Url.Action("ConfirmarSalida", "Empleado")">
             <button type="submit"
-                style="background-color: #2d6cdf; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; margin: 20px 0; font-size: 16px;">
-                Marcar entrada
+                style="background-color: @(locVerificado ? "#2d6cdf" : "#cccccc"); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: @(locVerificado ? "pointer" : "not-allowed"); margin: 20px 0; font-size: 16px;"
+                @(locVerificado ? "" : "disabled")>
+                Marcar Salida
             </button>
         </form>
+        @if (!locVerificado)
+        {
+            <div style="color: #d9534f; font-size: 16px; margin-top: 10px; font-weight: bold;">
+                No puedes marcar Salida hasta estar cerca del lugar de trabajo.
+            </div>
+        }
 
         <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px; gap: 15px;">
             <div style="text-align: left;">
@@ -62,33 +73,16 @@
             <h4 style="font-size: 20px; margin-bottom: 5px;">Historial del día</h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; text-align: left; gap: 0;">
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Entrada:</strong></p>
-                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@horaActual</p>
-                if
+                <p style="font-size: 16px; margin: 2px 0; text-align: right;">@horaEntrada</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Pausa:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">--</p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Salida:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @*{
-                        if (Model.asistencia.HoraSalida != null)
-                        {
-                            @Model.asistencia.HoraSalida
-                        }
-                        else
-                        {
-                            @("--")
-                        }
-                    }*@
+                    @horaActual
                 </p>
                 <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
                 <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                    @*if (Model.asistencia.HorasTrabajadas != null)
-                    {
-                        @Model.asistencia.HorasTrabajadas
-                    }
-                    else
-                    {
-                        @("0")
-                    }*@
+                    @horasTrabajadas
                 </p>
             </div>
             <a asp-controller="Asistencia" asp-action="Index" @*asp-route-id=@Model.asistencia.IdEmpleado*@

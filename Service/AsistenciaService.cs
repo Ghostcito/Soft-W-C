@@ -42,32 +42,24 @@ namespace SoftWC.Service
 
         }
 
-        public async Task<Asistencia?> AddSalida()
+        public async Task<Asistencia> GetAsistenciaByDate(DateTime fecha)
         {
             var userPrincipal = await _userService.GetCurrentUserAsync();
-            var asistencias = await GetAllAsistenciaByIdEmpleado(userPrincipal.Id);
-            var asistencia = asistencias.FindLast(a => a.Fecha == DateTime.UtcNow.Date);
-            if (asistencia != null && asistencia.HoraEntrada.HasValue)
-            {
-                asistencia.HoraSalida = DateTime.Now;
-                UpdateAsistencia(asistencia);
-                return asistencia;
-            }
-            else
-            {
-                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
-                return null;
-            }
+            var asistencia = await _context.Asistencia
+                .FirstOrDefaultAsync(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Date == fecha.Date);
+            return asistencia;
         }
 
-        public void CalcularHorasTrabajadas(int id)
+        public async Task<Asistencia?> AddSalida(Asistencia asistencia)
         {
-            var asistencia = _context.Asistencia.Find(id);
-            if (asistencia != null && asistencia.HoraEntrada.HasValue && asistencia.HoraSalida.HasValue)
-            {
-                asistencia.HorasTrabajadas = (decimal)(asistencia.HoraSalida - asistencia.HoraEntrada).Value.TotalHours;
-                UpdateAsistencia(asistencia);
-            }
+            asistencia.HoraSalida = DateTime.Now;
+            asistencia.HorasTrabajadas = await CalcularHorasTrabajadas((DateTime)asistencia.HoraEntrada, (DateTime)asistencia.HoraSalida);
+            return asistencia;
+        }
+
+        public async Task<decimal> CalcularHorasTrabajadas(DateTime horaEntrada, DateTime horaSalida)
+        {
+            return (decimal)(horaSalida - horaEntrada).TotalHours;
         }
         public async Task<Asistencia> AddAsistencia(Asistencia asistencia)
         {

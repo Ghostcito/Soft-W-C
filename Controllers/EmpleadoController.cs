@@ -77,19 +77,7 @@ namespace SoftWC.Controllers
             return View("Confirmacion");
         }
 
-        public async Task<IActionResult> MarcaSalida([FromBody] UbicacionDTO ubicacion)
-        {
-            if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
-            if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
-            TempData["Latitud"] = ubicacion.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            TempData["Longitud"] = ubicacion.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
-            TempData["EmpleadoId"] = ubicacion.EmpleadoId;
-
-            return Json(new { redirectUrl = Url.Action("ConfirmarSalida") });
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> ConfirmarSalida()
+        public async Task<IActionResult> MarcaSalida()
         {
             UbicacionDTO ubicacion = new UbicacionDTO
             {
@@ -97,23 +85,44 @@ namespace SoftWC.Controllers
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
-
-            Asistencia asis = await _asistenciaService.AddSalida();
-            if (asis != null)
+            var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
+            if (verificacion.Item1 == null)
             {
-                _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
-                var viewModel = new MarcaViewModel
-                {
-
-                };
-                return View("Marca", viewModel);
+                return View("NoSedesAsign");
             }
-            else
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(DateTime.UtcNow.Date);
+            if (asistencia == null || asistencia.HoraEntrada == null)
             {
                 Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
-
                 return View("Error");
             }
+            MarcaViewModel viewModel = new MarcaViewModel
+            {
+                NombreSede = verificacion.Item1.Nombre_local,
+                horaActual = DateTime.Now.ToString("HH:mm"),
+                fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
+                HoraEntrada = asistencia.HoraEntrada?.ToString("HH:mm"),
+                HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, DateTime.Now),
+                localizacionExitosa = verificacion.Item2
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmarSalida()
+        {
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(DateTime.UtcNow.Date);
+            if (asistencia == null || asistencia.HoraEntrada == null)
+            {
+                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
+                return View("Error");
+            }
+            asistencia = await _asistenciaService.AddSalida(asistencia);
+            _asistenciaService.UpdateAsistencia(asistencia);
+            ViewData["HoraRegistrada"] = asistencia.HoraSalida?.ToString("HH:mm");
+            ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
+            return View("Confirmacion");
         }
 
         public IActionResult PostEntradasSalidas([FromBody] UbicacionDTO ubicacion, string tipo)
@@ -127,7 +136,7 @@ namespace SoftWC.Controllers
 
             if (tipo == "salida")
             {
-                return Json(new { redirectUrl = Url.Action("MarcarEntrada") });
+                return Json(new { redirectUrl = Url.Action("MarcaSalida") });
             }
             else
             {
