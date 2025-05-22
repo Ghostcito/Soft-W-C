@@ -110,7 +110,7 @@ namespace SoftWC.Service
             {
                 return (sedeCercana, true);
             }
-            return (sedeCercana, true);
+            return (sedeCercana, false);
         }
 
         public List<Asistencia> GetAllAsistencias()
