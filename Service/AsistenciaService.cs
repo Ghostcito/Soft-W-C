@@ -88,12 +88,13 @@ namespace SoftWC.Service
             var empleado = await _context.Usuario
             .Include(u => u.Sedes)
             .FirstOrDefaultAsync(u => u.Id == ubicacion.EmpleadoId);
-            return DetectarSede(Convert.ToDecimal(ubicacion.Latitud), Convert.ToDecimal(ubicacion.Longitud), empleado.Sedes).Result;
+            if (empleado.Sedes == null || !empleado.Sedes.Any())
+                return (null, false);
+            return await DetectarSede(Convert.ToDecimal(ubicacion.Latitud), Convert.ToDecimal(ubicacion.Longitud), empleado.Sedes);
         }
 
         public async Task<(Sede, bool)> DetectarSede(decimal latitud, decimal longitud, ICollection<Sede> sedes)
         {
-            if (sedes == null || !sedes.Any()) throw new Exception("El usuario no tiene sedes asignadas.");
             double distMin = double.MaxValue;
             Sede sedeCercana = sedes.FirstOrDefault();
             foreach (var sede in sedes)
@@ -101,7 +102,6 @@ namespace SoftWC.Service
                 var distancia = GeoUtils.CalcularDistancia(Convert.ToDouble(latitud), Convert.ToDouble(longitud), Convert.ToDouble(sede.Latitud), Convert.ToDouble(sede.Longitud));
                 if (distancia < distMin)
                 {
-
                     sedeCercana = sede;
                     distMin = distancia;
                 }

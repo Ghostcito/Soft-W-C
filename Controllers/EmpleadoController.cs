@@ -84,6 +84,10 @@ namespace SoftWC.Controllers
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
             var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
+            if (verificacion.Item1 == null)
+            {
+
+            }
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
@@ -91,7 +95,6 @@ namespace SoftWC.Controllers
                 fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
-            Console.WriteLine("MarcaEntrada");
 
             return View(viewModel);
         }
