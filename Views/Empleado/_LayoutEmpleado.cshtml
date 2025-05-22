@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en" style="background: linear-gradient(to bottom, #D5D9FF, #FFFFFF);">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,22 +12,26 @@
 </head>
 <!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light shadow" style="background-color: #D5D9FF;">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light shadow"
+            style="background-color: #D5D9FF;">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img src="https://firebasestorage.googleapis.com/v0/b/appweb2-44bcb.appspot.com/o/game%2FCaptura%20de%20pantalla%202025-05-01%20231422.png?alt=media&token=e47b4245-bcd5-48d0-861c-bbf0ca6305cc" alt="SoftWC Logo" style="height: 60px;" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/appweb2-44bcb.appspot.com/o/game%2FCaptura%20de%20pantalla%202025-05-01%20231422.png?alt=media&token=e47b4245-bcd5-48d0-861c-bbf0ca6305cc"
+                        alt="SoftWC Logo" style="height: 60px;" />
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Empleado" asp-action="Index">Inicio</a>
-                        </li>                      
+                            <a class="nav-link text-dark fw-bold" asp-area="" asp-controller="Empleado"
+                                asp-action="Index">Inicio</a>
+                        </li>
                         <li class="nav-item">
                             <form asp-area="Identity" asp-page="/Account/Logout" method="post">
                                 <button type="submit" class="btn btn-danger text-dark ">Cerrar Sesión</button>
@@ -37,7 +42,7 @@
             </div>
         </nav>
     </header>
-    <div class="container mt-4">
+    <div class="container mt-4 flex-grow-1">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
@@ -53,4 +58,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

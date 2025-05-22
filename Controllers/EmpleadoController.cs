@@ -86,7 +86,7 @@ namespace SoftWC.Controllers
             var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
             if (verificacion.Item1 == null)
             {
-
+                return View("NoSedesAsign");
             }
             MarcaViewModel viewModel = new MarcaViewModel
             {
