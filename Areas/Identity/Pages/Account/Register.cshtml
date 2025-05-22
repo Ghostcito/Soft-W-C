@@ -62,7 +62,7 @@
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.DNI" class="form-control" aria-required="true" placeholder="DNI"
-                    value="12345678" maxlength="8" pattern="\d{8}" title="El DNI debe tener exactamente 8 dígitos" />
+                    maxlength="8" pattern="\d{8}" title="El DNI debe tener exactamente 8 dígitos" />
                 <label asp-for="Input.DNI">DNI</label>
                 <span asp-validation-for="Input.DNI" class="text-danger"></span>
             </div>
@@ -110,7 +110,7 @@
             </div>
             <div class="form-floating mb-3">
                 <input asp-for="Input.Salario" class="form-control" aria-required="true" placeholder="Salario"
-                    value="1500.00" type="number" step="0.01" />
+                type="number" step="0.01" />
                 <label asp-for="Input.Salario">Salario</label>
                 <span class="text-danger"></span>
             </div>

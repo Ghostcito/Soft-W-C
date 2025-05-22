@@ -31,8 +31,8 @@ namespace SoftWC.Models
 
 
         //RELACIONES EMPLEADO - SUPERVISOR
-        public ICollection<Supervision> EmpleadosSupervisados { get; set; } // Si es Supervisor
-        public ICollection<Supervision> SupervisoresAsignados { get; set; } // Si es Empleado
+        public ICollection<Supervision>? EmpleadosSupervisados { get; set; } // Si es Supervisor
+        public ICollection<Supervision>? SupervisoresAsignados { get; set; } // Si es Empleado
 
     }   
 }

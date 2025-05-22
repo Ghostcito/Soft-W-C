@@ -51,6 +51,18 @@ namespace SoftWC.Controllers
         // GET: Cliente/Create
         public IActionResult Create()
         {
+                ViewData["TipoCliente"] = new SelectList(
+                Enum.GetValues(typeof(TipoClienteEnum))
+                    .Cast<TipoClienteEnum>()
+                    .Select(e => new {
+                        Value = (int)e,
+                        Text = e.GetType()
+                            .GetMember(e.ToString())[0]
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .Name ?? e.ToString()
+                    }),
+                "Value", 
+                "Text");            
             return View();
         }
 
@@ -67,6 +79,19 @@ namespace SoftWC.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["TipoCliente"] = new SelectList(
+                Enum.GetValues(typeof(TipoClienteEnum))
+                    .Cast<TipoClienteEnum>()
+                    .Select(e => new {
+                        Value = (int)e,
+                        Text = e.GetType()
+                            .GetMember(e.ToString())[0]
+                            .GetCustomAttribute<DisplayAttribute>()?
+                            .Name ?? e.ToString()
+                    }),
+                "Value", 
+                "Text");        
             return View(cliente);
         }
 

@@ -83,7 +83,6 @@ namespace SoftWC.Areas.Identity.Pages.Account
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
@@ -179,7 +178,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
 
                 var user = new Usuario  // Usa el constructor directamente
                 {
-                    UserName = Input.Nombre,
+                    UserName = Input.Nombre.Replace(" ", "_"),
                     Email = Input.Email,
                     // Asigna todas las propiedades adicionales
                     Nombre = Input.Nombre,
@@ -193,7 +192,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
                     Salario = Input.Salario
                 };
 
-                await _userStore.SetUserNameAsync(user, Input.Nombre, CancellationToken.None);
+                await _userStore.SetUserNameAsync(user, user.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

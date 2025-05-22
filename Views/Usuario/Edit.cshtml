@@ -62,9 +62,10 @@
                     <div class="form-group mb-2">
                         <label asp-for="NivelAcceso" class="control-label"></label>
                         <select asp-for="NivelAcceso" class="form-select">
-                            <option value="">Seleccione...</option>
-                            <option value="Administrador">Administrador</option>
-                            <option value="Empleado">Empleado</option>
+                            <option value="-">Seleccione...</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1</option>
                         </select>
                         <span asp-validation-for="NivelAcceso" class="text-danger"></span>
                     </div>
@@ -93,15 +94,33 @@
                         <input asp-for="Email" class="form-control" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
-                    <div class="form-group mb-2">
-                        <label asp-for="PasswordHash" class="control-label">Contraseña Nueva</label>
-                        <input type="password" asp-for="PasswordHash" class="form-control" />
-                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    <div class="col-md-6">
+                        <label for="RolSeleccionado" class="form-label"></label>
+                        <select for="RolSeleccionado" class="form-select" asp-items="ViewBag.RoleDisponibles">
+                            <option value="">-- Seleccione un rol --</option>
+                        </select>
                     </div>
+
+
                     <div class="form-group mb-2">
                         <label asp-for="PhoneNumber" class="control-label"></label>
                         <input asp-for="PhoneNumber" class="form-control" />
                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <h4>Cambiar contraseña</h4>
+                    <div class="form-group mb-2">
+                        <label for="PasswordActual">Contraseña actual</label>
+                        <input type="password" class="form-control" name="PasswordActual" id="PasswordActual" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label for="NuevaContrasena">Nueva contraseña</label>
+                        <input type="password" class="form-control" name="NuevaContrasena" id="NuevaContrasena" minlength="6" />
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="ConfirmarContrasena">Confirmar nueva contraseña</label>
+                        <input type="password" class="form-control" name="ConfirmarContrasena" id="ConfirmarContrasena"/>
                     </div>
                 </div>
             </div>
@@ -112,6 +131,17 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.querySelector('form').addEventListener('submit', function (e) {
+        const nueva = document.getElementById('NuevaContrasena').value;
+        const confirmar = document.getElementById('ConfirmarContrasena').value;
+        if (nueva !== confirmar) {
+            e.preventDefault();
+            alert('La confirmación de la nueva contraseña no coincide.');
+        }
+    });
+</script>
 
 @* para aparezca el logout *@
     <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>

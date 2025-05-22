@@ -30,6 +30,13 @@ builder.Services.AddIdentity<Usuario, IdentityRole>(options =>
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 -._@+";
+    // También puedes permitir espacios agregando el carácter espacio " "
+});
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
