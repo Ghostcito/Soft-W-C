@@ -94,7 +94,7 @@ namespace SoftWC.Controllers
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
                 Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
-                return View("Error");
+                return View("NoSalida");
             }
             MarcaViewModel viewModel = new MarcaViewModel
             {
