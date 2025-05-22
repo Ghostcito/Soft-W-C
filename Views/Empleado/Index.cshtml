@@ -25,31 +25,28 @@
     <h1 class="display-4">Bienvenido @nombre @apellido</h1>
 </div>
 
-<main class="px-3">
-    <div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center">
 
-        <button onclick="obtenerUbicacion()" class="btn btn-success mx-2">Marcar Entrada</button>
+    <button data-tipo="entrada" onclick="obtenerUbicacion(event)" class="btn btn-success mx-2">Marcar Entrada</button>
 
 
-        <button onclick="obtenerUbicacion()" class="btn btn-success mx-2">Marcar Salida</button>
+    <button data-tipo="salida" onclick="obtenerUbicacion(event)" class="btn btn-success mx-2">Marcar Salida</button>
 
-    </div>
-</main>
-
+</div>
 <script>
-
-    function obtenerUbicacion() {
-        console.log("Intentando obtener ubicación...");
+    function obtenerUbicacion(event) {
+        const tipo = event.target.getAttribute('data-tipo');
         var empleadoId = "@id"; // Asegúrate de que el id del empleado esté disponible aquí
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
                 function (position) {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
+                    // 'entrada' o 'salida'
 
 
                     // Enviar a backend si deseas
-                    fetch('/Empleado/PostEntrada', {
+                    fetch('/Empleado/PostEntradasSalidas?tipo=' + tipo, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: empleadoId })

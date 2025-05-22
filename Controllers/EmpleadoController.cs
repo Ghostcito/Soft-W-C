@@ -39,42 +39,6 @@ namespace SoftWC.Controllers
             return View();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ConfirmarEntrada()
-        {
-            Console.WriteLine("ConfirmarEntrada");
-            //Obtener Usuario
-            var user = await _userService.GetCurrentUserAsync();
-            //Generar Asistencia
-            Asistencia asistencia = await _asistenciaService.AddEntrada();
-            await _asistenciaService.AddAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = asistencia.HoraEntrada?.ToString("HH:mm");
-            ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
-
-            return View("Confirmacion");
-        }
-
-        public async Task<IActionResult> MarcaSalida()
-        {
-            Asistencia asis = await _asistenciaService.AddSalida();
-            if (asis != null)
-            {
-                _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
-                var viewModel = new MarcaViewModel
-                {
-
-                };
-                return View("Marca", viewModel);
-            }
-            else
-            {
-                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
-
-                return View("Error");
-            }
-
-        }
-
         public async Task<IActionResult> MarcaEntrada()
         {
             UbicacionDTO ubicacion = new UbicacionDTO
@@ -99,14 +63,77 @@ namespace SoftWC.Controllers
             return View(viewModel);
         }
 
-        public IActionResult PostEntrada([FromBody] UbicacionDTO ubicacion)
+        [HttpGet]
+        public async Task<IActionResult> ConfirmarEntrada()
+        {
+            //Obtener Usuario
+            var user = await _userService.GetCurrentUserAsync();
+            //Generar Asistencia
+            Asistencia asistencia = await _asistenciaService.AddEntrada();
+            await _asistenciaService.AddAsistencia(asistencia);
+            ViewData["HoraRegistrada"] = asistencia.HoraEntrada?.ToString("HH:mm");
+            ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
+
+            return View("Confirmacion");
+        }
+
+        public async Task<IActionResult> MarcaSalida([FromBody] UbicacionDTO ubicacion)
         {
             if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
             if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
             TempData["Latitud"] = ubicacion.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
             TempData["Longitud"] = ubicacion.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
             TempData["EmpleadoId"] = ubicacion.EmpleadoId;
-            return Json(new { redirectUrl = Url.Action("MarcaEntrada") }); ;
+
+            return Json(new { redirectUrl = Url.Action("ConfirmarSalida") });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmarSalida()
+        {
+            UbicacionDTO ubicacion = new UbicacionDTO
+            {
+                Latitud = Convert.ToDouble(TempData["Latitud"]),
+                Longitud = Convert.ToDouble(TempData["Longitud"]),
+                EmpleadoId = TempData["EmpleadoId"]?.ToString()
+            };
+
+            Asistencia asis = await _asistenciaService.AddSalida();
+            if (asis != null)
+            {
+                _asistenciaService.CalcularHorasTrabajadas(asis.IdAsistencia);
+                var viewModel = new MarcaViewModel
+                {
+
+                };
+                return View("Marca", viewModel);
+            }
+            else
+            {
+                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
+
+                return View("Error");
+            }
+        }
+
+        public IActionResult PostEntradasSalidas([FromBody] UbicacionDTO ubicacion, string tipo)
+        {
+
+            if (ubicacion == null) return BadRequest("No se recibió la ubicación.");
+            if (string.IsNullOrEmpty(ubicacion.EmpleadoId)) return BadRequest("No se recibió el ID del empleado.");
+            TempData["Latitud"] = ubicacion.Latitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["Longitud"] = ubicacion.Longitud.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            TempData["EmpleadoId"] = ubicacion.EmpleadoId;
+
+            if (tipo == "salida")
+            {
+                return Json(new { redirectUrl = Url.Action("MarcarEntrada") });
+            }
+            else
+            {
+                // Lógica de entrada (por defecto)
+                return Json(new { redirectUrl = Url.Action("MarcaEntrada") });
+            }
         }
 
         public async Task<IActionResult> LogoutConfirmado()
