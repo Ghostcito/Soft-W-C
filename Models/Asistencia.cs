@@ -26,7 +26,5 @@ namespace SoftWC.Models
 
         //observacion para ser aumentada en el dashboard por parte de un supervisor o jefe de area
         public string? Observacion { get; set; }
-
-
     }
 }
