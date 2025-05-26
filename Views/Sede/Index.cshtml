@@ -136,13 +136,14 @@
         <div class="col-xl-10 col-lg-11 g-0">
             <div class="card shadow border-0 m-0">
                 <div class="card-header bg-gradient"
-                     style="background-color:#4b5cbf !important; color:white !important; text-align:center; padding:0.7rem 0;">
+                    style="background-color:#4b5cbf !important; color:white !important; text-align:center; padding:0.7rem 0;">
                     <h2 class="mb-0 fw-bold" style="font-size:1.6rem;">
                         <i class="bi bi-building me-2"></i>Listado de Sedes (Empresas Clientes)
                     </h2>
                 </div>
                 <div class="card-body bg-light p-2">
                     <div class="mb-2 text-end">
+                        
                         <a asp-action="Create" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-circle"></i> Crear Nueva Sede
                         </a>
@@ -157,6 +158,7 @@
                                     <th>@Html.DisplayNameFor(model => model.Ciudad)</th>
                                     <th>@Html.DisplayNameFor(model => model.Provincia)</th>
                                     <th>@Html.DisplayNameFor(model => model.estadoSede)</th>
+                                    <th>Usuarios asignados</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -180,6 +182,16 @@
                                             <span class="badge rounded-pill @(item.estadoSede == SedeEnum.ACTIVA ? "bg-success" : "bg-secondary") px-3 py-2 fs-6">
                                                 @Html.DisplayFor(modelItem => item.estadoSede)
                                             </span>
+                                        </td>  
+                                        <td>                                                                  
+                                            @if (item.Usuarios != null && item.Usuarios.Any())
+                                            {
+                                                <span class="badge bg-info">@item.Usuarios.Count usuarios</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">0 usuarios</span>
+                                            }
                                         </td>
                                         <td class="align-middle">
                                             <div class="btn-group btn-group-sm" role="group">
@@ -194,6 +206,10 @@
                                                 </a>
                                                 <a asp-controller="Usuario" asp-action="FindAllBySede" asp-route-id="@item.SedeId" class="btn btn-action" title="Empleados" data-bs-toggle="tooltip">
                                                     <i class="bi bi-people"></i>
+                                                </a>
+                                                <a asp-action="AsignarUsuarios" asp-route-id="@item.SedeId" 
+                                                    class="btn btn-action" title="Asignar Usuarios">
+                                                        <i class="bi bi-people"></i> Asignar usuarios
                                                 </a>
                                             </div>
                                         </td>

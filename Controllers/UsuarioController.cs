@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using SoftWC.Models.Dto;
 
 namespace SoftWC.Controllers
 {
@@ -255,5 +256,192 @@ namespace SoftWC.Controllers
         {
             return _context.Usuario.Any(e => e.Id == id);
         }
+
+        // POST: api/usuarios/{usuarioId}/asignar-sedes
+
+        // GET: Usuario/GestionarSedes/5
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GestionarSedes(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var usuario = await _userManager.Users
+                .Include(u => u.Sedes)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            // Verificar que sea EMPLEADO
+            var roles = await _userManager.GetRolesAsync(usuario);
+            if (!roles.Contains("EMPLEADO"))
+            {
+                return BadRequest("Solo los empleados pueden tener sedes asignadas");
+            }
+
+            return View(usuario);
+        }
+
+        // GET: api/Usuario/empleados-disponibles
+        [HttpGet("usuarios/empleados-disponibles")]
+        public async Task<IActionResult> GetEmpleadosDisponibles([FromQuery] string filtro = "", [FromQuery] int sedeId = 0)
+        {
+            // Obtener solo usuarios con rol EMPLEADO
+            var empleados = await _userManager.GetUsersInRoleAsync("EMPLEADO");
+            var query = empleados.AsQueryable();
+
+            // Aplicar filtro si existe
+            if (!string.IsNullOrEmpty(filtro))
+            {
+                query = query.Where(u =>
+                    u.Nombre.Contains(filtro) ||
+                    u.Apellido.Contains(filtro) ||
+                    u.UserName.Contains(filtro) ||
+                    u.Email.Contains(filtro));
+            }
+
+            // Excluir usuarios ya asignados a la sede
+            if (sedeId > 0)
+            {
+                var usuariosAsignados = _context.Sede
+                    .Where(s => s.SedeId == sedeId)
+                    .SelectMany(s => s.Usuarios)
+                    .Select(u => u.Id);
+
+                query = query.Where(u => !usuariosAsignados.Contains(u.Id));
+            }
+
+            var result = query.Select(u => new
+            {
+                id = u.Id,
+                userName = u.UserName,
+                nombreCompleto = $"{u.Nombre} {u.Apellido}",
+                email = u.Email
+            }).ToList();
+
+            return Ok(result);
+        }
+
+        [HttpGet("{usuarioId}/sedes-asignadas")]
+        public async Task<IActionResult> GetSedesAsignadas(string usuarioId)
+        {
+            var usuario = await _userManager.FindByIdAsync(usuarioId);
+            if (usuario == null)
+                return NotFound("Usuario no encontrado");
+
+            // Verificar que sea EMPLEADO
+            var roles = await _userManager.GetRolesAsync(usuario);
+            if (!roles.Contains("EMPLEADO"))
+                return BadRequest("Solo los empleados pueden tener sedes asignadas");
+
+            var sedes = await _context.Sede
+                .Where(s => s.Usuarios.Any(u => u.Id == usuarioId))
+                .Select(s => new
+                {
+                    s.SedeId,
+                    s.Nombre_local,
+                    s.Direccion_local,
+                    s.Ciudad
+                })
+                .ToListAsync();
+
+            return Ok(sedes);
+        }
+
+        [HttpPost("{usuarioId}/asignar-sede/{sedeId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AsignarSedeAUsuario(string usuarioId, int sedeId)
+        {
+            try
+            {
+                // Validar usuario
+                var usuario = await _userManager.FindByIdAsync(usuarioId);
+                if (usuario == null)
+                    return NotFound("Usuario no encontrado");
+
+                // Validar que sea EMPLEADO
+                var roles = await _userManager.GetRolesAsync(usuario);
+                if (!roles.Contains("EMPLEADO"))
+                    return BadRequest("Solo se pueden asignar sedes a empleados");
+
+                // Validar sede
+                var sede = await _context.Sede
+                    .Include(s => s.Usuarios)
+                    .FirstOrDefaultAsync(s => s.SedeId == sedeId);
+
+                if (sede == null)
+                    return NotFound("Sede no encontrada");
+
+                // Verificar si ya está asignado
+                if (sede.Usuarios.Any(u => u.Id == usuarioId))
+                    return BadRequest("El usuario ya está asignado a esta sede");
+
+                // Asignar
+                sede.Usuarios.Add(usuario);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = $"Sede {sede.Nombre_local} asignada al empleado {usuario.UserName}"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error interno: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("{usuarioId}/remover-sede/{sedeId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> RemoverSedeDeUsuario(string usuarioId, int sedeId)
+        {
+            try
+            {
+                // Validar usuario
+                var usuario = await _userManager.FindByIdAsync(usuarioId);
+                if (usuario == null)
+                    return NotFound(new { Message = "Usuario no encontrado" });
+
+                // Validar sede
+                var sede = await _context.Sede
+                    .Include(s => s.Usuarios)
+                    .FirstOrDefaultAsync(s => s.SedeId == sedeId);
+
+                if (sede == null)
+                    return NotFound(new { Message = "Sede no encontrada" });
+
+                // Verificar si está asignado
+                var usuarioEnSede = sede.Usuarios.FirstOrDefault(u => u.Id == usuarioId);
+                if (usuarioEnSede == null)
+                    return BadRequest(new { Message = "El usuario no está asignado a esta sede" });
+
+                // Remover
+                sede.Usuarios.Remove(usuarioEnSede);
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Success = true,
+                    Message = $"Sede {sede.Nombre_local} removida del empleado {usuario.UserName}"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "Error interno al procesar la solicitud",
+                    Error = ex.Message
+                });
+            }
+        }
+
+
     }
 }
