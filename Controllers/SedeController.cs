@@ -35,15 +35,35 @@ namespace SoftWC.Controllers
         }
 
         [HttpGet("Sede/Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchNombre, string searchCiudad, string searchProvincia)
         {
-            var sedes = await _context.Sede
+            var query = _context.Sede
                 .Include(s => s.Cliente)
                 .Include(s => s.Usuarios)
-                .ToListAsync();
-            return View(sedes);
-        }
+                .AsQueryable();
 
+            // Filtros case-insensitive con ILike (PostgreSQL/SQL Server)
+            if (!string.IsNullOrEmpty(searchNombre))
+            {
+                query = query.Where(s => EF.Functions.ILike(s.Nombre_local, $"%{searchNombre}%"));
+            }
+
+            if (!string.IsNullOrEmpty(searchCiudad))
+            {
+                query = query.Where(s => EF.Functions.ILike(s.Ciudad, $"%{searchCiudad}%"));
+            }
+
+            if (!string.IsNullOrEmpty(searchProvincia))
+            {
+                query = query.Where(s => EF.Functions.ILike(s.Provincia, $"%{searchProvincia}%"));
+            }
+
+            ViewBag.CurrentFilterNombre = searchNombre;
+            ViewBag.CurrentFilterCiudad = searchCiudad;
+            ViewBag.CurrentFilterProvincia = searchProvincia;
+
+            return View(await query.ToListAsync());
+        }
 
         // GET: Sede/Details/5
         public async Task<IActionResult> Details(int? id)

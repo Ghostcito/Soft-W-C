@@ -16,8 +16,6 @@
         
     }
     ViewData["Title"] = "Detalle Usuario WC";
-    
-
 }
 
 @{
@@ -25,6 +23,48 @@
 }
 
 <h1 class="mb-4">Detalles de Usuario</h1>
+<h4 class="mt-5">Sedes Asignadas</h4>
+<hr />
+@if (Model.Sedes != null && Model.Sedes.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Ciudad-Distrito</th>
+                <th>Provincia</th>
+                <th>Asignar usuarios</th>
+                <!-- Agrega más columnas si lo deseas -->
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Sedes.Count(); i++)
+            {
+                var sede = Model.Sedes.ElementAt(i);
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@sede.Nombre_local</td>
+                    <td>@sede.Direccion_local</td>
+                    <td>@sede.Ciudad</td>
+                    <td>@sede.Provincia</td>
+                    <td class="align-middle">
+                        <a asp-controller="Sede" asp-action="AsignarUsuarios" asp-route-id="@sede.SedeId" 
+                            class="btn btn-action" title="Asignar Usuarios">
+                                <i class="bi bi-people"></i> Asignar usuarios
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+}
+else
+{
+    <div class="alert alert-info">Este usuario no tiene sedes asignadas.</div>
+}
 <div>
     <h4>Usuario</h4>
     <hr />

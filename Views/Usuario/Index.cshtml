@@ -136,6 +136,33 @@
                     </h2>
                 </div>
                 <div class="card-body bg-light p-2">
+                    <form asp-action="Index" method="get" class="mb-4">
+                        <div class="row g-2">
+                            <div class="col-md-3">
+                                <input type="text" name="searchNombre" value="@ViewBag.CurrentFilterNombre" 
+                                    class="form-control" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="searchApellido" value="@ViewBag.CurrentFilterApellido" 
+                                    class="form-control" placeholder="Apellido">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="searchDni" value="@ViewBag.CurrentFilterDni" 
+                                    class="form-control" placeholder="DNI">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-search"></i> Buscar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <a asp-action="Index" class="btn btn-success btn-sm">
+                            <i class="bi"></i> Mostrar todas las sedes
+                        </a> 
+                </div>
+
+                <div class="card-body bg-light p-2">
                     <div class="mb-2 text-end">
                         <a class="btn btn-success btn-sm" asp-area="Identity" asp-page="/Account/Register">
                             <i class="bi bi-person-plus"></i> Crear Nuevo Usuario
@@ -195,7 +222,7 @@
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-action" title="Detalles" data-bs-toggle="tooltip">
-                                                    <i class="bi bi-eye"></i>
+                                                    <i class="bi bi-eye"> Sedes asignadas</i>
                                                 </a>
                                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-action-danger" title="Eliminar" data-bs-toggle="tooltip">
                                                     <i class="bi bi-trash"></i>

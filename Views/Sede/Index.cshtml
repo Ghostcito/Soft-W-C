@@ -142,8 +142,36 @@
                     </h2>
                 </div>
                 <div class="card-body bg-light p-2">
-                    <div class="mb-2 text-end">
-                        
+                    
+                    <form asp-action="Index" method="get" class="mb-3">
+                        <div class="row g-2">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                    <input type="text" class="form-control" name="searchNombre" 
+                                        value="@ViewBag.CurrentFilterNombre" placeholder="Buscar por nombre...">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="searchCiudad" 
+                                    value="@ViewBag.CurrentFilterCiudad" placeholder="Filtrar por distrito o ciudad...">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control" name="searchProvincia" 
+                                    value="@ViewBag.CurrentFilterProvincia" placeholder="Filtrar por provincia...">
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-funnel"></i> Filtrar
+                                </button>                                
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="mb-2 text-end">   
+                        <a asp-action="Index" class="btn btn-success btn-sm">
+                            <i class="bi"></i> Mostrar todas las sedes
+                        </a>                     
                         <a asp-action="Create" class="btn btn-success btn-sm">
                             <i class="bi bi-plus-circle"></i> Crear Nueva Sede
                         </a>

@@ -41,6 +41,37 @@ namespace SoftWC.Controllers
             return View(usuarios);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Index(string searchNombre, string searchApellido, string searchDni)
+        {
+            var usuarios = await _empleadoService.GetEmpleados();
+            
+            // Aplicar filtros si existen valores
+            if (!string.IsNullOrEmpty(searchNombre))
+            {
+                usuarios = usuarios.Where(u => 
+                    u.Nombre.Contains(searchNombre, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(searchApellido))
+            {
+                usuarios = usuarios.Where(u => 
+                    u.Apellido.Contains(searchApellido, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(searchDni))
+            {
+                usuarios = usuarios.Where(u => 
+                    u.DNI.Contains(searchDni)).ToList(); // DNI usualmente es case-sensitive
+            }
+
+            ViewBag.CurrentFilterNombre = searchNombre;
+            ViewBag.CurrentFilterApellido = searchApellido;
+            ViewBag.CurrentFilterDni = searchDni;
+
+            return View(usuarios);
+        }
+
         public async Task<IActionResult> FindAllBySede(int id)
         {
             var usuarios = await _context.Usuario
@@ -51,6 +82,21 @@ namespace SoftWC.Controllers
             return View("Index", usuarios);
         }
 
+        public async Task<IActionResult> FindAllSedesByUsuario(int id)
+        {
+            var usuario = await _context.Usuario
+                .Include(u => u.Sedes)
+                .FirstOrDefaultAsync(u => u.Id.Equals(id));
+
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            return View(usuario);
+        }
+
+
         // GET: Usuario/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -60,7 +106,9 @@ namespace SoftWC.Controllers
             }
 
             var usuario = await _context.Usuario
+                .Include(u => u.Sedes)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (usuario == null)
             {
                 return NotFound();
@@ -68,6 +116,7 @@ namespace SoftWC.Controllers
 
             return View(usuario);
         }
+
 
         // GET: Usuario/Create
         public IActionResult Create()
