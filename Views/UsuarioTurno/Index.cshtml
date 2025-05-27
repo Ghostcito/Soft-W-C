@@ -1,0 +1,76 @@
+@model IEnumerable<SoftWC.Models.UsuarioTurno>
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
+@Html.AntiForgeryToken()
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();       
+
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+    }    
+}
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Crear nuevo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Usuario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Turno)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Activo)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Usuario.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Turno.NombreTurno)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Activo)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.UsuarioTurnoId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.UsuarioTurnoId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.UsuarioTurnoId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+<script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>    

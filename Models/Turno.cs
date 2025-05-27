@@ -13,12 +13,15 @@ namespace SoftWC.Models
         public int TurnoId { get; set; }
 
         [Required]
+        [Display(Name = "Tipo de turno")]
         public string NombreTurno { get; set; } // Ej: "Mañana", "Tarde", "Noche"
 
         [Required]
+        [Display(Name = "Hora de inicio")]
         public TimeSpan HoraInicio { get; set; }
 
         [Required]
+        [Display(Name = "Hora de fin")]
         public TimeSpan HoraFin { get; set; }
 
         public string Descripcion { get; set; }

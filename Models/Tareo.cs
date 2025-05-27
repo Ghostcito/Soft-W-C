@@ -20,10 +20,14 @@ namespace SoftWC.Models
     public Usuario Empleado { get; set; }
 
     [Required]
-    public DateTime Fecha { get; set; }
-
+    public DateTime Fecha 
+    { 
+        get => _fecha;
+        set => _fecha = DateTime.SpecifyKind(value, DateTimeKind.Utc);
+    }
+    private DateTime _fecha;
     // Relación con servicio
-    public int ServicioId { get; set; }
+        public int ServicioId { get; set; }
     [ForeignKey("ServicioId")]
     public Servicio Servicio { get; set; }
 
