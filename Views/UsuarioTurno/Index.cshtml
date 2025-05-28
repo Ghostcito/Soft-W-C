@@ -15,62 +15,192 @@
     }    
 }
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Usuario Turno";
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-<p>
-    <a asp-action="Create">Crear nuevo</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Usuario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Turno)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaInicio)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FechaFin)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Activo)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Usuario.UserName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Turno.NombreTurno)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaInicio)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FechaFin)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Activo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.UsuarioTurnoId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.UsuarioTurnoId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.UsuarioTurnoId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+<style>
+    .table-custom-bg {
+        background-color: #D5D9FF !important;
+    }
+    .table-custom thead th {
+        background-color: #bfc3f7 !important;
+        color: #222;
+        border-bottom: 2px solid #aab0e6;
+        font-size: 1.08rem;
+        vertical-align: middle;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    .table-custom tbody td {
+        padding-top: 0.85rem !important;
+        padding-bottom: 0.85rem !important;
+        padding-left: 0.7rem !important;
+        padding-right: 0.7rem !important;
+    }
+    .table-custom tbody tr:nth-child(even) {
+        background-color: #e7e9fb !important;
+    }
+    .table-custom tbody tr:nth-child(odd) {
+        background-color: #f6f7ff !important;
+    }
+    .table-custom tbody tr:hover {
+        background-color: #d0d3f7 !important;
+        transition: background 0.2s;
+    }
+    .table-custom {
+        border-radius: 16px;
+        overflow: hidden;
+        font-size: 1.01rem;
+        margin-bottom: 2rem;
+    }
+    .btn-action, .btn-action-danger {
+        min-width: 38px;
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.18rem;
+        margin-right: 0.18rem;
+        margin-bottom: 0.18rem;
+        border-radius: 8px !important;
+    }
+    .btn-action:last-child, .btn-action-danger:last-child {
+        margin-right: 0;
+    }
+    .btn-action {
+        background-color: #bfc3f7;
+        color: #2d357a;
+        border: none;
+        transition: background 0.2s, color 0.2s;
+    }
+    .btn-action:hover, .btn-action:focus {
+        background-color: #4b5cbf;
+        color: #fff;
+    }
+    .btn-action-danger {
+        background-color: #e7e9fb;
+        color: #a94442;
+        border: none;
+    }
+    .btn-action-danger:hover, .btn-action-danger:focus {
+        background-color: #c7c9e6;
+        color: #fff;
+    }
+    .btn-success, .btn-success:focus, .btn-success:active {
+        background-color: #4b5cbf !important;
+        border: none !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+        padding: 0.6rem 1.2rem !important;
+        font-size: 1.08rem !important;
+        margin-bottom: 0.5rem;
+    }
+    .btn-success:hover {
+        background-color: #2d357a !important;
+        color: #fff !important;
+    }
+    .badge {
+        font-size: 1.01rem;
+        padding: 0.55em 1.1em;
+        border-radius: 8px;
+    }
+    .card-header, .card-body {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+    .card-header {
+        padding-top: 1.2rem !important;
+        padding-bottom: 1.2rem !important;
+    }
+    .card-body {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+    }
+    .mb-2.text-end {
+        margin-bottom: 1.3rem !important;
+    }
+    .container-fluid {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        padding-top: 2.2rem !important;
+        padding-bottom: 2.2rem !important;
+    }
+</style>
+
+<div class="container-fluid" style="padding:0;margin:0;">
+    <div class="row justify-content-center g-0">
+        <div class="col-xl-10 col-lg-11 g-0">
+            <div class="card shadow border-0 m-0">
+                <div class="card-header bg-gradient" style="background-color:#4b5cbf;color:white;text-align:center;padding:0.7rem 0;">
+                    <h2 class="mb-0 fw-bold" style="font-size:1.6rem;">
+                        <i class="bi bi-person-badge-fill me-2"></i>Usuario Turno
+                    </h2>
+                </div>
+                <div class="card-body bg-light p-2">
+                    <div class="mb-2 text-end">
+                        <a class="btn btn-success btn-sm" asp-action="Create">
+                            <i class="bi bi-person-plus"></i> Crear nuevo
+                        </a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-custom table-custom-bg table-bordered align-middle text-center shadow-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Usuario)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Turno)</th>
+                                    <th>@Html.DisplayNameFor(model => model.FechaInicio)</th>
+                                    <th>@Html.DisplayNameFor(model => model.FechaFin)</th>
+                                    <th>@Html.DisplayNameFor(model => model.Activo)</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Usuario.UserName)</td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Turno.NombreTurno)</td>
+                                        <td class="align-middle">@String.Format("{0:dd/MM/yyyy}", item.FechaInicio)</td>
+                                        <td class="align-middle">
+                                            @(item.FechaFin.HasValue ? item.FechaFin.Value.ToString("dd/MM/yyyy") : "-")
+                                        </td>
+                                        <td class="align-middle">
+                                            <span class="badge rounded-pill @(item.Activo ? "bg-success" : "bg-secondary") px-3 py-2">
+                                                @(item.Activo ? "Activo" : "Inactivo")
+                                            </span>
+                                        </td>
+                                        <td class="align-middle">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a asp-action="Edit" asp-route-id="@item.UsuarioTurnoId" class="btn btn-action" title="Editar" data-bs-toggle="tooltip">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a asp-action="Details" asp-route-id="@item.UsuarioTurnoId" class="btn btn-action" title="Detalles" data-bs-toggle="tooltip">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.UsuarioTurnoId" class="btn btn-action-danger" title="Eliminar" data-bs-toggle="tooltip">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
 <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
-<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>    
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+</script>
