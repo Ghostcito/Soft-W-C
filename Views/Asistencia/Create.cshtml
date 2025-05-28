@@ -1,5 +1,20 @@
 @model SoftWC.Models.Asistencia
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
 
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+    ViewData["Title"] = "Listado Sedes";
+}
 @{
     ViewData["Title"] = "Create";
 }
@@ -56,7 +71,9 @@
 <div>
     <a asp-action="Index">Regresar a la lista</a>
 </div>
-
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+<script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

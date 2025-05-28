@@ -65,8 +65,33 @@ namespace SoftWC.Controllers
         {
             usuarioTurno.Usuario = await _context.Usuario.FindAsync(usuarioTurno.UsuarioId);
             usuarioTurno.Turno = await _context.Turno.FindAsync(usuarioTurno.TurnoId);
+
+            ModelState.Remove("Usuario");
+            ModelState.Remove("Turno");
+
+            // 2. Validación manual de UsuarioId y TurnoId
+            if (string.IsNullOrEmpty(usuarioTurno.UsuarioId))
+            {
+                ModelState.AddModelError("UsuarioId", "El campo Usuario es obligatorio.");
+            }
+            if (usuarioTurno.TurnoId <= 0) // Asumiendo que TurnoId es un entero positivo
+            {
+                ModelState.AddModelError("TurnoId", "El campo Turno es obligatorio.");
+            }
+
+
             if (ModelState.IsValid)
             {
+                if (usuarioTurno.FechaInicio.HasValue)
+                {
+                    usuarioTurno.FechaInicio = DateTime.SpecifyKind(usuarioTurno.FechaInicio.Value, DateTimeKind.Utc);
+                }
+
+                if (usuarioTurno.FechaFin.HasValue)
+                {
+                    usuarioTurno.FechaFin = DateTime.SpecifyKind(usuarioTurno.FechaFin.Value, DateTimeKind.Utc);
+                }
+
                 _context.Add(usuarioTurno);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -99,7 +124,7 @@ namespace SoftWC.Controllers
                 return NotFound();
             }
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno", usuarioTurno.TurnoId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Id", usuarioTurno.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName", usuarioTurno.UsuarioId);
             return View(usuarioTurno);
         }
 
@@ -114,9 +139,34 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
+            usuarioTurno.Usuario = await _context.Usuario.FindAsync(usuarioTurno.UsuarioId);
+            usuarioTurno.Turno = await _context.Turno.FindAsync(usuarioTurno.TurnoId);
+
+            ModelState.Remove("Usuario");
+            ModelState.Remove("Turno");
+
+            // 2. Validación manual de UsuarioId y TurnoId
+            if (string.IsNullOrEmpty(usuarioTurno.UsuarioId))
+            {
+                ModelState.AddModelError("UsuarioId", "El campo Usuario es obligatorio.");
+            }
+            if (usuarioTurno.TurnoId <= 0) // Asumiendo que TurnoId es un entero positivo
+            {
+                ModelState.AddModelError("TurnoId", "El campo Turno es obligatorio.");
+            }
 
             if (ModelState.IsValid)
             {
+                if (usuarioTurno.FechaInicio.HasValue)
+                {
+                    usuarioTurno.FechaInicio = DateTime.SpecifyKind(usuarioTurno.FechaInicio.Value, DateTimeKind.Utc);
+                }
+
+                if (usuarioTurno.FechaFin.HasValue)
+                {
+                    usuarioTurno.FechaFin = DateTime.SpecifyKind(usuarioTurno.FechaFin.Value, DateTimeKind.Utc);
+                }
+
                 try
                 {
                     _context.Update(usuarioTurno);
@@ -136,7 +186,7 @@ namespace SoftWC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno", usuarioTurno.TurnoId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "Id", usuarioTurno.UsuarioId);
+            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName", usuarioTurno.UsuarioId);
             return View(usuarioTurno);
         }
 

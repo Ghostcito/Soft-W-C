@@ -2,7 +2,6 @@
 @using SoftWC.Models.ViewModels
 @using SoftWC.Models.ModelEnum;
 
-
 @{
     Layout = "~/Views/Admin/_LayoutAdmin.cshtml"; // layout personalizado para el área de administración
 }
@@ -113,6 +112,10 @@
         </div>
     </div>
 </div>
+
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
+<script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>
 
 @section Scripts {
     <script>
