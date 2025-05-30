@@ -61,7 +61,7 @@ namespace SoftWC.Controllers
         // GET: Asitencia/Create
         public IActionResult Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "Id");
+            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName");
             return View();
         }
 
@@ -70,16 +70,53 @@ namespace SoftWC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdAsistencia,IdEmpleado,Fecha,HoraEntrada,HoraSalida,HorasTrabajadas,Presente,Observacion")] Asistencia asistencia)
+        public async Task<IActionResult> Create(
+            [Bind("IdAsistencia,IdEmpleado,Fecha,HoraEntrada,HoraSalida,Presente,Observacion")] Asistencia asistencia)
         {
+            ModelState.Remove("IdEmpleado");
+            ModelState.Remove("Empleado");
+
+            
+
+            // Asegurar que la Fecha tenga Kind=Utc (si tiene valor)
+            if (asistencia.Fecha != default)
+            {
+                asistencia.Fecha = DateTime.SpecifyKind(asistencia.Fecha, DateTimeKind.Utc);
+            }
+
+            // Conversión de HoraEntrada a UTC (si tiene valor)
+            if (asistencia.HoraEntrada.HasValue)
+            {
+                asistencia.HoraEntrada = DateTime.SpecifyKind(asistencia.HoraEntrada.Value, DateTimeKind.Utc);
+            }
+
+            // Conversión de HoraSalida a UTC (si tiene valor)
+            if (asistencia.HoraSalida.HasValue)
+            {
+                asistencia.HoraSalida = DateTime.SpecifyKind(asistencia.HoraSalida.Value, DateTimeKind.Utc);
+            }
+
+            asistencia.HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas((DateTime)asistencia.HoraEntrada, (DateTime)asistencia.HoraSalida);
+
             if (ModelState.IsValid)
             {
                 _context.Add(asistencia);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "Id", asistencia.IdEmpleado);
-            return View(asistencia);
+            else
+            {
+                foreach (var key in ModelState.Keys)
+                {
+                    var state = ModelState[key];
+                    foreach (var error in state.Errors)
+                    {
+                        Console.WriteLine($"Error en {key}: {error.ErrorMessage}");
+                    }
+                }
+                ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
+                return View(asistencia);
+            }
         }
 
         // GET: Asitencia/Edit/5
@@ -95,7 +132,7 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "Id", asistencia.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
             return View(asistencia);
         }
 
@@ -104,12 +141,34 @@ namespace SoftWC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdAsistencia,IdEmpleado,Fecha,HoraEntrada,HoraSalida,HorasTrabajadas,Presente,Observacion")] Asistencia asistencia)
+        public async Task<IActionResult> Edit(int id, [Bind("IdAsistencia,IdEmpleado,Fecha,HoraEntrada,HoraSalida,Presente,Observacion")] Asistencia asistencia)
         {
             if (id != asistencia.IdAsistencia)
             {
                 return NotFound();
             }
+
+            ModelState.Remove("IdEmpleado");
+            ModelState.Remove("Empleado");
+
+            // Asegurar que la Fecha tenga Kind=Utc (si tiene valor)
+            if (asistencia.Fecha != default)
+            {
+                asistencia.Fecha = DateTime.SpecifyKind(asistencia.Fecha, DateTimeKind.Utc);
+            }
+
+            // Conversión de HoraEntrada a UTC (si tiene valor)
+            if (asistencia.HoraEntrada.HasValue)
+            {
+                asistencia.HoraEntrada = DateTime.SpecifyKind(asistencia.HoraEntrada.Value, DateTimeKind.Utc);
+            }
+
+            // Conversión de HoraSalida a UTC (si tiene valor)
+            if (asistencia.HoraSalida.HasValue)
+            {
+                asistencia.HoraSalida = DateTime.SpecifyKind(asistencia.HoraSalida.Value, DateTimeKind.Utc);
+            }
+            asistencia.HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas((DateTime)asistencia.HoraEntrada, (DateTime)asistencia.HoraSalida);
 
             if (ModelState.IsValid)
             {
@@ -131,7 +190,7 @@ namespace SoftWC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "Id", asistencia.IdEmpleado);
+            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
             return View(asistencia);
         }
 
