@@ -103,9 +103,9 @@ namespace SoftWC.Service
             }
             if (distMin <= Convert.ToDouble(sedeCercana.Radio))
             {
-                return (sedeCercana, true);
+                return (sedeCercana, false);
             }
-            return (sedeCercana, false);
+            return (sedeCercana, true);
         }
 
         public async Task<bool> VerificarUnicaEntrada(DateTime fecha)

@@ -32,6 +32,7 @@ namespace SoftWC.Models
 
         [Column(TypeName = "decimal(9,6)")]
         public decimal Longitud { get; set; }
+
         public decimal Radio { get; set; } //radio de la sede
 
         [Display(Name = "Servicio")]
