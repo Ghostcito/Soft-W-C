@@ -105,8 +105,17 @@ namespace SoftWC.Service
             {
                 return (sedeCercana, true);
             }
-            return (sedeCercana, true);
+            return (sedeCercana, false);
         }
+
+        public async Task<bool> VerificarUnicaEntrada(DateTime fecha)
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            var asistencia = await _context.Asistencia
+                .FirstOrDefaultAsync(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Date == fecha.Date && a.HoraEntrada != null);
+            return asistencia == null;
+        }
+
 
         public List<Asistencia> GetAllAsistencias()
         {
