@@ -11,8 +11,6 @@ using SoftWC.ViewModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SoftWC.Models.Dto;
-using SoftWC.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace SoftWC.Controllers
 {
@@ -24,17 +22,15 @@ namespace SoftWC.Controllers
         private readonly AsistenciaService _asistenciaService;
         private readonly EmpleadoService _empleadoService;
         private readonly SignInManager<Usuario> _signInManager;
-        private readonly ApplicationDbContext _context;
 
 
-        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService, SignInManager<Usuario> signInManager, ApplicationDbContext context)
+        public EmpleadoController(ILogger<EmpleadoController> logger, UserService userService, AsistenciaService asistenciaService, EmpleadoService empleadoService, SignInManager<Usuario> signInManager)
         {
             _asistenciaService = asistenciaService;
             _logger = logger;
             _userService = userService;
             _empleadoService = empleadoService;
             _signInManager = signInManager;
-            _context = context;
         }
 
         public IActionResult Index()
@@ -70,63 +66,15 @@ namespace SoftWC.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmarEntrada()
         {
-            // Obtener Usuario actual
+            //Obtener Usuario
             var user = await _userService.GetCurrentUserAsync();
-            var userId = user?.Id;
+            //Generar Asistencia
+            Asistencia asistencia = await _asistenciaService.AddEntrada();
 
-            if (userId == null)
-            {
-                return Unauthorized(); // Usuario no autenticado
-            }
 
-            var fechaHoy = DateTime.Today;
-            var horaActual = DateTime.Now.TimeOfDay;
-
-            // Buscar turno activo del usuario
-            var usuarioTurno = await _context.UsuarioTurno
-                .Include(ut => ut.Turno)
-                .FirstOrDefaultAsync(ut =>
-                    ut.UsuarioId == userId &&
-                    ut.Activo &&
-                    ut.FechaInicio <= fechaHoy &&
-                    (ut.FechaFin == null || ut.FechaFin >= fechaHoy));
-
-            if (usuarioTurno == null)
-            {
-                TempData["Error"] = "No tienes un turno asignado para hoy.";
-                return RedirectToAction("Index");
-            }
-
-            var turno = usuarioTurno.Turno;
-
-            // Validar margen permitido (15 minutos antes y hasta hora de fin)
-            var margenMinutos = 15;
-            var horaPermitidaInicio = turno.HoraInicio - TimeSpan.FromMinutes(margenMinutos);
-            var horaPermitidaFin = turno.HoraFin;
-
-            if (horaActual < horaPermitidaInicio || horaActual > horaPermitidaFin)
-            {
-                TempData["Error"] = $"No puedes marcar tu entrada fuera del horario del turno: {turno.NombreTurno}.";
-                return RedirectToAction("Index");
-            }
-
-            // Verificar si ya existe asistencia registrada
-            var asistenciaExistente = await _context.Asistencia
-                .FirstOrDefaultAsync(a => a.IdEmpleado == userId && a.Fecha == fechaHoy);
-
-            if (asistenciaExistente != null && asistenciaExistente.HoraEntrada != null)
-            {
-                TempData["Info"] = "Ya registraste tu entrada hoy.";
-                return RedirectToAction("Index");
-            }
-
-            // Generar asistencia (usando tu servicio)
-            var nuevaAsistencia = await _asistenciaService.AddEntrada(); // Asume que ya establece la HoraEntrada y UsuarioId
-
-            await _asistenciaService.AddAsistencia(nuevaAsistencia);
-
-            ViewData["HoraRegistrada"] = nuevaAsistencia.HoraEntrada?.ToString("HH:mm");
-            ViewData["FechaRegistrada"] = nuevaAsistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
+            await _asistenciaService.AddAsistencia(asistencia);
+            ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString("HH:mm");
+            ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
 
             return View("Confirmacion");
         }
