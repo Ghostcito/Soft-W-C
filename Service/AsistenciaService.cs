@@ -105,7 +105,7 @@ namespace SoftWC.Service
             {
                 return (sedeCercana, true);
             }
-            return (sedeCercana, true);
+            return (sedeCercana, false);
         }
 
         public async Task<bool> VerificarUnicaEntrada(DateTime fecha)
