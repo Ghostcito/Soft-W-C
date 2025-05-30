@@ -41,6 +41,13 @@ namespace SoftWC.Controllers
 
         public async Task<IActionResult> MarcaEntrada()
         {
+            //Validar entrada unica por empleado
+            if (!await _asistenciaService.VerificarUnicaEntrada(DateTime.UtcNow.Date))
+            {
+                return View("EntradaExistente");
+            }
+
+
             UbicacionDTO ubicacion = new UbicacionDTO
             {
                 Latitud = Convert.ToDouble(TempData["Latitud"]),
