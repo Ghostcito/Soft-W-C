@@ -8,24 +8,27 @@ using System.Threading.Tasks;
 namespace SoftWC.Models
 {
     public class Servicio
-{
-    [Key]
-    public int ServicioId { get; set; }
+    {
+        [Key]
+        public int ServicioId { get; set; }
 
-    [Required]
-    [StringLength(100)]
-    public string NombreServicio { get; set; }
+        [Required]
+        [StringLength(100)]
+        public string NombreServicio { get; set; }
 
-    [Required]
-    public string TipoServicio { get; set; }
+        [Required]
+        public string TipoServicio { get; set; }
 
-    [Required]
-    public string Descripcion { get; set; }
+        [Required]
+        public string Descripcion { get; set; }
 
-    [Column(TypeName = "decimal(10,2)")]
-    public decimal PrecioBase { get; set; }
+        [Column(TypeName = "decimal(10,2)")]
+        public decimal PrecioBase { get; set; }
 
-    // Duración estimada del servicio
-    public TimeSpan? DuracionEstimada { get; set; }
-}
+        // Duración estimada del servicio
+        public TimeSpan? DuracionEstimada { get; set; }
+
+        // Relación con EmpleadoServicio
+        public ICollection<EmpleadoServicio>? EmpleadosServicios { get; set; }
+    }
 }
