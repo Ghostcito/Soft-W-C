@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Conexion PostgreSQL
 
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");     
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
 
 // Agregar DbContext con soporte para PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -49,6 +49,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AsistenciaService>();
 builder.Services.AddScoped<EmpleadoService>();
+builder.Services.AddScoped<TareoService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();

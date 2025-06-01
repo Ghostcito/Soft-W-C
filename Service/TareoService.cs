@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SoftWC.Data;
 using SoftWC.Models;
 
@@ -12,9 +13,11 @@ namespace SoftWC.Service
     {
         private readonly ApplicationDbContext _context;
         private readonly UserService _userService;
-        public TareoService(ApplicationDbContext context, UserService userService)
+        private readonly AsistenciaService _asistenciaService;
+        public TareoService(ApplicationDbContext context, UserService userService, AsistenciaService asistenciaService)
         {
             _userService = userService;
+            _asistenciaService = asistenciaService;
             _context = context;
         }
 
@@ -95,14 +98,18 @@ namespace SoftWC.Service
                 .ToListAsync();
         }
 
-        public async Task<Tareo> CalcularHorasTotales(DateTime fechaInicio, DateTime fechFin)
+        public async Task<(bool, decimal)> CalcularHorasTotales(DateTime fechaInicio, DateTime fechFin)
         {
-            var userPrincipal = await _userService.GetCurrentUserAsync();
-            var asistencias =
-            if (tareo == null)
-            {
+            var asistencias = await _asistenciaService.GetAsistenciaByDateRange(DateTime.SpecifyKind(fechaInicio, DateTimeKind.Utc), DateTime.SpecifyKind(fechFin, DateTimeKind.Utc));
 
+            if (asistencias == null || asistencias.Count() < 15)
+            {
+                return (false, 0);
             }
+            var totalHoras = asistencias.Sum(a => a.HorasTrabajadas);
+
+            return (true, totalHoras);
+
 
         }
     }
