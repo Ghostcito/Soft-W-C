@@ -50,6 +50,15 @@ namespace SoftWC.Service
             return asistencia;
         }
 
+        //Obtener asistencia por rango de fechas
+        public async Task<List<Asistencia>> GetAsistenciaByDateRange(DateTime fechaInicio, DateTime fechaFin)
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            return await _context.Asistencia
+                .Where(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Date >= fechaInicio.Date && a.Fecha.Date <= fechaFin.Date)
+                .ToListAsync();
+        }
+
         public async Task<Asistencia?> AddSalida(Asistencia asistencia)
         {
             var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
