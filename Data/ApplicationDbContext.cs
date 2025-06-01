@@ -18,10 +18,11 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
     public DbSet<SoftWC.Models.Sede> Sede { get; set; }
     public DbSet<SoftWC.Models.Servicio> Servicio { get; set; }
     public DbSet<SoftWC.Models.Supervision> Supervision { get; set; }
-    public DbSet<SoftWC.Models.Tareo> Tareo { get; set; }   
-    public DbSet<SoftWC.Models.Turno> Turno { get; set; }   
+    public DbSet<SoftWC.Models.Tareo> Tareo { get; set; }
+    public DbSet<SoftWC.Models.Turno> Turno { get; set; }
     public DbSet<SoftWC.Models.Usuario> Usuario { get; set; }
     public DbSet<SoftWC.Models.UsuarioTurno> UsuarioTurno { get; set; }
+    public DbSet<SoftWC.Models.EmpleadoServicio> EmpleadoServicio { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,5 +44,20 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
            .HasMany(u => u.Sedes)
            .WithMany(s => s.Usuarios)
            .UsingEntity(j => j.ToTable("UsuarioSede"));
+
+        // Configuración de la relación entre Usuario y EmpleadoServicio
+        modelBuilder.Entity<EmpleadoServicio>()
+        .HasKey(es => new { es.EmpleadoId, es.ServicioId });
+
+        modelBuilder.Entity<EmpleadoServicio>()
+            .HasOne(es => es.Empleado)
+            .WithMany(e => e.EmpleadosServicios)
+            .HasForeignKey(es => es.EmpleadoId);
+
+        modelBuilder.Entity<EmpleadoServicio>()
+            .HasOne(es => es.Servicio)
+            .WithMany(s => s.EmpleadosServicios)
+            .HasForeignKey(es => es.ServicioId);
+
     }
 }

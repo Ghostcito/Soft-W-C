@@ -7,7 +7,7 @@ namespace SoftWC.Models
 {
     public class EmpleadoServicio
     {
-        public int EmpleadoId { get; set; }
+        public string EmpleadoId { get; set; }
         public Usuario Empleado { get; set; }
 
         public int ServicioId { get; set; }
