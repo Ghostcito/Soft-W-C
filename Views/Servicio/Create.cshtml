@@ -1,0 +1,67 @@
+@model SoftWC.Models.Servicio
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+}
+@{
+    ViewData["Title"] = "Crear Servicio";
+}
+
+<h1>Crear</h1>
+
+<h4>Servicio</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="NombreServicio" class="control-label"></label>
+                <input asp-for="NombreServicio" class="form-control" />
+                <span asp-validation-for="NombreServicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TipoServicio" class="control-label"></label>
+                <input asp-for="TipoServicio" class="form-control" />
+                <span asp-validation-for="TipoServicio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Descripcion" class="control-label"></label>
+                <input asp-for="Descripcion" class="form-control" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrecioBase" class="control-label"></label>
+                <input asp-for="PrecioBase" class="form-control" />
+                <span asp-validation-for="PrecioBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DuracionEstimada" class="control-label"></label>
+                <input asp-for="DuracionEstimada" class="form-control" />
+                <span asp-validation-for="DuracionEstimada" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

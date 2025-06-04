@@ -1,0 +1,73 @@
+@model IEnumerable<SoftWC.Models.Servicio>
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }
+}
+@{
+    ViewData["Title"] = "Listado Servicios";
+}
+
+<h1>Listado de servicios y precios</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NombreServicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TipoServicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrecioBase)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DuracionEstimada)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NombreServicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TipoServicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrecioBase)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DuracionEstimada)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ServicioId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ServicioId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ServicioId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

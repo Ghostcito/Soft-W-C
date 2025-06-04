@@ -1,0 +1,62 @@
+@model SoftWC.Models.Servicio
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<SoftWC.Models.Usuario> SignInManager
+@inject UserManager<SoftWC.Models.Usuario> UserManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
+    ViewData["Title"] = "Create";
+    @if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+        
+    }    
+}
+@{
+    ViewData["Title"] = "Detalles servicio";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Servicio</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreServicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreServicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TipoServicio)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TipoServicio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PrecioBase)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PrecioBase)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DuracionEstimada)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DuracionEstimada)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ServicioId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
