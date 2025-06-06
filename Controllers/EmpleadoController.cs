@@ -60,13 +60,6 @@ namespace SoftWC.Controllers
                 return View("NoSedesAsign");
             }
 
-            var verificarEstado = _asistenciaService.VerificarHoraEntrada(DateTime.Now.TimeOfDay);
-            if (!verificarEstado.Result.Item1)
-            {
-
-            }
-
-
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
@@ -74,9 +67,17 @@ namespace SoftWC.Controllers
                 fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
-
-
-
+            Console.WriteLine("Hora actual: " + DateTime.Now.TimeOfDay);
+            string estado = await _asistenciaService.VerificarHoraEntrada(DateTime.Now.TimeOfDay);
+            if (estado.Equals("NO_ASIGNADO"))
+            {
+                return View("NoTurnoAsignado");
+            }
+            if (estado.Equals("ANTICIPADO"))
+            {
+                return View("FueraDeHora");
+            }
+            ViewData["Estado"] = estado;
             return View(viewModel);
         }
 
@@ -122,6 +123,17 @@ namespace SoftWC.Controllers
                 HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, DateTime.Now),
                 localizacionExitosa = verificacion.Item2
             };
+
+            string estado = await _asistenciaService.VerificarHoraSalida(DateTime.Now.TimeOfDay);
+            if (estado.Equals("NO_ASIGNADO"))
+            {
+                return View("NoTurnoAsignado");
+            }
+            if (estado.Equals("ANTICIPADO"))
+            {
+                return View("FueraDeHora");
+            }
+            ViewData["Estado"] = estado;
 
             return View(viewModel);
         }

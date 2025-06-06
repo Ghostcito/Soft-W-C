@@ -13,6 +13,7 @@
     string fechaActual = Model.fechaActual;
     string sede = Model.NombreSede;
     bool locVerificado = Model.localizacionExitosa.Value;
+    string estado = ViewBag.Estado;
 }
 
 <div
@@ -27,48 +28,49 @@
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
-        <p style="color: gray; font-size: 18px;">📍 </p>
+        <div style="font-size: 18px; margin-bottom: 20px;">
+            <strong>Estado de HORA:</strong> @estado
 
 
-        <form method="get" action="@Url.Action("ConfirmarEntrada", "Empleado")">
-            <button type="submit"
-                style="background-color: @(locVerificado ? "#2d6cdf" : "#cccccc"); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: @(locVerificado ? "pointer" : "not-allowed"); margin: 20px 0; font-size: 16px;"
-                @(locVerificado ? "" : "disabled")>
-                Marcar entrada
-            </button>
-        </form>
-        @if (!locVerificado)
-        {
-            <div style="color: #d9534f; font-size: 16px; margin-top: 10px; font-weight: bold;">
-                No puedes marcar asistencia hasta estar cerca del lugar de trabajo.
+            <form method="get" action="@Url.Action("ConfirmarEntrada", "Empleado")">
+                <button type="submit"
+                    style="background-color: @(locVerificado ? "#2d6cdf" : "#cccccc"); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: @(locVerificado ? "pointer" : "not-allowed"); margin: 20px 0; font-size: 16px;"
+                    @(locVerificado ? "" : "disabled")>
+                    Marcar entrada
+                </button>
+            </form>
+            @if (!locVerificado)
+            {
+                <div style="color: #d9534f; font-size: 16px; margin-top: 10px; font-weight: bold;">
+                    No puedes marcar asistencia hasta estar cerca del lugar de trabajo.
+                </div>
+            }
+
+            <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px; gap: 15px;">
+                <div style="text-align: left;">
+                    <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Hora registrada correctamente</p>
+
+                    @if (locVerificado)
+                    {
+                        <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Ubicación confirmada</p>
+                    }
+                    else
+                    {
+                        <p style="color: red; font-size: 14px; margin: 3px 0;">❌ Ubicación fuera del rango permitido</p>
+                    }
+
+                    <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Foto tomada</p>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Foto"
+                        style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 5px;">
+                    <span style="font-size: 14px;">Subir evidencia<br /><small style="color: gray;">de
+                            ingreso</small></span>
+                </div>
             </div>
-        }
-
-        <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px; gap: 15px;">
-            <div style="text-align: left;">
-                <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Hora registrada correctamente</p>
-
-                @if (locVerificado)
-                {
-                    <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Ubicación confirmada</p>
-                }
-                else
-                {
-                    <p style="color: red; font-size: 14px; margin: 3px 0;">❌ Ubicación fuera del rango permitido</p>
-                }
-
-                <p style="color: green; font-size: 14px; margin: 3px 0;">✅ Foto tomada</p>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Foto"
-                    style="width: 60px; height: 60px; border-radius: 50%; margin-bottom: 5px;">
-                <span style="font-size: 14px;">Subir evidencia<br /><small style="color: gray;">de
-                        ingreso</small></span>
-            </div>
+            <a asp-controller="Empleado" asp-action="Index"
+                style="display: inline-block; margin-top: 25px; background-color: #6c757d; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-size: 15px; text-decoration: none; text-align: center;">
+                Volver a inicio
+            </a>
         </div>
-        <a asp-controller="Empleado" asp-action="Index"
-            style="display: inline-block; margin-top: 25px; background-color: #6c757d; color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-size: 15px; text-decoration: none; text-align: center;">
-            Volver a inicio
-        </a>
     </div>
-</div>
