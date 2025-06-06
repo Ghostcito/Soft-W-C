@@ -18,7 +18,6 @@ public class ApplicationDbContext : IdentityDbContext<Usuario>
     public DbSet<SoftWC.Models.Sede> Sede { get; set; }
     public DbSet<SoftWC.Models.Servicio> Servicio { get; set; }
     public DbSet<SoftWC.Models.Supervision> Supervision { get; set; }
-    public DbSet<SoftWC.Models.Tareo> Tareo { get; set; }   
     public DbSet<SoftWC.Models.Turno> Turno { get; set; }   
     public DbSet<SoftWC.Models.Usuario> Usuario { get; set; }
     public DbSet<SoftWC.Models.UsuarioTurno> UsuarioTurno { get; set; }

@@ -29,6 +29,11 @@ namespace SoftWC.Models
         //un usuario puede tener varias sedes
         public ICollection<Sede> Sedes { get; set; } = new List<Sede>();
 
+        public int? ServicioId { get; set; }
+
+        [ForeignKey("ServicioId")]
+        public Servicio? Servicio { get; set; }
+
 
         //RELACIONES EMPLEADO - SUPERVISOR
         public ICollection<Supervision>? EmpleadosSupervisados { get; set; } // Si es Supervisor
