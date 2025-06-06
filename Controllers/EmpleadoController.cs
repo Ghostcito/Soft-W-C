@@ -59,6 +59,7 @@ namespace SoftWC.Controllers
             {
                 return View("NoSedesAsign");
             }
+
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
@@ -66,7 +67,17 @@ namespace SoftWC.Controllers
                 fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
-
+            Console.WriteLine("Hora actual: " + DateTime.Now.TimeOfDay);
+            string estado = await _asistenciaService.VerificarHoraEntrada(DateTime.Now.TimeOfDay);
+            if (estado.Equals("NO_ASIGNADO"))
+            {
+                return View("NoTurnoAsignado");
+            }
+            if (estado.Equals("ANTICIPADO"))
+            {
+                return View("FueraDeHora");
+            }
+            ViewData["Estado"] = estado;
             return View(viewModel);
         }
 
@@ -77,8 +88,6 @@ namespace SoftWC.Controllers
             var user = await _userService.GetCurrentUserAsync();
             //Generar Asistencia
             Asistencia asistencia = await _asistenciaService.AddEntrada();
-
-
             await _asistenciaService.AddAsistencia(asistencia);
             ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString("HH:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
@@ -114,6 +123,17 @@ namespace SoftWC.Controllers
                 HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, DateTime.Now),
                 localizacionExitosa = verificacion.Item2
             };
+
+            string estado = await _asistenciaService.VerificarHoraSalida(DateTime.Now.TimeOfDay);
+            if (estado.Equals("NO_ASIGNADO"))
+            {
+                return View("NoTurnoAsignado");
+            }
+            if (estado.Equals("ANTICIPADO"))
+            {
+                return View("FueraDeHora");
+            }
+            ViewData["Estado"] = estado;
 
             return View(viewModel);
         }

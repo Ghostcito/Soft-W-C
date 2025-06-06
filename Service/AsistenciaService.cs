@@ -116,6 +116,76 @@ namespace SoftWC.Service
             return asistencia == null;
         }
 
+        public async Task<string> VerificarHoraEntrada(TimeSpan horaMarcada)
+        {
+            var turnoAsignado = await VerificarTurnosAsignados();
+            if (!turnoAsignado.Item1)
+            {
+                return "NO_ASIGNADO";
+            }
+            var turno = turnoAsignado.Item2.Turno;
+            // Definir los rangos permitidos con desviación de 10 minutos
+            var margen = TimeSpan.FromMinutes(10);
+            // Hora de entrada permitida
+            var horaEntradaEsperada = turno.HoraInicio;
+            Console.WriteLine("Hora de entrada esperada: " + horaEntradaEsperada);
+            var entradaMin = horaEntradaEsperada - margen;
+            var entradaMax = horaEntradaEsperada + margen;
+
+            if (horaMarcada < entradaMin)
+            {
+                // La hora de entrada es antes del rango permitido
+                return "ANTICIPADO";
+            }
+            if (horaMarcada > entradaMax)
+            {
+                // La hora de entrada es después del rango permitido
+                return "TARDANZA";
+            }
+            return "PUNTUAL";
+        }
+
+        public async Task<string> VerificarHoraSalida(TimeSpan horaMarcada)
+        {
+            var turnoAsignado = await VerificarTurnosAsignados();
+            if (!turnoAsignado.Item1)
+            {
+                return "NO_ASIGNADO";
+            }
+            var turno = turnoAsignado.Item2.Turno;
+            // Definir los rangos permitidos con desviación de 10 minutos
+            var margen = TimeSpan.FromMinutes(10);
+            // Hora de entrada permitida
+            var horaFinEsperada = turno.HoraFin;
+            Console.WriteLine("Hora de entrada esperada: " + horaFinEsperada);
+            var entradaMin = horaFinEsperada - margen;
+            var entradaMax = horaFinEsperada + margen;
+
+            if (horaMarcada < entradaMin)
+            {
+                // La hora de entrada es antes del rango permitido
+                return "ANTICIPADO";
+            }
+            if (horaMarcada > entradaMax)
+            {
+                // La hora de entrada es después del rango permitido
+                return "TARDANZA";
+            }
+            return "PUNTUAL";
+        }
+
+        public async Task<(bool, UsuarioTurno)> VerificarTurnosAsignados()
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            var usuarioTurno = await _context.UsuarioTurno
+                .Include(ut => ut.Turno)
+                .FirstOrDefaultAsync(ut => ut.UsuarioId == userPrincipal.Id);
+            if (usuarioTurno == null) return (false, null);
+            return (true, usuarioTurno);
+        }
+
+
+
 
         public List<Asistencia> GetAllAsistencias()
         {
