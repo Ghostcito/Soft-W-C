@@ -14,9 +14,11 @@ namespace SoftWC.Service
     {
         private readonly ApplicationDbContext _context;
         private readonly UserService _userService;
-        public AsistenciaService(ApplicationDbContext context, UserService userService)
+        private readonly TareoService _tareoService;
+        public AsistenciaService(ApplicationDbContext context, UserService userService, TareoService tareoService)
         {
             _userService = userService;
+            _tareoService = tareoService;
             _context = context;
         }
 
@@ -75,7 +77,12 @@ namespace SoftWC.Service
         }
         public async Task<Asistencia> AddAsistencia(Asistencia asistencia)
         {
+
             _context.Asistencia.Add(asistencia);
+            if (await VerificarQuincena(asistencia, DateTime.UtcNow))
+            {
+
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -156,7 +163,18 @@ namespace SoftWC.Service
             }
         }
 
-
-
+        //Verificar si llego a la quincena
+        public async Task<bool> VerificarQuincena(Asistencia asistencia, DateTime fechaInicio)
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            var asistencias = await _context.Asistencia
+                .Where(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Month == asistencia.Fecha.Month && a.Fecha.Year == asistencia.Fecha.Year && a.Fecha >= fechaInicio && a.Fecha <= asistencia.Fecha)
+                .ToListAsync();
+            if (asistencias.Count >= 15)
+            {
+                return true; // Ha llegado a la quincena
+            }
+            return false; // No ha llegado a la quincena
+        }
     }
 }

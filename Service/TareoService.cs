@@ -21,6 +21,8 @@ namespace SoftWC.Service
             _context = context;
         }
 
+        // Metodo para crear un tareo
+
         // Método para agregar un tareo
         public async Task<Tareo> AddTareo(Tareo tareo)
         {
