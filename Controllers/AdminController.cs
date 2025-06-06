@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using SoftWC.Models.ViewModels;
 using System.Globalization;
+using SoftWC.Service.Interfaces;
+using SoftWC.Service.Implementation;
 
 namespace SoftWC.Controllers;
 
@@ -18,15 +20,19 @@ public class AdminController : Controller
     private readonly ILogger<AdminController> _logger;
     private readonly UserService _userService;
     private readonly SignInManager<Usuario> _signInManager;
+    private readonly IExcelExportService _excelExportService;
+    private readonly IPdfExportService _pdfExportService;
 
     private readonly ApplicationDbContext _context;
 
-    public AdminController(ILogger<AdminController> logger, UserService userService, SignInManager<Usuario> signInManager, ApplicationDbContext context)
+    public AdminController(ILogger<AdminController> logger, UserService userService, SignInManager<Usuario> signInManager, ApplicationDbContext context, IPdfExportService pdfExportService, IExcelExportService excelExportService)
     {
         _context = context;    
         _userService = userService;
         _logger = logger;
         _signInManager = signInManager;
+        _pdfExportService = pdfExportService;
+        _excelExportService = excelExportService;
     }
 
     public IActionResult Index()
@@ -48,63 +54,6 @@ public class AdminController : Controller
         return RedirectToAction("Login", "Account");
     }
 
-    // public async Task<IActionResult> ResumenTareos(int? año, int? mes, int? quincena)
-    // {
-    //     // Asignar valores por defecto si no se proporcionan
-    //     int añoSeleccionado = año ?? DateTime.UtcNow.Year;
-    //     int mesSeleccionado = mes ?? DateTime.UtcNow.Month;
-    //     int quincenaSeleccionada = (quincena == 1 || quincena == 2) ? quincena.Value : 1;
-
-    //     // Cálculo del rango de fechas
-    //     var (inicioQuincena, finQuincena) = CalcularRangoQuincena(añoSeleccionado, mesSeleccionado, quincenaSeleccionada);
-
-    //     // Convertir a UTC
-    //     inicioQuincena = DateTime.SpecifyKind(inicioQuincena, DateTimeKind.Utc);
-    //     finQuincena = DateTime.SpecifyKind(finQuincena, DateTimeKind.Utc);
-
-    //     // Consulta optimizada que combina datos de Asistencia y Tareo
-    //     var resumen = await _context.Asistencia
-    //         .AsNoTracking()
-    //         .Include(a => a.Empleado)
-    //         .Where(a => a.Fecha >= inicioQuincena && a.Fecha <= finQuincena)
-    //         .GroupBy(a => new { a.IdEmpleado, a.Empleado.UserName, a.Empleado.DNI })
-    //         .Select(g => new ResumenTareoVM
-    //         {
-    //             Empleado = new Usuario
-    //             {
-    //                 Id = g.Key.IdEmpleado,
-    //                 UserName = g.Key.UserName,
-    //                 DNI = g.Key.DNI
-    //             },
-    //             TotalHoras = g.Sum(a => a.HorasTrabajadas),
-    //             TotalPago = g.Sum(a => a.HorasTrabajadas * 
-    //                 _context.Tareo
-    //                     .Where(t => t.IdEmpleado == g.Key.IdEmpleado && 
-    //                             t.Fecha >= inicioQuincena && 
-    //                             t.Fecha <= finQuincena)
-    //                     .Average(t => t.PagoPorHora)), // Obtener el promedio de pago por hora
-    //             Detalles = _context.Tareo
-    //                 .Where(t => t.IdEmpleado == g.Key.IdEmpleado && 
-    //                         t.Fecha >= inicioQuincena && 
-    //                         t.Fecha <= finQuincena)
-    //                 .OrderBy(t => t.Fecha)
-    //                 .ToList()
-    //         })
-    //         .ToListAsync();
-
-    //     // Pasar valores a ViewBag para mantener filtros seleccionados
-    //     ViewBag.AñoSeleccionado = añoSeleccionado;
-    //     ViewBag.MesSeleccionado = mesSeleccionado;
-    //     ViewBag.QuincenaSeleccionada = quincenaSeleccionada;
-    //     ViewBag.Meses = Enumerable.Range(1, 12).Select(m => new SelectListItem
-    //     {
-    //         Value = m.ToString(),
-    //         Text = CultureInfo.GetCultureInfo("es-ES").DateTimeFormat.GetMonthName(m)
-    //     }).ToList();
-
-    //     return View(resumen);
-    // }
-
     private (DateTime inicio, DateTime fin) CalcularRangoQuincena(int año, int mes, int quincena)
     {
         DateTime inicio, fin;
@@ -122,8 +71,6 @@ public class AdminController : Controller
         
         return (inicio, fin);
     }
-
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
@@ -164,6 +111,7 @@ public class AdminController : Controller
                     Empleado = g.Key.UserName,
                     DNI = g.Key.DNI,
                     TotalHoras = g.Sum(a => a.HorasTrabajadas),
+                    PrecioBase = g.Key.PrecioBase,
                     TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
                     Servicios = new List<string> { g.Key.NombreServicio },
                     Detalles = g.Select(a => new DetallePagoVM
@@ -187,5 +135,56 @@ public class AdminController : Controller
             _logger.LogError(ex, "Error al generar el resumen de pagos");
             return View(new List<ResumenPagoVM>());
         }
+    }
+
+    [HttpGet("exportar")]
+    public async Task<IActionResult> Exportar(
+        int año, int mes, int quincena, string formato)
+    {
+        var datos = await ObtenerDatosQuincena(año, mes, quincena);
+        
+        if (formato.ToLower() == "excel")
+        {
+            var fileContent = _excelExportService.GenerateExcel(datos, año, mes, quincena);
+            return File(fileContent, 
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                $"Pagos_{año}_{mes}_Q{quincena}.xlsx");
+        }
+        else if (formato.ToLower() == "pdf")
+        {
+            var fileContent = _pdfExportService.GeneratePdf(datos, año, mes, quincena);
+            return File(fileContent, "application/pdf", 
+                $"Pagos_{año}_{mes}_Q{quincena}.pdf");
+        }
+        
+        return BadRequest("Formato no soportado");
+    }
+
+    private async Task<List<ResumenPagoVM>> ObtenerDatosQuincena(int año, int mes, int quincena)
+    {
+    // Reutiliza la misma lógica del action ResumenPagos
+        var (inicio, fin) = CalcularRangoQuincena(año, mes, quincena);
+
+        return await _context.Asistencia
+        .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
+        .GroupBy(a => new 
+        { 
+            a.IdEmpleado,
+            a.Empleado.UserName,
+            a.Empleado.DNI,
+            a.Empleado.Servicio.NombreServicio,
+            a.Empleado.Servicio.PrecioBase
+        })
+        .Select(g => new ResumenPagoVM
+        {
+            Empleado = g.Key.UserName,
+            DNI = g.Key.DNI,
+            TotalHoras = g.Sum(a => a.HorasTrabajadas),
+            PrecioBase = g.Key.PrecioBase,
+            TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
+            Servicios = new List<string> { g.Key.NombreServicio }
+            // Detalles se omite o se inicializa como lista vacía si es requerido
+        })
+        .ToListAsync();
     }
 }

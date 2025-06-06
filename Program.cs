@@ -4,6 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using SoftWC.Data;
 using SoftWC.Models;
 using SoftWC.Service;
+using SoftWC.Service.Implementation;
+using SoftWC.Service.Interfaces;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,6 +54,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AsistenciaService>();
 builder.Services.AddScoped<EmpleadoService>();
+
+// Servicios de exportación (pueden ser Transient)
+builder.Services.AddTransient<IExcelExportService, ExcelExportService>();
+
+builder.Services.AddTransient<IPdfExportService,PdfExportService>();
+
+// Configuración de DinkToPdf (si lo usas)
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 builder.Services.AddAuthorization();
 builder.Services.AddHttpContextAccessor();

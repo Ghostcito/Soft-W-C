@@ -15,6 +15,7 @@
 <div class="container-fluid">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
+            
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h3><i class="fas fa-money-bill-wave"></i> Resumen de Pagos por Quincena</h3>
@@ -26,7 +27,26 @@
                         @(new System.Globalization.CultureInfo("es-ES").DateTimeFormat.GetMonthName(mesActual)) 
                         @añoActual
                     </span>
-                </div>
+                </div>                
+            </div>
+            <div class="mt-4">
+                <a href="@Url.Action("Exportar", new { 
+                    año = ViewBag.AñoSeleccionado, 
+                    mes = ViewBag.MesSeleccionado, 
+                    quincena = ViewBag.QuincenaSeleccionada, 
+                    formato = "excel" })" 
+                class="btn btn-success">
+                    <i class="fas fa-file-excel"></i> Exportar a Excel
+                </a>
+                
+                <a href="@Url.Action("Exportar", new { 
+                    año = ViewBag.AñoSeleccionado, 
+                    mes = ViewBag.MesSeleccionado, 
+                    quincena = ViewBag.QuincenaSeleccionada, 
+                    formato = "pdf" })" 
+                class="btn btn-danger ml-2">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
             </div>
         </div>
         
