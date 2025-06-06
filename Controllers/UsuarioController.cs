@@ -286,7 +286,22 @@ namespace SoftWC.Controllers
             return View(usuario);
         }
 
-        // POST: Usuario/Delete/5
+        // // POST: Usuario/Delete/5
+        // [HttpPost, ActionName("Delete")]
+        // [ValidateAntiForgeryToken]
+        // public async Task<IActionResult> DeleteConfirmed(string id)
+        // {
+        //     var usuario = await _context.Usuario.FindAsync(id);
+        //     if (usuario != null)
+        //     {
+        //         _context.Usuario.Remove(usuario);
+        //     }
+
+        //     await _context.SaveChangesAsync();
+        //     return RedirectToAction(nameof(Index));
+        // }
+
+        // Combertira en inactivo en lugar de eliminar
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -294,12 +309,16 @@ namespace SoftWC.Controllers
             var usuario = await _context.Usuario.FindAsync(id);
             if (usuario != null)
             {
-                _context.Usuario.Remove(usuario);
+                // Marcar como inactivo en lugar de eliminar
+                usuario.Estado = "Inactivo";
+
+                _context.Usuario.Update(usuario);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool UsuarioExists(string id)
         {

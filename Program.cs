@@ -68,6 +68,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
+    // await UserDataInitializer.Seed33Data2(services); //Método para iniciar la base de datos y crear tablas
+
 }
 
 // Configure the HTTP request pipeline.
@@ -85,9 +87,9 @@ else
 //evitan que el navegador sirva la vista desde su caché.
 app.Use(async (context, next) =>
 {
-    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-    context.Response.Headers["Pragma"] = "no-cache";
-    context.Response.Headers["Expires"] = "0";
+        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+        context.Response.Headers["Pragma"] = "no-cache";
+        context.Response.Headers["Expires"] = "0";
     await next();
 });
 

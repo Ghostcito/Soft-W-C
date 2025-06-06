@@ -209,7 +209,7 @@
                                             </span>
                                         </td>
                                         <td class="align-middle">
-                                            <span class="badge rounded-pill @(item.Estado == "Activo" ? "bg-success" : "bg-secondary") px-3 py-2">
+                                            <span class="badge rounded-pill @(item.Estado == "Activo" || item.Estado == "activo" ? "bg-success" : "bg-secondary") px-3 py-2">
                                                 @Html.DisplayFor(modelItem => item.Estado)
                                             </span>
                                         </td>
