@@ -116,6 +116,51 @@ namespace SoftWC.Service
             return asistencia == null;
         }
 
+        public async Task<bool> ValidarAsistenciaEnTurno(Asistencia asistencia)
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+
+            // Buscar el turno asignado para la fecha de la asistencia
+            var usuarioTurno = await _context.UsuarioTurno
+                .Include(ut => ut.Turno)
+                .FirstOrDefaultAsync(ut =>
+                    ut.UsuarioId == userPrincipal.Id &&
+                    asistencia.Fecha.Date >= ut.FechaInicio &&
+                    asistencia.Fecha.Date <= ut.FechaFin);
+
+            if (usuarioTurno == null || usuarioTurno.Turno == null)
+                return false; // No hay turno asignado
+
+            var turno = usuarioTurno.Turno;
+
+            // Definir los rangos permitidos con desviación de 10 minutos
+            var margen = TimeSpan.FromMinutes(10);
+
+            // Hora de entrada permitida
+            var horaEntradaEsperada = asistencia.Fecha.Date.Add(turno.HoraInicio);
+            var entradaMin = horaEntradaEsperada - margen;
+            var entradaMax = horaEntradaEsperada + margen;
+
+            // Hora de salida permitida
+            var horaSalidaEsperada = asistencia.Fecha.Date.Add(turno.HoraFin);
+            var salidaMin = horaSalidaEsperada - margen;
+            var salidaMax = horaSalidaEsperada + margen;
+
+            bool entradaValida = asistencia.HoraEntrada.HasValue &&
+                                 asistencia.HoraEntrada.Value >= entradaMin &&
+                                 asistencia.HoraEntrada.Value <= entradaMax;
+
+            bool salidaValida = true; // Por defecto true si no se marca salida
+            if (asistencia.HoraSalida.HasValue)
+            {
+                salidaValida = asistencia.HoraSalida.Value >= salidaMin &&
+                               asistencia.HoraSalida.Value <= salidaMax;
+            }
+
+            // Debe cumplir ambos si hay entrada y salida
+            return entradaValida && salidaValida;
+        }
+
 
         public List<Asistencia> GetAllAsistencias()
         {
