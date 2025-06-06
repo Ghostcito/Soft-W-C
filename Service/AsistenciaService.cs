@@ -116,50 +116,44 @@ namespace SoftWC.Service
             return asistencia == null;
         }
 
-        public async Task<bool> ValidarAsistenciaEnTurno(Asistencia asistencia)
+        public async Task<(bool, string)> VerificarHoraEntrada(TimeSpan horaEntrada)
         {
-            var userPrincipal = await _userService.GetCurrentUserAsync();
-
-            // Buscar el turno asignado para la fecha de la asistencia
-            var usuarioTurno = await _context.UsuarioTurno
-                .Include(ut => ut.Turno)
-                .FirstOrDefaultAsync(ut =>
-                    ut.UsuarioId == userPrincipal.Id &&
-                    asistencia.Fecha.Date >= ut.FechaInicio &&
-                    asistencia.Fecha.Date <= ut.FechaFin);
-
-            if (usuarioTurno == null || usuarioTurno.Turno == null)
-                return false; // No hay turno asignado
-
-            var turno = usuarioTurno.Turno;
-
+            var turnoAsignado = await VerificarTurnosAsignados();
+            if (!turnoAsignado.Item1) return (false, "NULL"); // No hay turnos asignados
+            var turno = turnoAsignado.Item2.Turno;
             // Definir los rangos permitidos con desviación de 10 minutos
             var margen = TimeSpan.FromMinutes(10);
-
             // Hora de entrada permitida
-            var horaEntradaEsperada = asistencia.Fecha.Date.Add(turno.HoraInicio);
+            var horaEntradaEsperada = turno.HoraInicio;
             var entradaMin = horaEntradaEsperada - margen;
             var entradaMax = horaEntradaEsperada + margen;
 
-            // Hora de salida permitida
-            var horaSalidaEsperada = asistencia.Fecha.Date.Add(turno.HoraFin);
-            var salidaMin = horaSalidaEsperada - margen;
-            var salidaMax = horaSalidaEsperada + margen;
-
-            bool entradaValida = asistencia.HoraEntrada.HasValue &&
-                                 asistencia.HoraEntrada.Value >= entradaMin &&
-                                 asistencia.HoraEntrada.Value <= entradaMax;
-
-            bool salidaValida = true; // Por defecto true si no se marca salida
-            if (asistencia.HoraSalida.HasValue)
+            if (horaEntrada < entradaMin)
             {
-                salidaValida = asistencia.HoraSalida.Value >= salidaMin &&
-                               asistencia.HoraSalida.Value <= salidaMax;
+                // La hora de entrada es antes del rango permitido
+                return (false, "RECHAZADO");
             }
-
-            // Debe cumplir ambos si hay entrada y salida
-            return entradaValida && salidaValida;
+            if (horaEntrada > entradaMax)
+            {
+                // La hora de entrada es después del rango permitido
+                var horas = (horaEntradaEsperada - horaEntrada).TotalHours;
+                return (true, horas.ToString());
+            }
+            return (true, "ACEPTADO");
         }
+
+        public async Task<(bool, UsuarioTurno)> VerificarTurnosAsignados()
+        {
+            var userPrincipal = await _userService.GetCurrentUserAsync();
+            var usuarioTurno = await _context.UsuarioTurno
+                .Include(ut => ut.Turno)
+                .FirstOrDefaultAsync(ut =>
+                    ut.UsuarioId == userPrincipal.Id);
+            if (usuarioTurno == null) return (false, null);
+            return (true, usuarioTurno);
+        }
+
+
 
 
         public List<Asistencia> GetAllAsistencias()

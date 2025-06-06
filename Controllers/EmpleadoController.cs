@@ -59,6 +59,14 @@ namespace SoftWC.Controllers
             {
                 return View("NoSedesAsign");
             }
+
+            var verificarEstado = _asistenciaService.VerificarHoraEntrada(DateTime.Now.TimeOfDay);
+            if (!verificarEstado.Result.Item1)
+            {
+
+            }
+
+
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
@@ -66,6 +74,8 @@ namespace SoftWC.Controllers
                 fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
+
+
 
             return View(viewModel);
         }
@@ -77,8 +87,6 @@ namespace SoftWC.Controllers
             var user = await _userService.GetCurrentUserAsync();
             //Generar Asistencia
             Asistencia asistencia = await _asistenciaService.AddEntrada();
-
-
             await _asistenciaService.AddAsistencia(asistencia);
             ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString("HH:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
