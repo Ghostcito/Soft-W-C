@@ -1,6 +1,5 @@
 /bin
 /obj
-Data/Migrations/
 .vscode
 .sln
 *.db-shm
