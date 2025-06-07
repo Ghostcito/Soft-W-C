@@ -37,6 +37,109 @@ public class AdminController : Controller
 
     public IActionResult Index()
     {
+        var asistencias = _context.Asistencia
+            .Where(a => a.Fecha.Month == DateTime.Now.Month)
+            .GroupBy(a => a.IdEmpleado)
+            .Select(g => new {
+                Empleado = g.First().Empleado.Nombre + " " + g.First().Empleado.Apellido,
+                Horas = g.Sum(a => a.HorasTrabajadas)
+            }).ToList();
+
+        var empleadosPorSede = _context.Usuario
+            .SelectMany(u => u.Sedes, (usuario, sede) => new { sede.Nombre_local })
+            .GroupBy(x => x.Nombre_local)
+            .Select(g => new { Sede = g.Key, Total = g.Count() })
+            .ToList();
+
+        var empleadosPorTurno = _context.UsuarioTurno
+            .Where(ut => ut.Activo && ut.Turno != null)
+            .GroupBy(ut => ut.Turno.NombreTurno)
+            .Select(g => new { Turno = g.Key, Total = g.Count() })
+            .ToList();
+
+        var horasPorSemana = _context.Asistencia
+            .AsEnumerable()
+            .GroupBy(a => a.Fecha.Date.AddDays(-(int)a.Fecha.DayOfWeek)) // Agrupa por inicio de semana (domingo)
+            .Select(g => new
+            {
+                Semana = g.Key.ToString("yyyy-MM-dd"),
+                TotalHoras = g.Sum(a => a.HorasTrabajadas)
+            })
+            .OrderBy(x => x.Semana)
+            .ToList();
+
+        var empleadosPorSupervisor = _context.Supervision   
+            .GroupBy(s => s.Supervisor.Nombre)
+            .Select(g => new { Supervisor = g.Key, Total = g.Count() })
+            .ToList();
+
+        var empleadosEnSistema = (from user in _context.Users
+            join userRole in _context.UserRoles on user.Id equals userRole.UserId
+            join role in _context.Roles on userRole.RoleId equals role.Id
+            where role.Name == "Empleado"
+            select user.Nombre).ToList();
+
+        // Obtener fecha actual
+        var fechaActual = DateTime.UtcNow;
+
+        // Calcular los últimos 3 meses
+        var pagosUltimosMeses = _context.Asistencia
+            .Where(a => a.Fecha >= fechaActual.AddMonths(-3)) // últimos 3 meses
+            .GroupBy(a => new { a.Fecha.Year, a.Fecha.Month })
+            .Select(g => new {
+                Mes = g.Key.Month,
+                Año = g.Key.Year,
+                Total = g.Sum(a => a.HorasTrabajadas * a.Empleado.Servicio.PrecioBase)
+            })
+            .OrderBy(g => g.Año).ThenBy(g => g.Mes)
+            .ToList();
+
+            // Obtener usuarios próximos a cumplir años en los próximos 30 días
+    var hoy = DateTime.Today;
+    var proximosCumpleanios = _context.Users
+        .Where(u => u.FechaNacimiento != null)
+        .AsEnumerable() // Para trabajar con DateTime sin errores en EF
+        .Select(u => new
+        {
+            Usuario = u,
+            ProximoCumple = new DateTime(hoy.Year, u.FechaNacimiento.Value.Month, u.FechaNacimiento.Value.Day)
+        })
+        .Where(x => x.ProximoCumple >= hoy && x.ProximoCumple <= hoy.AddDays(30))
+        .OrderBy(x => x.ProximoCumple)
+        .Take(4)
+        .Select(x => x.Usuario)
+        .ToList();
+
+        // Obtener la cantidad total de usuarios con rol "Empleado"
+        var totalEmpleados = (from user in _context.Users
+                            join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                            join role in _context.Roles on userRole.RoleId equals role.Id
+                            where role.Name == "Empleado"
+                            select user).Count();
+
+        // ViewBag con listas simples (labels y data separados)
+        ViewBag.Empleados = asistencias.Select(a => a.Empleado).ToList();
+        ViewBag.Horas = asistencias.Select(a => a.Horas).ToList();
+
+        ViewBag.Sedes = empleadosPorSede.Select(e => e.Sede).ToList();
+        ViewBag.EmpleadosPorSede = empleadosPorSede.Select(e => e.Total).ToList();
+
+        ViewBag.Turnos = empleadosPorTurno.Select(e => e.Turno).ToList();
+        ViewBag.EmpleadosPorTurno = empleadosPorTurno.Select(e => e.Total).ToList();
+
+        ViewBag.Semanas = horasPorSemana.Select(s => s.Semana).ToList();
+        ViewBag.HorasPorSemana = horasPorSemana.Select(s => s.TotalHoras).ToList();
+
+        ViewBag.Supervisores = empleadosPorSupervisor.Select(e => e.Supervisor).ToList();
+        ViewBag.EmpleadosPorSupervisor = empleadosPorSupervisor.Select(e => e.Total).ToList();
+
+        ViewBag.EmpleadosEnSistema = empleadosEnSistema;
+
+        ViewBag.MesesPagos = pagosUltimosMeses.Select(p => $"{p.Mes}/{p.Año}").ToList();
+        ViewBag.TotalPagosPorMes = pagosUltimosMeses.Select(p => p.Total).ToList();
+
+        ViewBag.ProximosCumpleanios = proximosCumpleanios;
+        ViewBag.TotalEmpleados = totalEmpleados;
 
         return View();
     }
