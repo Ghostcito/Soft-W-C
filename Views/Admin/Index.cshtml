@@ -1,10 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Inicio";
-    Layout = "~/Views/Admin/_LayoutAdmin.cshtml"; // layout personalizado para el área de administración
+    Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
 }
 
-<div class="container container-fluid"">
-    <h1 class="text-center">Bienvenido, @User.Identity?.Name!</h1>
+<link rel="stylesheet" href="~/css/Estilo.css" asp-append-version="true" />
+
+<div class="container container-fluid">
+    <h1 class="text-center fw-bold mb-4" style="color:#4b5cbf; letter-spacing:1px;">
+        ¡Bienvenido, @User.Identity?.Name!
+    </h1>
     <div class="row justify-content-center mt-4">
         <div class="col-md-3 mb-3">
             <a href="#" class="btn btn-primary btn-lg w-100 shadow-sm" style="transition: transform 0.2s;">
@@ -31,98 +35,220 @@
 
     </div>
 
-<div class="row">
-    <!-- Primer Card - Próximos cumpleaños (6 columnas) -->
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-header bg-gradient-primary py-3">
-                <h5 class="mb-0">
-                    <i class="fas fa-birthday-cake me-2"></i>
-                    Próximos cumpleaños <small>(próximos 30 días)</small>
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                <ul class="list-group list-group-flush rounded-bottom">
-                    @if(ViewBag.ProximosCumpleanios != null && ViewBag.ProximosCumpleanios.Count > 0)
-                    {
-                        @foreach (var user in ViewBag.ProximosCumpleanios)
+    <div class="row">
+        <!-- Primer Card - Próximos cumpleaños (6 columnas) -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-header bg-gradient-primary py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-birthday-cake me-2"></i>
+                        Próximos cumpleaños <small>(próximos 30 días)</small>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush rounded-bottom">
+                        @if(ViewBag.ProximosCumpleanios != null && ViewBag.ProximosCumpleanios.Count > 0)
                         {
-                            var fechaCumpleThisYear = new DateTime(DateTime.Now.Year, user.FechaNacimiento.Month, user.FechaNacimiento.Day);
-                            var diasRestantes = (fechaCumpleThisYear - DateTime.Now).Days;
-                            
-                            // Si ya pasó este año, calcular para el próximo año
-                            if(diasRestantes < 0)
+                            @foreach (var user in ViewBag.ProximosCumpleanios)
                             {
-                                fechaCumpleThisYear = fechaCumpleThisYear.AddYears(1);
-                                diasRestantes = (fechaCumpleThisYear - DateTime.Now).Days;
-                            }
+                                var fechaCumpleThisYear = new DateTime(DateTime.Now.Year, user.FechaNacimiento.Month, user.FechaNacimiento.Day);
+                                var diasRestantes = (fechaCumpleThisYear - DateTime.Now).Days;
+                                
+                                // Si ya pasó este año, calcular para el próximo año
+                                if(diasRestantes < 0)
+                                {
+                                    fechaCumpleThisYear = fechaCumpleThisYear.AddYears(1);
+                                    diasRestantes = (fechaCumpleThisYear - DateTime.Now).Days;
+                                }
 
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong class="text-primary">@user.Nombre @user.Apellido</strong>
-                                    <div class="text-muted small">@user.FechaNacimiento.ToString("dd MMMM")</div>
-                                </div>
-                                <span class="badge bg-light text-primary">
-                                    @diasRestantes día@(diasRestantes != 1 ? "s" : "")
-                                </span>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong class="text-primary">@user.Nombre @user.Apellido</strong>
+                                        <div class="text-muted small">@user.FechaNacimiento.ToString("dd MMMM")</div>
+                                    </div>
+                                    <span class="badge bg-light text-primary">
+                                        @diasRestantes día@(diasRestantes != 1 ? "s" : "")
+                                    </span>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="list-group-item text-muted text-center py-4">
+                                No hay cumpleaños próximos
                             </li>
                         }
-                    }
-                    else
-                    {
-                        <li class="list-group-item text-muted text-center py-4">
-                            No hay cumpleaños próximos
-                        </li>
-                    }
-                </ul>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Segundo Card - Total empleados (6 columnas) -->
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-body text-center d-flex flex-column justify-content-center">
-                <h5 class="card-title text-muted mb-4">
-                    <i class="fas fa-users me-2"></i>
-                    Total de empleados en el sistema
-                </h5>
-                <div class="display-3 fw-bold text-primary mb-3">@ViewBag.TotalEmpleados</div>
-                <div class="progress mt-auto" style="height: 8px;">
-                    <div class="progress-bar bg-gradient-primary" 
-                        style="width: 100%" 
-                        role="progressbar" 
-                        aria-valuenow="@ViewBag.TotalEmpleados" 
-                        aria-valuemin="0" 
-                        aria-valuemax="@(ViewBag.TotalEmpleados + 10)">
+        <!-- Segundo Card - Total empleados (6 columnas) -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h5 class="card-title text-muted mb-4">
+                        <i class="fas fa-users me-2"></i>
+                        Total de empleados en el sistema
+                    </h5>
+                    <div class="display-3 fw-bold text-primary mb-3">@ViewBag.TotalEmpleados</div>
+                    <div class="progress mt-auto" style="height: 8px;">
+                        <div class="progress-bar bg-gradient-primary" 
+                            style="width: 100%" 
+                            role="progressbar" 
+                            aria-valuenow="@ViewBag.TotalEmpleados" 
+                            aria-valuemin="0" 
+                            aria-valuemax="@(ViewBag.TotalEmpleados + 10)">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-
-    @* estadisticas creadas con chart.js  *@
-    <div class="">
-
-        <canvas id="chartAsistencia"></canvas>         
-
-        <canvas id="chartSede" width="400" height="200"></canvas>
-        <canvas id="chartTurno" width="400" height="200"></canvas>
-        <canvas id="chartSupervisores" width="400" height="200"></canvas>
-        <canvas id="chartHorasSemana" width="400" height="200"></canvas>
-
-        <canvas id="graficoPagosMensuales"></canvas>
-
-        <canvas id="chartTipoEmpleado"></canvas>
-        <canvas id="chartEvolucionEvaluacion"></canvas>
-        <canvas id="chartCriterios"></canvas>
-
+    <!-- Gráficos estadísticos atractivos -->
+    <div class="row g-4 mt-2">
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-bar-chart-fill me-2"></i>
+                    <span class="fw-bold">Horas trabajadas por empleado</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartAsistencia" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-pie-chart-fill me-2"></i>
+                    <span class="fw-bold">Empleados por sede</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartSede" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-bar-chart-steps me-2"></i>
+                    <span class="fw-bold">Empleados por turno</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartTurno" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-person-lines-fill me-2"></i>
+                    <span class="fw-bold">Supervisores con más empleados</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartSupervisores" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-graph-up-arrow me-2"></i>
+                    <span class="fw-bold">Horas trabajadas por semana</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartHorasSemana" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-cash-coin me-2"></i>
+                    <span class="fw-bold">Pagos mensuales</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="graficoPagosMensuales" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-bar-chart-line-fill me-2"></i>
+                    <span class="fw-bold">Promedio de evaluación por tipo de empleado</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartTipoEmpleado" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card shadow border-0 h-100 chart-card">
+                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
+                    <i class="bi bi-bullseye me-2"></i>
+                    <span class="fw-bold">Promedio por criterio de evaluación</span>
+                </div>
+                <div class="card-body bg-white d-flex align-items-center justify-content-center">
+                    <canvas id="chartCriterios" class="chart-zoom" style="max-height:320px;"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
+
     <style>
         .btn:hover {
             transform: scale(1.05);
+        }
+        .card.chart-card {
+            background: #D5D9FF !important;
+            border-radius: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+        .card.chart-card .card-header {
+            background: #D5D9FF !important;
+            color: #2d357a !important;
+            font-size: 1.13rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 1.5rem 1.5rem 0 0;
+            border: none;
+            text-align: left;
+        }
+        .card.chart-card .card-body {
+            background: #f6f7ff !important;
+            border-radius: 0 0 1.5rem 1.5rem;
+            transition: background 0.2s;
+        }
+        .chart-zoom {
+            transition: transform 0.25s cubic-bezier(.4,2,.3,1), box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .chart-zoom:hover {
+            transform: scale(1.13);
+            box-shadow: 0 8px 32px rgba(75,92,191,0.18);
+            z-index: 10;
+        }
+        .card.chart-card:hover {
+            box-shadow: 0 12px 36px rgba(75,92,191,0.18);
+        }
+        .card .card-header i {
+            color: #4b5cbf;
+            font-size: 1.4rem;
+            vertical-align: middle;
+        }
+        .card .fw-bold {
+            letter-spacing: 0.5px;
+        }
+        .card .card-header span {
+            font-size: 1.08rem;
+        }
+        media (max-width: 991px) {
+            .card .card-body {
+                padding: 1rem 0.5rem;
+            }
         }
     </style>
 
@@ -170,5 +296,4 @@
 
     <!-- Scripts personalizados -->
     <script src="~/js/site.js" asp-append-version="true"></script>
-
 </div>

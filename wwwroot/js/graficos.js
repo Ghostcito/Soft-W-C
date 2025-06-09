@@ -1,254 +1,424 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Función auxiliar para configuraciones comunes
-    const commonOptions = {
-        plugins: {
-            legend: { 
-                labels: { 
-                    font: { 
-                        size: 14 
-                    } 
-                } 
-            }
+document.addEventListener("DOMContentLoaded", function () {
+  // Paleta de colores personalizada
+  const palette = [
+    "#4b5cbf",
+    "#36A2EB",
+    "#FFCE56",
+    "#FF6384",
+    "#4BC0C0",
+    "#9966FF",
+    "#FF9F40",
+    "#2d357a",
+    "#bfc3f7",
+  ];
+
+  // Opciones comunes mejoradas
+  const commonOptions = {
+    plugins: {
+      legend: {
+        labels: {
+          font: { size: 15, family: "'Segoe UI', Arial, sans-serif" },
+          color: "#2d357a",
         },
-        scales: {
-            x: { 
-                ticks: { 
-                    font: { 
-                        size: 14 
-                    } 
-                } 
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: "#4b5cbf",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        borderColor: "#fff",
+        borderWidth: 1,
+        padding: 12,
+      },
+    },
+    layout: {
+      padding: { left: 16, right: 16, top: 16, bottom: 16 },
+    },
+    scales: {
+      x: {
+        grid: { color: "#e7e9fb" },
+        ticks: { font: { size: 14 }, color: "#2d357a" },
+      },
+      y: {
+        grid: { color: "#e7e9fb" },
+        ticks: { font: { size: 14 }, color: "#2d357a" },
+      },
+    },
+  };
+
+  // === 1. Horas trabajadas por empleado ===
+  try {
+    const chartElement = document.getElementById("chartAsistencia");
+    if (
+      chartElement &&
+      window.horasTrabajadasLabels &&
+      window.horasTrabajadasData
+    ) {
+      new Chart(chartElement, {
+        type: "bar",
+        data: {
+          labels: window.horasTrabajadasLabels,
+          datasets: [
+            {
+              label: "Horas trabajadas",
+              data: window.horasTrabajadasData,
+              backgroundColor: palette,
+              borderRadius: 10,
+              borderSkipped: false,
             },
-            y: { 
-                ticks: { 
-                    font: { 
-                        size: 14 
-                    } 
-                } 
-            }
-        }
-    };
-
-    // === 1. Horas trabajadas por empleado ===
-    try {
-        const chartElement = document.getElementById('chartAsistencia');
-        if (chartElement && window.horasTrabajadasLabels && window.horasTrabajadasData) {
-            new Chart(chartElement, {
-                type: 'bar',
-                data: {
-                    labels: window.horasTrabajadasLabels,
-                    datasets: [{
-                        label: 'Horas trabajadas',
-                        data: window.horasTrabajadasData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-                    }]
-                },
-                options: commonOptions
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de horas trabajadas:', error);
+          ],
+        },
+        options: {
+          ...commonOptions,
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Horas trabajadas por empleado",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+            legend: {
+              display: false,
+            },
+            tooltip: commonOptions.plugins.tooltip,
+          },
+          scales: {
+            x: {
+              display: false, // Oculta los nombres de abajo
+            },
+            y: commonOptions.scales.y,
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de horas trabajadas:", error);
+  }
 
-    // === 2. Empleados por sede ===
-    try {
-        const chartElement = document.getElementById('chartSede');
-        if (chartElement && window.sedesLabels && window.sedesData) {
-            new Chart(chartElement, {
-                type: 'doughnut',
-                data: {
-                    labels: window.sedesLabels,
-                    datasets: [{
-                        label: 'Empleados por sede',
-                        data: window.sedesData,
-                        backgroundColor: [
-                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'
-                        ]
-                    }]
-                },
-                options: {
-                    plugins: commonOptions.plugins
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de empleados por sede:', error);
+  // === 2. Empleados por sede ===
+  try {
+    const chartElement = document.getElementById("chartSede");
+    if (chartElement && window.sedesLabels && window.sedesData) {
+      new Chart(chartElement, {
+        type: "doughnut",
+        data: {
+          labels: window.sedesLabels,
+          datasets: [
+            {
+              label: "Empleados por sede",
+              data: window.sedesData,
+              backgroundColor: palette,
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Empleados por Sede",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+          cutout: "65%",
+          layout: commonOptions.layout,
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de empleados por sede:", error);
+  }
 
-    // === 3. Empleados por turno ===
-    try {
-        const chartElement = document.getElementById('chartTurno');
-        if (chartElement && window.turnosLabels && window.turnosData) {
-            new Chart(chartElement, {
-                type: 'bar',
-                data: {
-                    labels: window.turnosLabels,
-                    datasets: [{
-                        label: 'Empleados por turno',
-                        data: window.turnosData,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                    }]
-                },
-                options: commonOptions
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de empleados por turno:', error);
+  // === 3. Empleados por turno ===
+  try {
+    const chartElement = document.getElementById("chartTurno");
+    if (chartElement && window.turnosLabels && window.turnosData) {
+      new Chart(chartElement, {
+        type: "bar",
+        data: {
+          labels: window.turnosLabels,
+          datasets: [
+            {
+              label: "Empleados por turno",
+              data: window.turnosData,
+              backgroundColor: palette,
+              borderRadius: 10,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          ...commonOptions,
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Empleados por Turno",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de empleados por turno:", error);
+  }
 
-    // === 4. Supervisores con más empleados ===
-    try {
-        const chartElement = document.getElementById('chartSupervisores');
-        if (chartElement && window.supervisoresLabels && window.supervisoresData) {
-            new Chart(chartElement, {
-                type: 'bar',
-                data: {
-                    labels: window.supervisoresLabels,
-                    datasets: [{
-                        label: 'Cantidad de empleados supervisados',
-                        data: window.supervisoresData,
-                        backgroundColor: 'rgba(153, 102, 255, 0.6)'
-                    }]
-                },
-                options: commonOptions
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de supervisores:', error);
+  // === 4. Supervisores con más empleados ===
+  try {
+    const chartElement = document.getElementById("chartSupervisores");
+    if (chartElement && window.supervisoresLabels && window.supervisoresData) {
+      new Chart(chartElement, {
+        type: "horizontalBar" in Chart.defaults ? "horizontalBar" : "bar",
+        data: {
+          labels: window.supervisoresLabels,
+          datasets: [
+            {
+              label: "Cantidad de empleados supervisados",
+              data: window.supervisoresData,
+              backgroundColor: palette,
+              borderRadius: 10,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          ...commonOptions,
+          indexAxis: "y",
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Supervisores con más empleados",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de supervisores:", error);
+  }
 
-    // === 5. Horas trabajadas por semana ===
-    try {
-        const chartElement = document.getElementById('chartHorasSemana');
-        if (chartElement && window.semanasLabels && window.semanasData) {
-            new Chart(chartElement, {
-                type: 'line',
-                data: {
-                    labels: window.semanasLabels,
-                    datasets: [{
-                        label: 'Total horas por semana',
-                        data: window.semanasData,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.3)',
-                        tension: 0.3
-                    }]
-                },
-                options: commonOptions
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de horas por semana:', error);
+  // === 5. Horas trabajadas por semana ===
+  try {
+    const chartElement = document.getElementById("chartHorasSemana");
+    if (chartElement && window.semanasLabels && window.semanasData) {
+      new Chart(chartElement, {
+        type: "line",
+        data: {
+          labels: window.semanasLabels,
+          datasets: [
+            {
+              label: "Total horas por semana",
+              data: window.semanasData,
+              borderColor: "#4b5cbf",
+              backgroundColor: "rgba(75, 92, 191, 0.13)",
+              tension: 0.4,
+              pointBackgroundColor: "#4b5cbf",
+              pointRadius: 6,
+              pointHoverRadius: 9,
+              fill: true,
+            },
+          ],
+        },
+        options: {
+          ...commonOptions,
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Horas trabajadas por semana",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de horas por semana:", error);
+  }
 
-    // === 6. Pagos mensuales ===
-    try {
-        const chartElement = document.getElementById('graficoPagosMensuales');
-        if (chartElement && window.mesesPagosLabels && window.mesesPagosData && 
-            window.mesesPagosLabels.length > 0 && window.mesesPagosData.length > 0) {
-            new Chart(chartElement, {
-                type: 'bar',
-                data: {
-                    labels: window.mesesPagosLabels,
-                    datasets: [{
-                        label: 'Total a pagar por mes',
-                        data: window.mesesPagosData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    ...commonOptions,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Monto en S/.'
-                            },
-                            ticks: { font: { size: 14 } }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Mes/Año'
-                            },
-                            ticks: { font: { size: 14 } }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de pagos mensuales:', error);
+  // === 6. Pagos mensuales ===
+  try {
+    const chartElement = document.getElementById("graficoPagosMensuales");
+    if (
+      chartElement &&
+      window.mesesPagosLabels &&
+      window.mesesPagosData &&
+      window.mesesPagosLabels.length > 0 &&
+      window.mesesPagosData.length > 0
+    ) {
+      new Chart(chartElement, {
+        type: "bar",
+        data: {
+          labels: window.mesesPagosLabels,
+          datasets: [
+            {
+              label: "Total a pagar por mes",
+              data: window.mesesPagosData,
+              backgroundColor: palette,
+              borderColor: "#4b5cbf",
+              borderWidth: 1,
+              borderRadius: 10,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          ...commonOptions,
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Pagos Mensuales",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Monto en S/.",
+              },
+              ticks: { font: { size: 14 }, color: "#2d357a" },
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Mes/Año",
+              },
+              ticks: { font: { size: 14 }, color: "#2d357a" },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de pagos mensuales:", error);
+  }
 
-    // === 7. Tipos de empleado ===
-    try {
-        const chartElement = document.getElementById('chartTipoEmpleado');
-        if (chartElement && window.tiposEmpleadoLabels && window.tiposEmpleadoData) {
-            new Chart(chartElement, {
-                type: 'bar',
-                data: {
-                    labels: window.tiposEmpleadoLabels,
-                    datasets: [{
-                        label: 'Promedio de Evaluación',
-                        data: window.tiposEmpleadoData,
-                        backgroundColor: 'rgba(255, 159, 64, 0.6)'
-                    }]
-                },
-                options: {
-                    ...commonOptions,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 4,
-                            ticks: { 
-                                stepSize: 1,
-                                font: { size: 14 }
-                            }
-                        },
-                        x: {
-                            ticks: { font: { size: 14 } }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de tipos de empleado:', error);
+  // === 7. Tipos de empleado ===
+  try {
+    const chartElement = document.getElementById("chartTipoEmpleado");
+    if (
+      chartElement &&
+      window.tiposEmpleadoLabels &&
+      window.tiposEmpleadoData
+    ) {
+      new Chart(chartElement, {
+        type: "bar",
+        data: {
+          labels: window.tiposEmpleadoLabels,
+          datasets: [
+            {
+              label: "Promedio de Evaluación",
+              data: window.tiposEmpleadoData,
+              backgroundColor: palette,
+              borderRadius: 10,
+              borderSkipped: false,
+            },
+          ],
+        },
+        options: {
+          ...commonOptions,
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Promedio de Evaluación por Tipo de Empleado",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 4,
+              ticks: {
+                stepSize: 1,
+                font: { size: 14 },
+                color: "#2d357a",
+              },
+            },
+            x: {
+              ticks: { font: { size: 14 }, color: "#2d357a" },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de tipos de empleado:", error);
+  }
 
-    // === 8. Criterios de evaluación ===
-    try {
-        const chartElement = document.getElementById('chartCriterios');
-        if (chartElement && window.criteriosLabels && window.criteriosData) {
-            new Chart(chartElement, {
-                type: 'radar',
-                data: {
-                    labels: window.criteriosLabels,
-                    datasets: [{
-                        label: 'Promedio por Criterio',
-                        data: window.criteriosData,
-                        backgroundColor: 'rgba(54, 162, 235, 0.3)',
-                        borderColor: 'rgba(54, 162, 235, 1)'
-                    }]
-                },
-                options: {
-                    plugins: commonOptions.plugins,
-                    scales: {
-                        r: {
-                            min: 0,
-                            max: 4,
-                            ticks: {
-                                stepSize: 1,
-                                font: { size: 14 }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    } catch (error) {
-        console.error('Error al crear gráfica de criterios:', error);
+  // === 8. Criterios de evaluación ===
+  try {
+    const chartElement = document.getElementById("chartCriterios");
+    if (chartElement && window.criteriosLabels && window.criteriosData) {
+      new Chart(chartElement, {
+        type: "radar",
+        data: {
+          labels: window.criteriosLabels,
+          datasets: [
+            {
+              label: "Promedio por Criterio",
+              data: window.criteriosData,
+              backgroundColor: "rgba(75, 92, 191, 0.13)",
+              borderColor: "#4b5cbf",
+              pointBackgroundColor: "#4b5cbf",
+              pointBorderColor: "#fff",
+              pointRadius: 6,
+              pointHoverRadius: 9,
+            },
+          ],
+        },
+        options: {
+          plugins: {
+            ...commonOptions.plugins,
+            title: {
+              display: true,
+              text: "Promedio por Criterio de Evaluación",
+              font: { size: 20, weight: "bold" },
+              color: "#4b5cbf",
+              padding: { top: 10, bottom: 20 },
+            },
+          },
+          scales: {
+            r: {
+              min: 0,
+              max: 4,
+              ticks: {
+                stepSize: 1,
+                font: { size: 14 },
+                color: "#2d357a",
+              },
+              grid: { color: "#e7e9fb" },
+              pointLabels: { font: { size: 14 }, color: "#2d357a" },
+            },
+          },
+        },
+      });
     }
+  } catch (error) {
+    console.error("Error al crear gráfica de criterios:", error);
+  }
 });
