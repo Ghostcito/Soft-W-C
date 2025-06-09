@@ -191,7 +191,103 @@ body {
   text-align: center;
 }
 
-/* Responsive */
+/* Home styles */
+.hero-section {
+  background: linear-gradient(135deg, #d5d9ff 0%, #f6f7ff 100%);
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.carousel-caption h1 {
+  background: rgba(255, 255, 255, 0.8);
+  color: #4b5cbf;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  font-size: 2.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+  margin-bottom: 2rem;
+}
+.featured-block {
+  background: #d5d9ff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+  padding: 1.5rem 1rem;
+  min-height: 220px;
+  transition: transform 0.15s;
+}
+.featured-block:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(75, 92, 191, 0.13);
+}
+.featured-block-text {
+  color: #2d357a !important;
+  font-weight: 500;
+  font-size: 1.08rem;
+}
+.custom-text-box {
+  background: #d5d9ff;
+  border-radius: 1.5rem;
+  padding: 2rem 2rem 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+}
+.custom-block-wrap {
+  background: #d5d9ff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+  padding: 1.5rem 1rem;
+  margin-bottom: 2rem;
+  transition: transform 0.15s;
+}
+.custom-block-wrap:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(75, 92, 191, 0.13);
+}
+.custom-block-body h5 {
+  color: #4b5cbf;
+  font-weight: 700;
+}
+.contact-info-wrap {
+  background: #d5d9ff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+  padding: 2rem 2rem 1.5rem 2rem;
+  margin-bottom: 2rem;
+}
+.contact-info h5 {
+  color: #4b5cbf;
+  font-weight: 700;
+}
+.carousel-indicators li img {
+  border: 2px solid #4b5cbf;
+}
+.section-padding {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+.section-bg {
+  background: #f6f7ff;
+}
+.custom-text-box-image {
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(75, 92, 191, 0.08);
+}
+.avatar-image {
+  border-radius: 50%;
+  border: 3px solid #4b5cbf;
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+}
+.contact-image-wrap {
+  gap: 1rem;
+}
+.custom-block-image {
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(75, 92, 191, 0.07);
+}
 @media (max-width: 991px) {
   .custom-text-box,
   .contact-info-wrap,
