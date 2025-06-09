@@ -8,9 +8,9 @@ using SoftWC.Models;
 
 namespace SoftWC.Data
 {
-    public static class IdentityDataInitializer
+    public static class newRolesDataInitializer
     {
-        public static async Task SeedData(IServiceProvider serviceProvider)
+        public static async Task SeedData4(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<Usuario>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -28,39 +28,39 @@ namespace SoftWC.Data
 
             var users = new List<(string Email, string Password, string Role, Usuario User)>
             {
-                ("admin@gmail.com", "Admin123*@", "Administrador", new Usuario
-                {
-                    UserName = "Administradorwc",
-                    Email = "admin@gmail.com",
-                    EmailConfirmed = true,
-                    Nombre = "Administrador",
-                    Apellido = "NaN",
-                    NivelAcceso = "3",
-                    Estado = "activo",
-                    DNI = "12345678"
-                }),
-                ("supervisor@gmail.com", "Supervisor123*@", "Supervisor", new Usuario
-                {
-                    UserName = "Supervisorwc",
-                    Email = "supervisor@gmail.com",
-                    EmailConfirmed = true,
-                    Nombre = "Supervisor",
-                    Apellido = "NaN",
-                    NivelAcceso = "2",
-                    Estado = "activo",
-                    DNI = "87654321"
-                }),
-                ("empleado@gmail.com", "Empleado123*@", "Empleado", new Usuario
-                {
-                    UserName = "Empleadowc",
-                    Email = "empleado@gmail.com",
-                    EmailConfirmed = true,
-                    Nombre = "Empleado",
-                    Apellido = "NaN",
-                    NivelAcceso = "1",
-                    Estado = "activo",
-                    DNI = "11223344"
-                }),
+                // ("admin@gmail.com", "Admin123*@", "Administrador", new Usuario
+                // {
+                //     UserName = "Administradorwc",
+                //     Email = "admin@gmail.com",
+                //     EmailConfirmed = true,
+                //     Nombre = "Administrador",
+                //     Apellido = "NaN",
+                //     NivelAcceso = "3",
+                //     Estado = "activo",
+                //     DNI = "12345678"
+                // }),
+                // ("supervisor@gmail.com", "Supervisor123*@", "Supervisor", new Usuario
+                // {
+                //     UserName = "Supervisorwc",
+                //     Email = "supervisor@gmail.com",
+                //     EmailConfirmed = true,
+                //     Nombre = "Supervisor",
+                //     Apellido = "NaN",
+                //     NivelAcceso = "2",
+                //     Estado = "activo",
+                //     DNI = "87654321"
+                // }),
+                // ("empleado@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                // {
+                //     UserName = "Empleadowc",
+                //     Email = "empleado@gmail.com",
+                //     EmailConfirmed = true,
+                //     Nombre = "Empleado",
+                //     Apellido = "NaN",
+                //     NivelAcceso = "1",
+                //     Estado = "activo",
+                //     DNI = "11223344"
+                // }),
 
                 //añadir nuevos usuarios aquí
                 ("Maria_Elizabeth2@gmail.com", "Contador123*@", "Contador", new Usuario

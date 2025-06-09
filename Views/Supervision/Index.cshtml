@@ -141,6 +141,11 @@
                             <i class="bi bi-person-plus"></i> Añadir Supervisión
                         </a>
                     </div>
+                    <div class="mb-2 text-end">
+                        <a class="btn btn-success btn-sm" asp-controller="Usuario" asp-action="Create">
+                            <i class="bi bi-person-plus"></i> Crear nuevo supervisor
+                        </a>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-custom table-custom-bg table-bordered align-middle text-center shadow-sm mb-0">
                             <thead>
@@ -156,8 +161,8 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td class="align-middle">@item.Supervisor?.Nombre</td>
-                                        <td class="align-middle">@item.Empleado?.Nombre</td>
+                                        <td class="align-middle">@item.Supervisor?.Nombre @item.Supervisor?.Apellido</td>
+                                        <td class="align-middle">@item.Empleado?.Nombre  @item.Empleado?.Apellido</td>
                                         <td class="align-middle">
                                             @item.FechaInicio.ToString("dd 'de' MM 'del' yyyy")
                                         </td>

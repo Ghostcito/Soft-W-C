@@ -4,9 +4,17 @@
 @inject SignInManager<SoftWC.Models.Usuario> SignInManager
 @inject UserManager<SoftWC.Models.Usuario> UserManager
 @{
-    var user = await UserManager.GetUserAsync(User);
-    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();       
+    // Verificar primero si el usuario está autenticado
+    if (!SignInManager.IsSignedIn(User))
+    {
+        // Redirigir a la página de login
+        Context.Response.Redirect("/Identity/Account/Login");
+        return;
+    }
 
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();      
+    
     @if (roles.Contains("Administrador"))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
@@ -221,8 +229,11 @@
                                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-action" title="Editar" data-bs-toggle="tooltip">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
-                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-action" title="Detalles" data-bs-toggle="tooltip">
+                                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-action" title="Ver sedes asignadas" data-bs-toggle="tooltip">
                                                     <i class="bi bi-eye"> Sedes asignadas</i>
+                                                </a>
+                                                <a asp-action="Calificar" asp-route-id="@item.Id" class="btn btn-action" title="Calificacion" data-bs-target="#evaluacionModal" data-bs-toggle="tooltip">
+                                                    <i class="bi bi-star"> Calificacion</i>
                                                 </a>
                                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-action-danger" title="Eliminar" data-bs-toggle="tooltip">
                                                     <i class="bi bi-trash"></i>

@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using SoftWC.Models.Dto;
+using SoftWC.Models.ViewModels;
 
 namespace SoftWC.Controllers
 {
@@ -114,8 +115,18 @@ namespace SoftWC.Controllers
                 return NotFound();
             }
 
+            // Obtener las evaluaciones relacionadas al usuario
+            var evaluaciones = await _context.Evaluaciones
+                .Where(e => e.IdEmpleado == id)
+                .OrderByDescending(e => e.FechaEvaluacion)
+                .ToListAsync();
+
+            // Pasar la lista de evaluaciones por ViewBag
+            ViewBag.Evaluaciones = evaluaciones;
+
             return View(usuario);
         }
+
 
 
         // GET: Usuario/Create
@@ -156,6 +167,8 @@ namespace SoftWC.Controllers
                 return NotFound();
             }
             ViewData["RoleDisponibles"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+            ViewData["ServiciosDisponibles"] = new SelectList(_context.Servicio.ToList(), "ServicioId", "NombreServicio");
+
             return View(usuario);
         }
 
@@ -164,10 +177,12 @@ namespace SoftWC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,Email,PhoneNumber")] Usuario usuario, string PasswordActual, string NuevaContrasena, string ConfirmarContrasena, string RolSeleccionado)
+        public async Task<IActionResult> Edit(string id, [Bind("Nombre,Apellido,DNI,FechaIngreso,FechaNacimiento,NivelAcceso,Estado,Salario,Id,UserName,Email,PhoneNumber,ServicioId")] Usuario usuario, string PasswordActual, string NuevaContrasena, string ConfirmarContrasena, string RolSeleccionado)
         {
-            Console.WriteLine("Editando usuario: " + usuario.Id);
+            var servicioId = usuario.ServicioId ?? 0;
+            Console.WriteLine("Editando usuario: " + servicioId+1);    
             ViewData["RoleDisponibles"] = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+            ViewData["ServiciosDisponibles"] = new SelectList(_context.Servicio.ToList(), "ServicioId", "NombreServicio");
             if (id != usuario.Id)
                 return NotFound();
 
@@ -202,6 +217,7 @@ namespace SoftWC.Controllers
                     usuarioActual.UserName = usuario.Nombre;
                     usuarioActual.Email = usuario.Email;
                     usuarioActual.PhoneNumber = usuario.PhoneNumber;
+                    usuarioActual.ServicioId = servicioId;
 
                     // Validar y cambiar la contraseña
                     if (!string.IsNullOrWhiteSpace(PasswordActual) &&
@@ -509,6 +525,108 @@ namespace SoftWC.Controllers
                 });
             }
         }
+
+        // GET: Usuario/Calificar/5
+    [Authorize(Roles = "Supervisor,Administrador")]
+    public async Task<IActionResult> Calificar(string id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var empleado = await _context.Usuario.FindAsync(id);
+        if (empleado == null)
+        {
+            return NotFound();
+        }
+
+        var model = new EvaluacionViewModel
+        {
+            IdEmpleado = id,
+            NombreEmpleado = $"{empleado.Nombre} {empleado.Apellido}",
+            FechaEvaluacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc),
+            EvaluadorId = _context.Usuario.FirstOrDefault(u => u.UserName == User.Identity.Name)?.Id,
+        };
+
+        var userRoleId = await _context.UserRoles
+            .Where(ur => ur.UserId == model.IdEmpleado)
+            .Select(ur => ur.RoleId)
+            .FirstOrDefaultAsync();
+
+        var userRoleName = await _context.Roles
+            .Where(r => r.Id == userRoleId)
+            .Select(r => r.Name)
+            .FirstOrDefaultAsync();
+
+        model.TipoEmpleado = userRoleName;
+
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Supervisor,Administrador")]
+    public async Task<IActionResult> Calificar(EvaluacionViewModel model)
+    {
+        
+        model.FechaEvaluacion = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
+        if (ModelState.IsValid)
+        {
+            var evaluacion = new Evaluaciones
+            {
+                IdEmpleado = model.IdEmpleado,
+                TipoEmpleado = model.TipoEmpleado,
+                FechaEvaluacion = model.FechaEvaluacion,
+                Descripcion = model.Descripcion,
+                Responsabilidad = model.Responsabilidad,
+                Puntualidad = model.Puntualidad,
+                CalidadTrabajo = model.CalidadTrabajo,
+                UsoMateriales = model.UsoMateriales,
+                Actitud = model.Actitud,
+                EvaluadorId = model.EvaluadorId
+            };
+        Console.WriteLine("enviado: " + evaluacion);
+            _context.Add(evaluacion);
+            await _context.SaveChangesAsync();
+            
+            TempData["SuccessMessage"] = "Evaluación registrada correctamente";
+            return RedirectToAction(nameof(Details), new { id = model.IdEmpleado });
+        }
+
+        // Agrega esta parte para mostrar errores del ModelState en consola
+        foreach (var key in ModelState.Keys)
+        {
+            var errors = ModelState[key].Errors;
+            foreach (var error in errors)
+            {
+                Console.WriteLine($"Error en '{key}': {error.ErrorMessage}");
+            }
+        }
+
+        var empleado = await _context.Usuario.FindAsync(model.IdEmpleado);
+        model.NombreEmpleado = $"{empleado?.Nombre} {empleado?.Apellido}";
+        
+        var roles = _roleManager.Roles.Select(r => r.Name).ToList();
+        ViewBag.TiposEmpleado = new SelectList(roles);
+        return View(model);
+    }
+
+
+    // Vista para mostrar historial de evaluaciones
+    public async Task<IActionResult> EvaluacionesEmpleado(string id)
+    {
+        var evaluaciones = await _context.Evaluaciones
+            .Include(e => e.Empleado)
+            .Include(e => e.Evaluador)
+            .Where(e => e.IdEmpleado == id)
+            .OrderByDescending(e => e.FechaEvaluacion)
+            .ToListAsync();
+
+        ViewBag.EmpleadoId = id;
+        return View(evaluaciones);
+    }    
 
 
     }

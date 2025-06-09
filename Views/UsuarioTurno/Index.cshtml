@@ -161,7 +161,7 @@
                                 @foreach (var item in Model)
                                 {
                                     <tr>
-                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Usuario.UserName)</td>
+                                        <td class="align-middle">@Html.DisplayFor(modelItem => item.Usuario.Apellido) @Html.DisplayFor(modelItem => item.Usuario.Apellido)</td>
                                         <td class="align-middle">@Html.DisplayFor(modelItem => item.Turno.NombreTurno)</td>
                                         <td class="align-middle">@String.Format("{0:dd/MM/yyyy}", item.FechaInicio)</td>
                                         <td class="align-middle">

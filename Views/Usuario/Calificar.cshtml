@@ -1,0 +1,176 @@
+@model SoftWC.Models.ViewModels.EvaluacionViewModel
+@using Microsoft.AspNetCore.Identity
+@using SoftWC.Models
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
+@{
+    // Verificar autenticación
+    if (!SignInManager.IsSignedIn(User))
+    {
+        Context.Response.Redirect("/Identity/Account/Login");
+        return;
+    }
+
+    var user = await UserManager.GetUserAsync(User);
+    var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();      
+    
+    if (roles.Contains("Administrador"))
+    {
+        Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
+    }
+    else if (roles.Contains("Supervisor"))
+    {
+        Layout = "~/Views/Supervisor/_LayoutSupervisor.cshtml";
+    }
+    
+    ViewData["Title"] = "Evaluación de Desempeño";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="container mt-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Calificar" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="IdEmpleado" />
+                <input type="hidden" asp-for="EvaluadorId" />
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Empleado:</label>
+                        <input class="form-control" asp-for="NombreEmpleado" value="@Model.NombreEmpleado" readonly />
+                    </div>
+                    <label asp-for="TipoEmpleado" class="form-label">Tipo de Empleado</label>
+                    <input asp-for="TipoEmpleado" class="form-control" readonly />
+
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label asp-for="FechaEvaluacion" class="form-label">Fecha de Evaluación</label>
+                    <input asp-for="FechaEvaluacion" class="form-control" type="date" />
+                    <span asp-validation-for="FechaEvaluacion" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3">Criterios de Evaluación</h5>
+                
+                <!-- Sistema de rating (1-4 estrellas según tu enum) -->
+                @await Html.PartialAsync("_RatingField", new {
+                    PropertyName = "Responsabilidad",
+                    DisplayName = "Responsabilidad",
+                    CurrentValue = (int)Model.Responsabilidad,
+                    MaxValue = 4 // Porque tu enum va de 1 a 4
+                })
+                
+                @await Html.PartialAsync("_RatingField", new {
+                    PropertyName = "Puntualidad",
+                    DisplayName = "Puntualidad",
+                    CurrentValue = (int)Model.Puntualidad,
+                    MaxValue = 4
+                })
+                
+                @await Html.PartialAsync("_RatingField", new {
+                    PropertyName = "CalidadTrabajo",
+                    DisplayName = "Calidad de Trabajo",
+                    CurrentValue = (int)Model.CalidadTrabajo,
+                    MaxValue = 4
+                })
+                
+                @await Html.PartialAsync("_RatingField", new {
+                    PropertyName = "UsoMateriales",
+                    DisplayName = "Uso de Materiales",
+                    CurrentValue = (int)Model.UsoMateriales,
+                    MaxValue = 4
+                })
+                
+                @await Html.PartialAsync("_RatingField", new {
+                    PropertyName = "Actitud",
+                    DisplayName = "Actitud",
+                    CurrentValue = (int)Model.Actitud,
+                    MaxValue = 4
+                })
+
+                <div class="mb-3">
+                    <label asp-for="Descripcion" class="form-label">Comentarios</label>
+                    <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <a asp-action="Index" asp-route-id="@Model.IdEmpleado" class="btn btn-secondary me-md-2">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Evaluación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+<script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Inicializar estrellas con los valores actuales
+            $('.rating').each(function() {
+                const initialValue = $(this).find('.rating-value').val();
+                if (initialValue) {
+                    $(this).find('.star').each(function() {
+                        const starValue = parseInt($(this).data('value'));
+                        $(this).toggleClass('text-warning', starValue <= initialValue);
+                    });
+                }
+            });
+
+            // Manejar clic en estrellas
+            $('.rating .star').click(function() {
+                const container = $(this).closest('.rating');
+                const value = $(this).data('value');
+                
+                // Actualizar apariencia
+                container.find('.star').removeClass('text-warning');
+                container.find('.star').each(function() {
+                    if ($(this).data('value') <= value) {
+                        $(this).addClass('text-warning');
+                    }
+                });
+                
+                // Actualizar valor
+                container.find('.rating-value').val(value);
+                
+                // Actualizar texto descriptivo
+                const ratingText = GetCalificacionText(value);
+                container.nextAll('.text-muted').first().text(ratingText);
+            });
+            
+            function GetCalificacionText(value) {
+                switch(value) {
+                    case 1: return "Deficiente";
+                    case 2: return "Regular";
+                    case 3: return "Bueno";
+                    case 4: return "Excelente";
+                    default: return "No evaluado";
+                }
+            }
+        });
+    </script>
+}

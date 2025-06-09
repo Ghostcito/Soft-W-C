@@ -95,8 +95,8 @@ public class AdminController : Controller
             .ToList();
 
             // Obtener usuarios próximos a cumplir años en los próximos 30 días
-    var hoy = DateTime.Today;
-    var proximosCumpleanios = _context.Users
+        var hoy = DateTime.Today;
+        var proximosCumpleanios = _context.Users
         .Where(u => u.FechaNacimiento != null)
         .AsEnumerable() // Para trabajar con DateTime sin errores en EF
         .Select(u => new
@@ -116,6 +116,40 @@ public class AdminController : Controller
                             join role in _context.Roles on userRole.RoleId equals role.Id
                             where role.Name == "Empleado"
                             select user).Count();
+
+        var puntajePorTipo = _context.Evaluaciones
+            .GroupBy(e => e.TipoEmpleado)
+            .Select(g => new
+            {
+                Tipo = g.Key,
+                Promedio = Math.Round(g.Average(e =>
+                    ((int)e.Responsabilidad + (int)e.Puntualidad + (int)e.CalidadTrabajo +
+                    (int)e.UsoMateriales + (int)e.Actitud) / 5.0), 2)
+            })
+            .ToList();
+
+        var distribucion = new
+        {
+            Responsabilidad = _context.Evaluaciones.Average(e => (int)e.Responsabilidad),
+            Puntualidad = _context.Evaluaciones.Average(e => (int)e.Puntualidad),
+            CalidadTrabajo = _context.Evaluaciones.Average(e => (int)e.CalidadTrabajo),
+            UsoMateriales = _context.Evaluaciones.Average(e => (int)e.UsoMateriales),
+            Actitud = _context.Evaluaciones.Average(e => (int)e.Actitud)
+        };
+
+        ViewBag.CriteriosLabels = new[] { "Responsabilidad", "Puntualidad", "CalidadTrabajo", "UsoMateriales", "Actitud" };
+        ViewBag.CriteriosData = new[] {
+            distribucion.Responsabilidad,
+            distribucion.Puntualidad,
+            distribucion.CalidadTrabajo,
+            distribucion.UsoMateriales,
+            distribucion.Actitud
+        };
+
+
+        ViewBag.TiposEmpleadoLabels = puntajePorTipo.Select(x => x.Tipo).ToList();
+        ViewBag.TiposEmpleadoData = puntajePorTipo.Select(x => x.Promedio).ToList();
+
 
         // ViewBag con listas simples (labels y data separados)
         ViewBag.Empleados = asistencias.Select(a => a.Empleado).ToList();
@@ -201,31 +235,35 @@ public class AdminController : Controller
             
             // Consulta optimizada para agrupar correctamente
             var resumen = await _context.Asistencia
-                .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
-                .GroupBy(a => new { 
-                    a.IdEmpleado,
-                    a.Empleado.UserName,
-                    a.Empleado.DNI,
-                    a.Empleado.Servicio.NombreServicio,
-                    a.Empleado.Servicio.PrecioBase
-                })
-                .Select(g => new ResumenPagoVM
+            .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
+            .Include(a => a.Empleado)  // Añadir Include para evitar problemas de carga perezosa
+            .Include(a => a.Empleado.Servicio)
+            .GroupBy(a => new { 
+                a.IdEmpleado,
+                NombreCompleto = a.Empleado.Nombre + " " + a.Empleado.Apellido,
+                a.Empleado.DNI,
+                NombreServicio = a.Empleado.Servicio.NombreServicio,
+                a.Empleado.Servicio.PrecioBase
+            })
+            .Select(g => new ResumenPagoVM
+            {
+                Empleado = g.Key.NombreCompleto,
+                DNI = g.Key.DNI,
+                TotalHoras = g.Sum(a => a.HorasTrabajadas),
+                PrecioBase = g.Key.PrecioBase,
+                TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
+                Servicios = new List<string> { g.Key.NombreServicio },
+                Detalles = g.OrderBy(a => a.Fecha).Select(a => new DetallePagoVM  // Ordenar por fecha
                 {
-                    Empleado = g.Key.UserName,
-                    DNI = g.Key.DNI,
-                    TotalHoras = g.Sum(a => a.HorasTrabajadas),
-                    PrecioBase = g.Key.PrecioBase,
-                    TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
-                    Servicios = new List<string> { g.Key.NombreServicio },
-                    Detalles = g.Select(a => new DetallePagoVM
-                    {
-                        Fecha = a.Fecha,
-                        Servicio = g.Key.NombreServicio,
-                        Horas = a.HorasTrabajadas,
-                        PagoHora = g.Key.PrecioBase,
-                        TotalDia = a.HorasTrabajadas * g.Key.PrecioBase
-                    }).ToList()
-                }).ToListAsync();
+                    Fecha = a.Fecha,
+                    Servicio = g.Key.NombreServicio,
+                    Horas = a.HorasTrabajadas,
+                    PagoHora = g.Key.PrecioBase,
+                    TotalDia = a.HorasTrabajadas * g.Key.PrecioBase
+                }).ToList()
+            })
+            .OrderBy(r => r.Empleado)  // Ordenar alfabéticamente por empleado
+            .ToListAsync();
             
             ViewBag.AñoSeleccionado = año;
             ViewBag.MesSeleccionado = mes;

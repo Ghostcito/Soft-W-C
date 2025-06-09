@@ -90,7 +90,7 @@
             </form>
 
             <!-- Resumen -->
-            @if (Model != null && Model.Any())
+           @if (Model != null && Model.Any())
             {
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
@@ -106,56 +106,68 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @{ int contador = 1; }
-                            @foreach (var item in Model)
+                            @foreach (var (item, index) in Model.Select((item, index) => (item, index + 1)))
                             {
                                 <tr>
-                                    <td>@contador</td>
+                                    <td>@index</td>
                                     <td>@item.Empleado</td>
                                     <td>@item.DNI</td>
                                     <td>@item.TotalHoras.ToString("N2") hrs</td>
                                     <td>@item.TotalPago.ToString("C2")</td>
-                                    <td>@string.Join(", ", item.Servicios.Distinct())</td>
+                                    <td>@string.Join(", ", item.Servicios.Distinct().OrderBy(s => s))</td>
                                     <td>
                                         <button class="btn btn-sm btn-info btn-detalle" 
-                                                data-empleado-id="@item.DNI">
+                                                data-empleado-id="@item.DNI"
+                                                title="Ver detalles">
                                             <i class="fas fa-list"></i> Detalle
                                         </button>
                                     </td>
                                 </tr>
-                                <!-- Detalle por día (inicialmente oculto) -->
                                 <tr class="detalle-@item.DNI d-none">
                                     <td colspan="7">
                                         <div class="p-3 bg-light rounded">
-                                            <h5>Detalle de pagos para @item.Empleado</h5>
-                                            <table class="table table-bordered table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Fecha</th>
-                                                        <th>Servicio</th>
-                                                        <th>Horas</th>
-                                                        <th>Pago/Hora</th>
-                                                        <th>Total</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var detalle in item.Detalles)
-                                                    {
+                                            <h5 class="mb-3">Detalle de pagos para @item.Empleado</h5>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered table-sm">
+                                                    <thead class="table-light">
                                                         <tr>
-                                                            <td>@detalle.Fecha.ToString("dd/MM/yyyy")</td>
-                                                            <td>@detalle.Servicio</td>
-                                                            <td>@detalle.Horas.ToString("N2")</td>
-                                                            <td>@detalle.PagoHora.ToString("C2")</td>
-                                                            <td>@detalle.TotalDia.ToString("C2")</td>
+                                                            <th>Fecha</th>
+                                                            <th>Servicio</th>
+                                                            <th>Horas</th>
+                                                            <th>Pago/Hora</th>
+                                                            <th>Total</th>
                                                         </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var detalle in item.Detalles)
+                                                        {
+                                                            <tr>
+                                                                <td>@detalle.Fecha.ToString("dd/MM/yyyy")</td>
+                                                                <td>@detalle.Servicio</td>
+                                                                <td>@detalle.Horas.ToString("N2")</td>
+                                                                <td>@detalle.PagoHora.ToString("C2")</td>
+                                                                <td>@detalle.TotalDia.ToString("C2")</td>
+                                                            </tr>
+                                                        }
+                                                        <tr class="table-secondary fw-bold">
+                                                            <td colspan="2">TOTAL</td>
+                                                            <td>@item.TotalHoras.ToString("N2")</td>
+                                                            <td>@item.PrecioBase.ToString("C2")</td>
+                                                            <td>@item.TotalPago.ToString("C2")</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
-                                contador++;
                             }
+                            <!-- Fila de totales generales -->
+                            <tr class="table-primary fw-bold">
+                                <td colspan="3">TOTAL GENERAL</td>
+                                <td>@Model.Sum(m => m.TotalHoras).ToString("N2") hrs</td>
+                                <td colspan="3">@Model.Sum(m => m.TotalPago).ToString("C2")</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -163,12 +175,17 @@
             else
             {
                 <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
                     No se encontraron registros para el periodo seleccionado.
                 </div>
             }
-        </div>
-    </div>
-</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Scripts para dropdown de usuario-->    
+            <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
+            <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
+            <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
 
 @section Scripts {
     <script>
@@ -177,6 +194,14 @@
                 var empleadoDNI = $(this).data('empleado-id');
                 $(`.detalle-${empleadoDNI}`).toggleClass('d-none');
                 $(this).find('i').toggleClass('fa-list fa-times');
+
+                // Cambiar ícono según estado
+                const icon = $(this).find('i');
+                if (icon.hasClass('fa-list')) {
+                    icon.removeClass('fa-list').addClass('fa-minus');
+                } else {
+                    icon.removeClass('fa-minus').addClass('fa-list');
+                }
             });
         });
     </script>

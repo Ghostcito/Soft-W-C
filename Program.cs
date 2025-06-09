@@ -46,7 +46,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
     options.SlidingExpiration = true;
 });
 
@@ -80,9 +80,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
+    //await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
     // await UserDataInitializer.Seed33Data2(services); //Método para iniciar la base de datos y crear tablas
-
+    //await newRolesDataInitializer.SeedData4(services);
 }
 
 // Configure the HTTP request pipeline.

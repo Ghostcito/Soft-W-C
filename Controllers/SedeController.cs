@@ -100,6 +100,7 @@ namespace SoftWC.Controllers
         {
             if (ModelState.IsValid)
             {
+                sede.Radio = 80; // Asignar un radio por defecto de 80 metros
                 _context.Add(sede);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

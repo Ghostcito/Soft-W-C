@@ -114,6 +114,11 @@
         <canvas id="chartHorasSemana" width="400" height="200"></canvas>
 
         <canvas id="graficoPagosMensuales"></canvas>
+
+        <canvas id="chartTipoEmpleado"></canvas>
+        <canvas id="chartEvolucionEvaluacion"></canvas>
+        <canvas id="chartCriterios"></canvas>
+
     </div>
     <style>
         .btn:hover {
@@ -146,6 +151,18 @@
 
         window.mesesPagosLabels = @Html.Raw(Json.Serialize(ViewBag.MesesPagos));
         window.mesesPagosData = @Html.Raw(Json.Serialize(ViewBag.TotalPagosPorMes));
+
+        
+            window.tiposEmpleadoLabels = @Html.Raw(Json.Serialize(ViewBag.TiposEmpleadoLabels));
+            window.tiposEmpleadoData = @Html.Raw(Json.Serialize(ViewBag.TiposEmpleadoData));
+
+            window.mesesEvaluacionLabels = @Html.Raw(Json.Serialize(ViewBag.MesesEvaluacionLabels));
+            window.mesesEvaluacionData = @Html.Raw(Json.Serialize(ViewBag.MesesEvaluacionData));
+
+            window.criteriosLabels = @Html.Raw(Json.Serialize(ViewBag.CriteriosLabels));
+            window.criteriosData = @Html.Raw(Json.Serialize(ViewBag.CriteriosData));
+        
+
 
     </script>
 
