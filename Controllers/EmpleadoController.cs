@@ -41,24 +41,23 @@ namespace SoftWC.Controllers
 
         public async Task<IActionResult> MarcaEntrada()
         {
-            //Obtener Usuario
-            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
-            var fechaPeru = fechaHoraPeru.Date;
-            Console.WriteLine("Fecha y hora en Perú: " + fechaHoraPeru);
+            //Obtener Fecha y Hora Actual
+            var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
             //Validar entrada unica por empleado
-            if (!await _asistenciaService.VerificarUnicaEntrada(fechaPeru))
+            if (!await _asistenciaService.VerificarUnicaEntrada(fecha))
             {
                 return View("EntradaExistente");
             }
 
-
+            //Obtener ubicación
             UbicacionDTO ubicacion = new UbicacionDTO
             {
                 Latitud = Convert.ToDouble(TempData["Latitud"]),
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
+
+            // Verificar distancia a la sede
             var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
             if (verificacion.Item1 == null)
             {
@@ -68,15 +67,23 @@ namespace SoftWC.Controllers
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
-                horaActual = DateTime.Now.ToString("HH:mm"),
-                fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
+                horaActual = fecha.ToString("HH:mm"),
+                fechaActual = fecha.ToString("dd/MM/yyyy"),
                 localizacionExitosa = verificacion.Item2
             };
-            Console.WriteLine("Hora actual: " + DateTime.Now.TimeOfDay);
-            string estado = await _asistenciaService.VerificarHoraEntrada(DateTime.Now.TimeOfDay);
+
+            // Obtener asistencia del empleado
+
+            string estado = await _asistenciaService.VerificarHoraEntrada(fecha.TimeOfDay);
             if (estado.Equals("NO_ASIGNADO"))
             {
-                return View("NoTurnoAsignado");
+                return Json(new
+                {
+                    showAlert = true,
+                    title = "Sin turno asignado",
+                    text = "No tienes un turno asignado para hoy.",
+                    icon = "warning"
+                });
             }
             if (estado.Equals("ANTICIPADO"))
             {
@@ -113,14 +120,12 @@ namespace SoftWC.Controllers
             {
                 return View("NoSedesAsign");
             }
-            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
-            var fechaPeru = fechaHoraPeru.Date;
+            // Obtener Fecha y Hora Actual con zona horario
+            var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
 
-            var asistencia = await _asistenciaService.GetAsistenciaByDate(fechaPeru);
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(fecha);
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
-                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
                 return View("NoSalida");
             }
             if (asistencia.HoraSalida != null)
@@ -130,10 +135,10 @@ namespace SoftWC.Controllers
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
-                horaActual = DateTime.Now.ToString("HH:mm"),
-                fechaActual = DateTime.Now.ToString("dd/MM/yyyy"),
+                horaActual = fecha.ToString("HH:mm"),
+                fechaActual = fecha.ToString("dd/MM/yyyy"),
                 HoraEntrada = asistencia.HoraEntrada?.ToString("HH:mm"),
-                HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, DateTime.Now),
+                HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, fecha),
                 localizacionExitosa = verificacion.Item2
             };
 
@@ -154,11 +159,9 @@ namespace SoftWC.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmarSalida()
         {
-            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
-            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
-            var fechaPeru = fechaHoraPeru.Date;
+            var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
 
-            var asistencia = await _asistenciaService.GetAsistenciaByDate(fechaPeru);
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(fecha);
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
                 Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");

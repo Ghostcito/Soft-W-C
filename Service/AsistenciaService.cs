@@ -105,9 +105,9 @@ namespace SoftWC.Service
             }
             if (distMin <= Convert.ToDouble(sedeCercana.Radio))
             {
-                return (sedeCercana, false);
+                return (sedeCercana, true);
             }
-            return (sedeCercana, true);
+            return (sedeCercana, false);
         }
 
         public async Task<bool> VerificarUnicaEntrada(DateTime fecha)
@@ -185,6 +185,16 @@ namespace SoftWC.Service
                 .FirstOrDefaultAsync(ut => ut.UsuarioId == userPrincipal.Id);
             if (usuarioTurno == null) return (false, null);
             return (true, usuarioTurno);
+        }
+
+        public async Task<DateTime> GetFechaHoraActual(DateTime fecha)
+        {
+            // Obtener la hora actual en la zona horaria de Lima
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            fecha = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+            fecha = DateTime.SpecifyKind(fecha, DateTimeKind.Utc);
+            return fecha;
+
         }
 
 
