@@ -14,7 +14,7 @@ using SoftWC.Service.Implementation;
 
 namespace SoftWC.Controllers;
 
-[Authorize(Roles = "Administrador,Supervisor")]
+[Authorize(Roles = "Administrador,Supervisor,Contador,Controltotal")]
 public class AdminController : Controller
 {
     private readonly ILogger<AdminController> _logger;
@@ -34,7 +34,7 @@ public class AdminController : Controller
         _pdfExportService = pdfExportService;
         _excelExportService = excelExportService;
     }
-
+    [Authorize(Roles = "Administrador,Contador,Supervisor,Controltotal")]
     public IActionResult Index()
     {
         var asistencias = _context.Asistencia
@@ -216,6 +216,8 @@ public class AdminController : Controller
     }
 
     [HttpGet]
+    
+    [Authorize(Roles = "Administrador,Contador,Controltotal")]
     public async Task<IActionResult> ResumenPagos(int? año = null, int? mes = null, int? quincena = null)
     {
         try
