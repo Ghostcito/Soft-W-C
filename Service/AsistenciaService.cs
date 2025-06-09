@@ -44,7 +44,9 @@ namespace SoftWC.Service
 
         public async Task<Asistencia> GetAsistenciaByDate(DateTime fecha)
         {
+            fecha = DateTime.SpecifyKind(fecha, DateTimeKind.Utc);
             var userPrincipal = await _userService.GetCurrentUserAsync();
+            fecha = DateTime.SpecifyKind(fecha, DateTimeKind.Utc);
             var asistencia = await _context.Asistencia
                 .FirstOrDefaultAsync(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Date == fecha.Date);
             return asistencia;
@@ -111,6 +113,7 @@ namespace SoftWC.Service
         public async Task<bool> VerificarUnicaEntrada(DateTime fecha)
         {
             var userPrincipal = await _userService.GetCurrentUserAsync();
+            fecha = DateTime.SpecifyKind(fecha, DateTimeKind.Utc);
             var asistencia = await _context.Asistencia
                 .FirstOrDefaultAsync(a => a.IdEmpleado == userPrincipal.Id && a.Fecha.Date == fecha.Date && a.HoraEntrada != null);
             return asistencia == null;

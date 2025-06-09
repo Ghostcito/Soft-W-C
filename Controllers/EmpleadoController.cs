@@ -41,8 +41,13 @@ namespace SoftWC.Controllers
 
         public async Task<IActionResult> MarcaEntrada()
         {
+            //Obtener Usuario
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+            var fechaPeru = fechaHoraPeru.Date;
+            Console.WriteLine("Fecha y hora en Perú: " + fechaHoraPeru);
             //Validar entrada unica por empleado
-            if (!await _asistenciaService.VerificarUnicaEntrada(DateTime.UtcNow.Date))
+            if (!await _asistenciaService.VerificarUnicaEntrada(fechaPeru))
             {
                 return View("EntradaExistente");
             }
@@ -108,11 +113,19 @@ namespace SoftWC.Controllers
             {
                 return View("NoSedesAsign");
             }
-            var asistencia = await _asistenciaService.GetAsistenciaByDate(DateTime.UtcNow.Date);
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+            var fechaPeru = fechaHoraPeru.Date;
+
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(fechaPeru);
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
                 Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
                 return View("NoSalida");
+            }
+            if (asistencia.HoraSalida != null)
+            {
+                return View("EntradaExistente");
             }
             MarcaViewModel viewModel = new MarcaViewModel
             {
@@ -141,7 +154,11 @@ namespace SoftWC.Controllers
         [HttpGet]
         public async Task<IActionResult> ConfirmarSalida()
         {
-            var asistencia = await _asistenciaService.GetAsistenciaByDate(DateTime.UtcNow.Date);
+            var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
+            var fechaHoraPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
+            var fechaPeru = fechaHoraPeru.Date;
+
+            var asistencia = await _asistenciaService.GetAsistenciaByDate(fechaPeru);
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
                 Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
