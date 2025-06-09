@@ -14,8 +14,12 @@ namespace SoftWC.ViewModel
         public string? NombreEmpleado { get; set; }
 
 
+        public string? HoraEntradaEsperada { get; set; }
         public string? HoraEntrada { get; set; }
-        public string? HorasDescontadas { get; set; }
+
+
+        public string? HoraSalidaEsperada { get; set; }
+        public decimal? HorasDescontadas { get; set; }
         public decimal? HorasTrabajadas { get; set; }
         public bool? localizacionExitosa { get; set; }
     }

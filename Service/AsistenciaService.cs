@@ -52,11 +52,12 @@ namespace SoftWC.Service
             return asistencia;
         }
 
-        public async Task<Asistencia?> AddSalida(Asistencia asistencia)
+        public async Task<Asistencia?> AddSalida(Asistencia asistencia, string horaEsp, string estado)
         {
             var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
             var horaPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
             horaPeru = DateTime.SpecifyKind(horaPeru, DateTimeKind.Utc);
+            if (estado.Equals("TARDANZA")) horaPeru = DateTime.Parse(horaEsp);
             asistencia.HoraSalida = horaPeru;
             asistencia.HorasTrabajadas = await CalcularHorasTrabajadas((DateTime)asistencia.HoraEntrada, (DateTime)asistencia.HoraSalida);
             return asistencia;
@@ -107,7 +108,7 @@ namespace SoftWC.Service
             {
                 return (sedeCercana, true);
             }
-            return (sedeCercana, false);
+            return (sedeCercana, true);
         }
 
         public async Task<bool> VerificarUnicaEntrada(DateTime fecha)
@@ -119,62 +120,63 @@ namespace SoftWC.Service
             return asistencia == null;
         }
 
-        public async Task<string> VerificarHoraEntrada(TimeSpan horaMarcada)
+        public async Task<(string, Turno?)> VerificarHoraEntrada(TimeSpan horaMarcada)
         {
             var turnoAsignado = await VerificarTurnosAsignados();
             if (!turnoAsignado.Item1)
             {
-                return "NO_ASIGNADO";
+                return ("NO_ASIGNADO", null);
             }
             var turno = turnoAsignado.Item2.Turno;
             // Definir los rangos permitidos con desviación de 10 minutos
             var margen = TimeSpan.FromMinutes(10);
             // Hora de entrada permitida
             var horaEntradaEsperada = turno.HoraInicio;
-            Console.WriteLine("Hora de entrada esperada: " + horaEntradaEsperada);
+
             var entradaMin = horaEntradaEsperada - margen;
             var entradaMax = horaEntradaEsperada + margen;
 
             if (horaMarcada < entradaMin)
             {
                 // La hora de entrada es antes del rango permitido
-                return "ANTICIPADO";
+                return ("ANTICIPADO", turno);
             }
             if (horaMarcada > entradaMax)
             {
                 // La hora de entrada es después del rango permitido
-                return "TARDANZA";
+                return ("TARDANZA", turno);
             }
-            return "PUNTUAL";
+            return ("PUNTUAL", turno);
         }
 
-        public async Task<string> VerificarHoraSalida(TimeSpan horaMarcada)
+        public async Task<(string, Turno?)> VerificarHoraSalida(TimeSpan horaMarcada)
         {
             var turnoAsignado = await VerificarTurnosAsignados();
             if (!turnoAsignado.Item1)
             {
-                return "NO_ASIGNADO";
+                return ("NO_ASIGNADO", null);
             }
             var turno = turnoAsignado.Item2.Turno;
+
             // Definir los rangos permitidos con desviación de 10 minutos
             var margen = TimeSpan.FromMinutes(10);
             // Hora de entrada permitida
             var horaFinEsperada = turno.HoraFin;
-            Console.WriteLine("Hora de entrada esperada: " + horaFinEsperada);
+
             var entradaMin = horaFinEsperada - margen;
             var entradaMax = horaFinEsperada + margen;
 
             if (horaMarcada < entradaMin)
             {
                 // La hora de entrada es antes del rango permitido
-                return "ANTICIPADO";
+                return ("ANTICIPADO", turno);
             }
             if (horaMarcada > entradaMax)
             {
                 // La hora de entrada es después del rango permitido
-                return "TARDANZA";
+                return ("TARDANZA", turno);
             }
-            return "PUNTUAL";
+            return ("PUNTUAL", turno);
         }
 
         public async Task<(bool, UsuarioTurno)> VerificarTurnosAsignados()

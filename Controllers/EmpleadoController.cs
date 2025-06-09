@@ -43,6 +43,7 @@ namespace SoftWC.Controllers
         {
             //Obtener Fecha y Hora Actual
             var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
+
             //Validar entrada unica por empleado
             if (!await _asistenciaService.VerificarUnicaEntrada(fecha))
             {
@@ -64,18 +65,9 @@ namespace SoftWC.Controllers
                 return View("NoSedesAsign");
             }
 
-            MarcaViewModel viewModel = new MarcaViewModel
-            {
-                NombreSede = verificacion.Item1.Nombre_local,
-                horaActual = fecha.ToString("HH:mm"),
-                fechaActual = fecha.ToString("dd/MM/yyyy"),
-                localizacionExitosa = verificacion.Item2
-            };
-
-            // Obtener asistencia del empleado
-
-            string estado = await _asistenciaService.VerificarHoraEntrada(fecha.TimeOfDay);
-            if (estado.Equals("NO_ASIGNADO"))
+            // Obtener turno del empleado
+            var estado = await _asistenciaService.VerificarHoraEntrada(fecha.TimeOfDay);
+            if (estado.Item1.Equals("NO_ASIGNADO"))
             {
                 return Json(new
                 {
@@ -89,19 +81,30 @@ namespace SoftWC.Controllers
             {
                 return View("FueraDeHora");
             }
-            ViewData["Estado"] = estado;
+
+            //Creando el ViewModel para la vista
+
+            MarcaViewModel viewModel = new MarcaViewModel
+            {
+                NombreSede = verificacion.Item1.Nombre_local,
+                horaActual = fecha.ToString("HH:mm"),
+                HoraEntradaEsperada = estado.Item2?.HoraInicio.ToString(@"hh\:mm"),
+                fechaActual = fecha.ToString("dd/MM/yyyy"),
+                localizacionExitosa = verificacion.Item2
+            };
+
+            //Recuperar asistencia del empleado
+            ViewData["Estado"] = estado.Item1;
             return View(viewModel);
         }
 
         [HttpGet]
         public async Task<IActionResult> ConfirmarEntrada()
         {
-            //Obtener Usuario
-            var user = await _userService.GetCurrentUserAsync();
             //Generar Asistencia
             Asistencia asistencia = await _asistenciaService.AddEntrada();
             await _asistenciaService.AddAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString("HH:mm");
+            ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString(@"hh\:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
 
             return View("Confirmacion");
@@ -109,20 +112,26 @@ namespace SoftWC.Controllers
 
         public async Task<IActionResult> MarcaSalida()
         {
+
+            //CREANDO VIEWMODEL PARA LA UBICACION
             UbicacionDTO ubicacion = new UbicacionDTO
             {
                 Latitud = Convert.ToDouble(TempData["Latitud"]),
                 Longitud = Convert.ToDouble(TempData["Longitud"]),
                 EmpleadoId = TempData["EmpleadoId"]?.ToString()
             };
+
+            // Verificar que la ubicación no sea nula
             var verificacion = await _asistenciaService.ValidarDistancia(ubicacion);
             if (verificacion.Item1 == null)
             {
                 return View("NoSedesAsign");
             }
+
             // Obtener Fecha y Hora Actual con zona horario
             var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
 
+            // Validar si ya existe una entrada registrada
             var asistencia = await _asistenciaService.GetAsistenciaByDate(fecha);
             if (asistencia == null || asistencia.HoraEntrada == null)
             {
@@ -132,26 +141,49 @@ namespace SoftWC.Controllers
             {
                 return View("EntradaExistente");
             }
+
+            // Verificar si el empleado tiene un turno asignado
+            var estado = await _asistenciaService.VerificarHoraSalida(fecha.TimeOfDay);
+            if (estado.Item1.Equals("NO_ASIGNADO"))
+            {
+                return Json(new
+                {
+                    showAlert = true,
+                    title = "Sin turno asignado",
+                    text = "No tienes un turno asignado para hoy.",
+                    icon = "warning"
+                });
+            }
+            if (estado.Item1.Equals("ANTICIPADO"))
+            {
+                ViewData["TIPO"] = "Salida";
+                return View("FueraDeHora");
+            }
+
+            var horasPerdidas = Decimal.Zero;
+
+            if (estado.Item1.Equals("TARDANZA"))
+            {
+                DateTime horaSalidaEsperada = DateTime.Parse(estado.Item2.HoraFin.ToString(@"hh\:mm"));
+                horasPerdidas = await _asistenciaService.CalcularHorasTrabajadas(horaSalidaEsperada, fecha);
+
+            }
+
             MarcaViewModel viewModel = new MarcaViewModel
             {
                 NombreSede = verificacion.Item1.Nombre_local,
                 horaActual = fecha.ToString("HH:mm"),
                 fechaActual = fecha.ToString("dd/MM/yyyy"),
-                HoraEntrada = asistencia.HoraEntrada?.ToString("HH:mm"),
+                HoraEntrada = asistencia.HoraEntrada?.ToString(@"hh\:mm"),
+                HoraSalidaEsperada = estado.Item2?.HoraFin.ToString(@"hh\:mm"),
                 HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, fecha),
+                HorasDescontadas = horasPerdidas,
                 localizacionExitosa = verificacion.Item2
             };
 
-            string estado = await _asistenciaService.VerificarHoraSalida(DateTime.Now.TimeOfDay);
-            if (estado.Equals("NO_ASIGNADO"))
-            {
-                return View("NoTurnoAsignado");
-            }
-            if (estado.Equals("ANTICIPADO"))
-            {
-                return View("FueraDeHora");
-            }
-            ViewData["Estado"] = estado;
+            ViewData["Estado"] = estado.Item1;
+            TempData["EstadoSalida"] = estado.Item1;
+            TempData["HoraEsperada"] = estado.Item2?.HoraFin.ToString(@"hh\:mm");
 
             return View(viewModel);
         }
@@ -162,14 +194,10 @@ namespace SoftWC.Controllers
             var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
 
             var asistencia = await _asistenciaService.GetAsistenciaByDate(fecha);
-            if (asistencia == null || asistencia.HoraEntrada == null)
-            {
-                Console.WriteLine("No se encontró la asistencia para el empleado o no se registró la hora de entrada.");
-                return View("Error");
-            }
-            asistencia = await _asistenciaService.AddSalida(asistencia);
+
+            asistencia = await _asistenciaService.AddSalida(asistencia, TempData["EstadoSalida"]?.ToString(), TempData["HoraEsperada"]?.ToString());
             _asistenciaService.UpdateAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = asistencia.HoraSalida?.ToString("HH:mm");
+            ViewData["HoraRegistrada"] = TempData["HoraEsperada"];
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
             return View("Confirmacion");
         }

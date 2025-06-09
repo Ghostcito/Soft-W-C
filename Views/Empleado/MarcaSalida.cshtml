@@ -12,9 +12,11 @@
     string horaActual = Model.horaActual;
     string fechaActual = Model.fechaActual;
     string sede = Model.NombreSede;
+    string horaSalidaEsp = Model.HoraSalidaEsperada;
     bool locVerificado = Model.localizacionExitosa.Value;
     string horaEntrada = Model.HoraEntrada;
     string horasTrabajadas = Model.HorasTrabajadas.ToString();
+    string horasDescontadas = Model.HorasDescontadas.ToString();
     string estado = ViewBag.Estado;
 
 }
@@ -24,14 +26,16 @@
     <div
         style="width: 600px; padding: 30px; background-color: white; border-radius: 12px; box-shadow: 0 0 15px rgba(0,0,0,0.2); text-align: center;">
         <h2 style="font-size: 28px; margin-bottom: 20px;">Marcar Salida</h2>
-        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para irte a tu jato, pues que lastima, marca
-                tu salida primero XD</strong></p>
+        <p style="font-size: 18px;"><strong>Hola, @nombreUsuario 👋 ¡Listo para retiarte, marca tu salida para registrar
+                tu Asistencia Correctamente</strong></p>
 
         <div style="font-size: 36px; font-weight: bold; margin: 20px 0;">@horaActual</div>
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
         <div style="font-size: 18px; margin-bottom: 20px;">
-            <strong>Estado de HORA:</strong> @estado
+
+            <strong>Hora Salida Esperada:</strong> @horaSalidaEsp <br>
+            <strong>Estado de Hora:</strong> @estado
 
             <p style="color: gray; font-size: 18px;">📍 </p>
 
@@ -87,6 +91,10 @@
                     <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
                     <p style="font-size: 16px; margin: 2px 0; text-align: right;">
                         @horasTrabajadas
+                    </p>
+                    <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo descontado:</strong></p>
+                    <p style="font-size: 16px; margin: 2px 0; text-align: right;">
+                        @horasDescontadas
                     </p>
                 </div>
                 <a asp-controller="Asistencia" asp-action="Index" @*asp-route-id=@Model.asistencia.IdEmpleado*@

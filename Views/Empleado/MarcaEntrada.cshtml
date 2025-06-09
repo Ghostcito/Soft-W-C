@@ -11,6 +11,7 @@
     string nombreUsuario = user.Nombre;
     string horaActual = Model.horaActual;
     string fechaActual = Model.fechaActual;
+    string horaEntradaEsp = Model.HoraEntradaEsperada;
     string sede = Model.NombreSede;
     bool locVerificado = Model.localizacionExitosa.Value;
     string estado = ViewBag.Estado;
@@ -29,7 +30,8 @@
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
         <div style="font-size: 18px; margin-bottom: 20px;">
-            <strong>Estado de HORA:</strong> @estado
+            <strong>Hora de Entrada Asignada:</strong> @horaEntradaEsp <br>
+            <strong>Estado de Hora:</strong> @estado
 
 
             <form method="get" action="@Url.Action("ConfirmarEntrada", "Empleado")">
