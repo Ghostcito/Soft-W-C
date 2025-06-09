@@ -125,7 +125,7 @@ namespace SoftWC.Areas.Identity.Pages.Account
                     var roles = await _userManager.GetRolesAsync(userIdentity);
 
                     // Redirige según el rol
-                    if (roles.Contains("Administrador") || roles.Contains("Supervisor"))
+                    if (roles.Contains("Administrador") || roles.Contains("Supervisor") || roles.Contains("Controltotal") || roles.Contains("Contador"))
                     {
                         return RedirectToAction("Index", "Admin"); 
                     }

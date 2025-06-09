@@ -7,10 +7,10 @@
     var user = await UserManager.GetUserAsync(User);
     var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
     ViewData["Title"] = "Create";
-    @if (roles.Contains("Administrador"))
+        var layoutRoles = new[] { "Administrador", "Contador", "Controltotal", "Supervisor" };
+    if (roles.Any(r => layoutRoles.Contains(r)))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
-        
     }
     ViewData["Title"] = "Usuarios WC";
     

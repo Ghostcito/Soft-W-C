@@ -9,7 +9,8 @@
     var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();
 
     // Opcional: manejar layout por rol
-    if (roles.Contains("Administrador"))
+    var layoutRoles = new[] { "Administrador", "Contador", "Controltotal", "Supervisor" };
+    if (roles.Any(r => layoutRoles.Contains(r)))
     {
         Layout = "~/Views/Admin/_LayoutAdmin.cshtml";
     }

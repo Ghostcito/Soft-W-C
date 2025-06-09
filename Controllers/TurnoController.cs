@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace SoftWC.Controllers
 {
-    [Authorize(Roles = "Administrador,Supervisor")]
+    [Authorize(Roles = "Administrador,Supervisor,Controltotal")]
     public class TurnoController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -12,7 +12,7 @@ using SoftWC.Models;
 
 namespace SoftWC.Controllers
 {
-    [Authorize(Roles = "Administrador,Supervisor")]
+    [Authorize(Roles = "Administrador,Supervisor,Controltotal")]
     public class ServicioController : Controller
     {
         private readonly ApplicationDbContext _context;
