@@ -52,7 +52,13 @@
                         body: JSON.stringify({ Latitud: lat, Longitud: lon, EmpleadoId: empleadoId })
                     }).then(res => res.json())
                         .then(data => {
-                            if (data.redirectUrl) {
+                            if (data.showAlert) {
+                                Swal.fire({
+                                    title: data.title,
+                                    text: data.text,
+                                    icon: data.icon
+                                });
+                            } else if (data.redirectUrl) {
                                 window.location.href = data.redirectUrl;
                             }
                         });

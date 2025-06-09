@@ -77,7 +77,13 @@ namespace SoftWC.Controllers
             string estado = await _asistenciaService.VerificarHoraEntrada(fecha.TimeOfDay);
             if (estado.Equals("NO_ASIGNADO"))
             {
-                return View("NoTurnoAsignado");
+                return Json(new
+                {
+                    showAlert = true,
+                    title = "Sin turno asignado",
+                    text = "No tienes un turno asignado para hoy.",
+                    icon = "warning"
+                });
             }
             if (estado.Equals("ANTICIPADO"))
             {
