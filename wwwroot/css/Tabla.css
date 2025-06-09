@@ -1,13 +1,13 @@
 /* Estilos generales para tablas personalizadas */
 .table-custom-bg,
 .table-sede-bg {
-  background-color: #d5d9ff !important;
+  background-color: #e7e9fb !important;
 }
 .table-custom thead th,
 .table-sede thead th {
-  background-color: #bfc3f7 !important;
-  color: #222;
-  border-bottom: 2px solid #aab0e6;
+  background-color: #c7caef !important;
+  color: #2d357a;
+  border-bottom: 2px solid #bfc3f7;
   font-size: 1.08rem;
   vertical-align: middle;
   padding-top: 1rem !important;
@@ -22,15 +22,15 @@
 }
 .table-custom tbody tr:nth-child(even),
 .table-sede tbody tr:nth-child(even) {
-  background-color: #e7e9fb !important;
+  background-color: #f6f7ff !important;
 }
 .table-custom tbody tr:nth-child(odd),
 .table-sede tbody tr:nth-child(odd) {
-  background-color: #f6f7ff !important;
+  background-color: #fff !important;
 }
 .table-custom tbody tr:hover,
 .table-sede tbody tr:hover {
-  background-color: #d0d3f7 !important;
+  background-color: #d5d9ff !important;
   transition: background 0.2s;
 }
 .table-custom,
@@ -39,6 +39,7 @@
   overflow: hidden;
   font-size: 1.01rem;
   margin-bottom: 2rem;
+  border: 1.5px solid #d5d9ff;
 }
 .btn-action,
 .btn-action-danger {
@@ -68,13 +69,13 @@
   color: #fff;
 }
 .btn-action-danger {
-  background-color: #e7e9fb;
+  background-color: #fbe7e7;
   color: #a94442;
   border: none;
 }
 .btn-action-danger:hover,
 .btn-action-danger:focus {
-  background-color: #c7c9e6;
+  background-color: #e06b6b;
   color: #fff;
 }
 .btn-success,
@@ -105,10 +106,14 @@
 .card-header {
   padding-top: 1.2rem !important;
   padding-bottom: 1.2rem !important;
+  background: linear-gradient(90deg, #4b5cbf 70%, #d5d9ff 100%) !important;
+  color: #fff !important;
+  border: none;
 }
 .card-body {
   padding-top: 1.5rem !important;
   padding-bottom: 1.5rem !important;
+  background: #f6f7ff !important;
 }
 .mb-2.text-end {
   margin-bottom: 1.3rem !important;
