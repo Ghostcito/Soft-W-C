@@ -1,0 +1,106 @@
+/* Estilos de Cliente\Create.cshtml */
+body {
+  background: #fff !important;
+  min-height: 100vh;
+}
+.create-card {
+  background-color: #d5d9ff !important;
+  border-radius: 2rem;
+  box-shadow: 0 8px 32px rgba(75, 92, 191, 0.13);
+  border: none;
+}
+.form-floating > .form-control,
+.form-floating > .form-select {
+  background-color: #f6f7ff !important;
+  border-radius: 1rem;
+}
+.btn-primary {
+  background-color: #4b5cbf !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #2d357a !important;
+}
+.create-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.create-header i {
+  font-size: 2.2rem;
+  color: #4b5cbf;
+}
+
+/* Estilos de Sede\Create.cshtml */
+.card,
+.card-header {
+  border-radius: 1.2rem;
+}
+fieldset.bg-light {
+  background: #f8f9fa !important;
+}
+
+/* Estilos de Supervision\Create.cshtml */
+.form-section {
+  background: #f8f9fa;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.form-section h2 {
+  color: #4b5cbf;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  font-size: 1.5rem;
+}
+.form-label {
+  font-weight: 500;
+  color: #2d357a;
+}
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #bfc3f7;
+  font-size: 1.05rem;
+  margin-bottom: 1rem;
+}
+.form-control:focus,
+.form-select:focus {
+  border-color: #4b5cbf;
+  box-shadow: 0 0 0 0.15rem #bfc3f7;
+}
+.btn-primary,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #4b5cbf !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  padding: 0.55rem 1.3rem !important;
+  font-size: 1.08rem !important;
+  margin-top: 0.5rem;
+}
+.btn-primary:hover {
+  background-color: #2d357a !important;
+  color: #fff !important;
+}
+.back-link {
+  margin-top: 1.5rem;
+  display: inline-block;
+  color: #4b5cbf;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.back-link:hover {
+  color: #2d357a;
+  text-decoration: underline;
+}
