@@ -175,6 +175,37 @@ public class AdminController : Controller
         ViewBag.ProximosCumpleanios = proximosCumpleanios;
         ViewBag.TotalEmpleados = totalEmpleados;
 
+        // Empleados por sede (usando Usuario y Sede)
+        var usuariosConSedes = _context.Usuario
+            .Include(u => u.Sedes)
+            .ToList(); // Trae a memoria
+
+        var sedesRaw = usuariosConSedes
+            .SelectMany(u => u.Sedes.Select(sede => new { Sede = sede.Nombre_local }))
+            .GroupBy(x => x.Sede)
+            .Select(g => new {
+                sede = g.Key,
+                cantidad = g.Count()
+            }).ToList();
+
+        ViewBag.Sedes = sedesRaw.Select(x => x.sede).ToList();
+        ViewBag.EmpleadosPorSede = sedesRaw.Select(x => x.cantidad).ToList();
+        ViewBag.SedesRaw = sedesRaw;
+
+        // Usuarios por sede para el filtro
+        var sedesUsuariosRaw = usuariosConSedes
+            .SelectMany(u => u.Sedes.Select(sede => new {
+                Sede = sede.Nombre_local,
+                Usuario = u.Nombre + " " + u.Apellido
+            }))
+            .GroupBy(x => x.Sede)
+            .Select(g => new {
+                sede = g.Key,
+                usuarios = g.Select(x => x.Usuario).ToList()
+            }).ToList();
+
+        ViewBag.SedesUsuariosRaw = sedesUsuariosRaw;
+
         return View();
     }
 

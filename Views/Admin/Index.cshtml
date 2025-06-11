@@ -106,7 +106,7 @@
         </div>
     </div>
 
-    <!-- Gráficos estadísticos atractivos -->
+
     <div class="row g-4 mt-2">
         <div class="col-lg-6 col-md-12">
             <div class="card shadow border-0 h-100 chart-card">
@@ -121,12 +121,34 @@
         </div>
         <div class="col-lg-6 col-md-12">
             <div class="card shadow border-0 h-100 chart-card">
-                <div class="card-header bg-gradient" style="background-color:#D5D9FF;color:#2d357a;">
-                    <i class="bi bi-pie-chart-fill me-2"></i>
-                    <span class="fw-bold">Empleados por sede</span>
+                <div class="card-header bg-gradient d-flex align-items-center justify-content-between" style="background-color:#D5D9FF;color:#2d357a;">
+                    <div>
+                        <i class="bi bi-pie-chart-fill me-2"></i>
+                        <span class="fw-bold">Empleados por sede</span>
+                    </div>
+                    <button type="button"
+                        class="btn btn-primary btn-sm d-flex align-items-center gap-1 px-3 py-2 shadow"
+                        data-bs-toggle="modal"
+                        data-bs-target="#usuariosPorSedeModal"
+                        style="
+                            background: #4b5cbf;
+                            border: none;
+                            color: #fff;
+                            font-weight: 600;
+                            letter-spacing: 0.5px;
+                            border-radius: 2rem;
+                            box-shadow: 0 2px 8px rgba(75,92,191,0.13);
+                            transition: background 0.2s, box-shadow 0.2s;
+                        "
+                        onmouseover="this.style.background='#2d357a'"
+                        onmouseout="this.style.background='#4b5cbf'"
+                    >
+                        <i class="bi bi-people-fill" style="font-size:1.2rem;"></i>
+                        <span>Ver usuarios</span>
+                    </button>
                 </div>
-                <div class="card-body bg-white d-flex align-items-center justify-content-center">
-                    <canvas id="chartSede" class="chart-zoom" style="max-height:320px;"></canvas>
+                <div class="card-body bg-white d-flex flex-column align-items-center justify-content-center" style="min-height:420px;">
+                    <canvas id="chartSede" class="chart-zoom mb-3" style="max-height:380px; min-height:320px; width:100% !important; max-width:500px;"></canvas>
                 </div>
             </div>
         </div>
@@ -198,6 +220,38 @@
         </div>
     </div>
 
+    <!-- Modal para filtro de usuarios por sede (diseño mejorado) -->
+    <div class="modal fade" id="usuariosPorSedeModal" tabindex="-1" aria-labelledby="usuariosPorSedeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius:1.5rem;">
+          <div class="modal-header" style="background:linear-gradient(90deg,#4b5cbf 60%,#bfc3f7 100%); border-radius:1.5rem 1.5rem 0 0;">
+            <h5 class="modal-title text-white fw-bold" id="usuariosPorSedeModalLabel">
+                <i class="bi bi-geo-alt-fill me-2"></i>Usuarios por sede
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body" style="background:#f6f7ff;">
+            <div class="mb-4">
+                <label for="filtroSedeUsuarios" class="form-label fw-semibold" style="color:#4b5cbf;">Seleccione una sede:</label>
+                <select id="filtroSedeUsuarios" class="form-select form-select-lg" style="max-width:350px;">
+                    <option value="">Seleccione una sede</option>
+                    @foreach(var sede in ViewBag.Sedes ?? new List<string>())
+                    {
+                        <option value="@sede">@sede</option>
+                    }
+                </select>
+            </div>
+            <div id="usuariosPorSede" class="w-100 mt-3"></div>
+          </div>
+          <div class="modal-footer" style="background:#e7e9fb; border-radius:0 0 1.5rem 1.5rem;">
+            <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">
+                <i class="bi bi-x-circle"></i> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <style>
         .btn:hover {
             transform: scale(1.05);
@@ -250,6 +304,27 @@
                 padding: 1rem 0.5rem;
             }
         }
+        /* Modal custom styles */
+        #usuariosPorSedeModal .modal-content {
+            box-shadow: 0 8px 32px rgba(75,92,191,0.18);
+        }
+        #usuariosPorSedeModal .modal-body {
+            min-height: 200px;
+        }
+        #usuariosPorSede ul.list-group {
+            border-radius: 1rem;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(75,92,191,0.07);
+        }
+        #usuariosPorSede ul.list-group li {
+            border: none;
+            border-bottom: 1px solid #e7e9fb;
+            color: #2d357a;
+            font-size: 1.08rem;
+        }
+        #usuariosPorSede ul.list-group li:last-child {
+            border-bottom: none;
+        }
     </style>
 
     <!-- Bootstrap JS Bundle with Popper -->
@@ -287,7 +362,9 @@
 
             window.criteriosLabels = @Html.Raw(Json.Serialize(ViewBag.CriteriosLabels));
             window.criteriosData = @Html.Raw(Json.Serialize(ViewBag.CriteriosData));
-        
+
+            window.sedesUsuariosRaw = @Html.Raw(Json.Serialize(ViewBag.SedesUsuariosRaw));
+
 
 
     </script>

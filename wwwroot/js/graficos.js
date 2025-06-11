@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
           },
           scales: {
             x: {
-              display: false, // Oculta los nombres de abajo
+              display: false,
             },
             y: commonOptions.scales.y,
           },
@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error("Error al crear gráfica de horas trabajadas:", error);
   }
 
-  // === 2. Empleados por sede ===
   try {
     const chartElement = document.getElementById("chartSede");
     if (chartElement && window.sedesLabels && window.sedesData) {
@@ -133,11 +132,35 @@ document.addEventListener("DOMContentLoaded", function () {
         },
       });
     }
+
+    const filtroSedeUsuarios = document.getElementById("filtroSedeUsuarios");
+    const usuariosPorSedeDiv = document.getElementById("usuariosPorSede");
+    if (filtroSedeUsuarios && usuariosPorSedeDiv && window.sedesUsuariosRaw) {
+      filtroSedeUsuarios.addEventListener("change", function () {
+        const sede = this.value;
+        usuariosPorSedeDiv.innerHTML = "";
+        if (sede) {
+          const sedeObj = window.sedesUsuariosRaw.find((x) => x.sede === sede);
+          if (sedeObj && sedeObj.usuarios.length > 0) {
+            usuariosPorSedeDiv.innerHTML =
+              "<strong>Usuarios en " +
+              sede +
+              ":</strong><ul class='list-group mt-2'>" +
+              sedeObj.usuarios
+                .map((u) => "<li class='list-group-item py-1'>" + u + "</li>")
+                .join("") +
+              "</ul>";
+          } else {
+            usuariosPorSedeDiv.innerHTML =
+              "<em>No hay usuarios en esta sede.</em>";
+          }
+        }
+      });
+    }
   } catch (error) {
     console.error("Error al crear gráfica de empleados por sede:", error);
   }
 
-  // === 3. Empleados por turno ===
   try {
     const chartElement = document.getElementById("chartTurno");
     if (chartElement && window.turnosLabels && window.turnosData) {
