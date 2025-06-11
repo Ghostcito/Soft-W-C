@@ -15,10 +15,12 @@
     ViewData["Title"] = "Cliente WC";
 }
 
+<link rel="stylesheet" href="~/css/custom-create.css" />
+
 <div class="container d-flex align-items-center justify-content-center" style="min-height: 90vh;">
     <div class="col-md-7 col-lg-6">
-        <div class="create-card shadow border-0 p-4">
-            <div class="create-header">
+        <div class="edit-card shadow border-0 p-4">
+            <div class="edit-header">
                 <i class="bi bi-person-plus"></i>
                 <h2 class="mb-0 text-primary fw-bold">Crear Cliente</h2>
             </div>
@@ -76,7 +78,6 @@
     </div>
 </div>
 
-<!-- Scripts para dropdown de usuario-->    
 <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")"></script>
 <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
 <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")"></script>
