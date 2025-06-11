@@ -1,6 +1,7 @@
 @model SoftWC.Models.Usuario
 
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="~/css/Details.css" asp-append-version="true" />
 
 @using Microsoft.AspNetCore.Identity
 @using SoftWC.Models
@@ -65,7 +66,7 @@ else
 {
     <div class="alert alert-info">Este usuario no tiene sedes asignadas.</div>
 }
-<div>
+<div class="details-card shadow border-0 p-4 my-4">
     <h4>Usuario</h4>
     <hr />
     <dl class="row">
