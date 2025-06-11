@@ -4,6 +4,8 @@
 @inject SignInManager<SoftWC.Models.Usuario> SignInManager
 @inject UserManager<SoftWC.Models.Usuario> UserManager
 
+<link rel="stylesheet" href="~/css/Edit.css" />
+
 @{
     var user = await UserManager.GetUserAsync(User);
     var roles = user != null ? await UserManager.GetRolesAsync(user) : new List<string>();        
@@ -101,14 +103,6 @@
         </div>
     </div>
 </div>
-<style>
-    .card, .card-header {
-        border-radius: 1.2rem;
-    }
-    fieldset.bg-light {
-        background: #f8f9fa !important;
-    }
-</style>
 <script src="@Url.Content("~/lib/jquery/dist/jquery.min.js")" ></script>
 <script src="@Url.Content("~/js/site.js")" asp-append-version="true"></script>
 <script src="@Url.Content("~/lib/bootstrap/dist/js/bootstrap.bundle.min.js")" ></script>    
