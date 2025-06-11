@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Identity;
 namespace SoftWC.Controllers
 {
     [Authorize]
-    
+
     public class SedeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -100,7 +100,7 @@ namespace SoftWC.Controllers
         {
             if (ModelState.IsValid)
             {
-                sede.Radio = 80; // Asignar un radio por defecto de 80 metros
+                sede.Radio = 200; // Asignar un radio por defecto de 80 metros
                 _context.Add(sede);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -211,7 +211,7 @@ namespace SoftWC.Controllers
             var sede = await _context.Sede
                 .Include(s => s.Usuarios)
                 .FirstOrDefaultAsync(s => s.SedeId == id);
-                
+
             if (sede == null)
             {
                 return NotFound();
@@ -228,8 +228,8 @@ namespace SoftWC.Controllers
             // Aplicar filtro si existe
             if (!string.IsNullOrEmpty(filtro))
             {
-                query = query.Where(s => 
-                    s.Nombre_local.Contains(filtro) || 
+                query = query.Where(s =>
+                    s.Nombre_local.Contains(filtro) ||
                     s.Ciudad.Contains(filtro) ||
                     s.Direccion_local.Contains(filtro));
             }
@@ -245,7 +245,8 @@ namespace SoftWC.Controllers
             }
 
             var sedes = await query
-                .Select(s => new {
+                .Select(s => new
+                {
                     id = s.SedeId,
                     nombre = s.Nombre_local,
                     ciudad = s.Ciudad,
@@ -332,7 +333,7 @@ namespace SoftWC.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new 
+                return StatusCode(500, new
                 {
                     Success = false,
                     Message = "Error interno al procesar la solicitud",
@@ -361,8 +362,8 @@ namespace SoftWC.Controllers
                 if (!string.IsNullOrEmpty(filtro))
                 {
                     filtro = filtro.ToLower(); // Normalizar a minúsculas
-                    query = query.Where(u => 
-                        u.Nombre.ToLower().Contains(filtro) || 
+                    query = query.Where(u =>
+                        u.Nombre.ToLower().Contains(filtro) ||
                         u.Apellido.ToLower().Contains(filtro) ||
                         u.UserName.ToLower().Contains(filtro) ||
                         u.Email.ToLower().Contains(filtro));
