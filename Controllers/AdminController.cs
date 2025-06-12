@@ -27,7 +27,7 @@ public class AdminController : Controller
 
     public AdminController(ILogger<AdminController> logger, UserService userService, SignInManager<Usuario> signInManager, ApplicationDbContext context, IPdfExportService pdfExportService, IExcelExportService excelExportService)
     {
-        _context = context;    
+        _context = context;
         _userService = userService;
         _logger = logger;
         _signInManager = signInManager;
@@ -40,7 +40,8 @@ public class AdminController : Controller
         var asistencias = _context.Asistencia
             .Where(a => a.Fecha.Month == DateTime.Now.Month)
             .GroupBy(a => a.IdEmpleado)
-            .Select(g => new {
+            .Select(g => new
+            {
                 Empleado = g.First().Empleado.Nombre + " " + g.First().Empleado.Apellido,
                 Horas = g.Sum(a => a.HorasTrabajadas)
             }).ToList();
@@ -68,16 +69,16 @@ public class AdminController : Controller
             .OrderBy(x => x.Semana)
             .ToList();
 
-        var empleadosPorSupervisor = _context.Supervision   
+        var empleadosPorSupervisor = _context.Supervision
             .GroupBy(s => s.Supervisor.Nombre)
             .Select(g => new { Supervisor = g.Key, Total = g.Count() })
             .ToList();
 
         var empleadosEnSistema = (from user in _context.Users
-            join userRole in _context.UserRoles on user.Id equals userRole.UserId
-            join role in _context.Roles on userRole.RoleId equals role.Id
-            where role.Name == "Empleado"
-            select user.Nombre).ToList();
+                                  join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                                  join role in _context.Roles on userRole.RoleId equals role.Id
+                                  where role.Name == "Empleado"
+                                  select user.Nombre).ToList();
 
         // Obtener fecha actual
         var fechaActual = DateTime.UtcNow;
@@ -86,7 +87,8 @@ public class AdminController : Controller
         var pagosUltimosMeses = _context.Asistencia
             .Where(a => a.Fecha >= fechaActual.AddMonths(-3)) // últimos 3 meses
             .GroupBy(a => new { a.Fecha.Year, a.Fecha.Month })
-            .Select(g => new {
+            .Select(g => new
+            {
                 Mes = g.Key.Month,
                 Año = g.Key.Year,
                 Total = g.Sum(a => a.HorasTrabajadas * a.Empleado.Servicio.PrecioBase)
@@ -94,7 +96,7 @@ public class AdminController : Controller
             .OrderBy(g => g.Año).ThenBy(g => g.Mes)
             .ToList();
 
-            // Obtener usuarios próximos a cumplir años en los próximos 30 días
+        // Obtener usuarios próximos a cumplir años en los próximos 30 días
         var hoy = DateTime.Today;
         var proximosCumpleanios = _context.Users
         .Where(u => u.FechaNacimiento != null)
@@ -112,10 +114,10 @@ public class AdminController : Controller
 
         // Obtener la cantidad total de usuarios con rol "Empleado"
         var totalEmpleados = (from user in _context.Users
-                            join userRole in _context.UserRoles on user.Id equals userRole.UserId
-                            join role in _context.Roles on userRole.RoleId equals role.Id
-                            where role.Name == "Empleado"
-                            select user).Count();
+                              join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                              join role in _context.Roles on userRole.RoleId equals role.Id
+                              where role.Name == "Empleado"
+                              select user).Count();
 
         var puntajePorTipo = _context.Evaluaciones
             .GroupBy(e => e.TipoEmpleado)
@@ -128,13 +130,15 @@ public class AdminController : Controller
             })
             .ToList();
 
+        var evaluaciones = _context.Evaluaciones.ToList();
+
         var distribucion = new
         {
-            Responsabilidad = _context.Evaluaciones.Average(e => (int)e.Responsabilidad),
-            Puntualidad = _context.Evaluaciones.Average(e => (int)e.Puntualidad),
-            CalidadTrabajo = _context.Evaluaciones.Average(e => (int)e.CalidadTrabajo),
-            UsoMateriales = _context.Evaluaciones.Average(e => (int)e.UsoMateriales),
-            Actitud = _context.Evaluaciones.Average(e => (int)e.Actitud)
+            Responsabilidad = evaluaciones.Any() ? _context.Evaluaciones.Average(e => (int)e.Responsabilidad) : 0,
+            Puntualidad = evaluaciones.Any() ? _context.Evaluaciones.Average(e => (int)e.Puntualidad) : 0,
+            CalidadTrabajo = evaluaciones.Any() ? _context.Evaluaciones.Average(e => (int)e.CalidadTrabajo) : 0,
+            UsoMateriales = evaluaciones.Any() ? _context.Evaluaciones.Average(e => (int)e.UsoMateriales) : 0,
+            Actitud = evaluaciones.Any() ? _context.Evaluaciones.Average(e => (int)e.Actitud) : 0
         };
 
         ViewBag.CriteriosLabels = new[] { "Responsabilidad", "Puntualidad", "CalidadTrabajo", "UsoMateriales", "Actitud" };
@@ -183,7 +187,8 @@ public class AdminController : Controller
         var sedesRaw = usuariosConSedes
             .SelectMany(u => u.Sedes.Select(sede => new { Sede = sede.Nombre_local }))
             .GroupBy(x => x.Sede)
-            .Select(g => new {
+            .Select(g => new
+            {
                 sede = g.Key,
                 cantidad = g.Count()
             }).ToList();
@@ -194,12 +199,14 @@ public class AdminController : Controller
 
         // Usuarios por sede para el filtro
         var sedesUsuariosRaw = usuariosConSedes
-            .SelectMany(u => u.Sedes.Select(sede => new {
+            .SelectMany(u => u.Sedes.Select(sede => new
+            {
                 Sede = sede.Nombre_local,
                 Usuario = u.Nombre + " " + u.Apellido
             }))
             .GroupBy(x => x.Sede)
-            .Select(g => new {
+            .Select(g => new
+            {
                 sede = g.Key,
                 usuarios = g.Select(x => x.Usuario).ToList()
             }).ToList();
@@ -225,7 +232,7 @@ public class AdminController : Controller
     private (DateTime inicio, DateTime fin) CalcularRangoQuincena(int año, int mes, int quincena)
     {
         DateTime inicio, fin;
-    
+
         if (quincena == 1)
         {
             inicio = new DateTime(año, mes, 1, 0, 0, 0, DateTimeKind.Utc);
@@ -236,7 +243,7 @@ public class AdminController : Controller
             inicio = new DateTime(año, mes, 16, 0, 0, 0, DateTimeKind.Utc);
             fin = new DateTime(año, mes, DateTime.DaysInMonth(año, mes), 23, 59, 59, DateTimeKind.Utc);
         }
-        
+
         return (inicio, fin);
     }
 
@@ -247,7 +254,7 @@ public class AdminController : Controller
     }
 
     [HttpGet]
-    
+
     [Authorize(Roles = "Administrador,Contador,Controltotal")]
     public async Task<IActionResult> ResumenPagos(int? año = null, int? mes = null, int? quincena = null)
     {
@@ -265,13 +272,14 @@ public class AdminController : Controller
             }
 
             var (inicio, fin) = CalcularRangoQuincena(año.Value, mes.Value, quincena.Value);
-            
+
             // Consulta optimizada para agrupar correctamente
             var resumen = await _context.Asistencia
             .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
             .Include(a => a.Empleado)  // Añadir Include para evitar problemas de carga perezosa
             .Include(a => a.Empleado.Servicio)
-            .GroupBy(a => new { 
+            .GroupBy(a => new
+            {
                 a.IdEmpleado,
                 NombreCompleto = a.Empleado.Nombre + " " + a.Empleado.Apellido,
                 a.Empleado.DNI,
@@ -297,11 +305,11 @@ public class AdminController : Controller
             })
             .OrderBy(r => r.Empleado)  // Ordenar alfabéticamente por empleado
             .ToListAsync();
-            
+
             ViewBag.AñoSeleccionado = año;
             ViewBag.MesSeleccionado = mes;
             ViewBag.QuincenaSeleccionada = quincena;
-            
+
             return View(resumen);
         }
         catch (Exception ex)
@@ -316,33 +324,33 @@ public class AdminController : Controller
         int año, int mes, int quincena, string formato)
     {
         var datos = await ObtenerDatosQuincena(año, mes, quincena);
-        
+
         if (formato.ToLower() == "excel")
         {
             var fileContent = _excelExportService.GenerateExcel(datos, año, mes, quincena);
-            return File(fileContent, 
-                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+            return File(fileContent,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 $"Pagos_{año}_{mes}_Q{quincena}.xlsx");
         }
         else if (formato.ToLower() == "pdf")
         {
             var fileContent = _pdfExportService.GeneratePdf(datos, año, mes, quincena);
-            return File(fileContent, "application/pdf", 
+            return File(fileContent, "application/pdf",
                 $"Pagos_{año}_{mes}_Q{quincena}.pdf");
         }
-        
+
         return BadRequest("Formato no soportado");
     }
 
     private async Task<List<ResumenPagoVM>> ObtenerDatosQuincena(int año, int mes, int quincena)
     {
-    // Reutiliza la misma lógica del action ResumenPagos
+        // Reutiliza la misma lógica del action ResumenPagos
         var (inicio, fin) = CalcularRangoQuincena(año, mes, quincena);
 
         return await _context.Asistencia
         .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
-        .GroupBy(a => new 
-        { 
+        .GroupBy(a => new
+        {
             a.IdEmpleado,
             a.Empleado.UserName,
             a.Empleado.DNI,
