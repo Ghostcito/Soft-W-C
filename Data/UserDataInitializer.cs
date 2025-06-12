@@ -18,8 +18,8 @@ namespace SoftWC.Data
 
             var users = new List<(string Email, string Password, string Role, Usuario User)>
             {
-                
-                ("ruth.torocahua@gmail.com", "Empleado123*@", "Empleado", new Usuario
+
+                ("ruth.torocahua@gmail.com", "Empleado121*@", "Empleado", new Usuario
                 {
                     UserName = "RUTHWC",
                     Email = "ruth.torocahua@gmail.com",
@@ -31,7 +31,7 @@ namespace SoftWC.Data
                     DNI = "42425474"
                 }),
 
-                ("marilda.torocahua@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("marilda.torocahua@gmail.com", "Empleado122*@", "Empleado", new Usuario
                 {
                     UserName = "MARILDAWC",
                     Email = "marilda.torocahua@gmail.com",
@@ -55,7 +55,7 @@ namespace SoftWC.Data
                     DNI = "29594503"
                 }),
 
-                ("rogelia.alhuirca@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("rogelia.alhuirca@gmail.com", "Empleado124*@", "Empleado", new Usuario
                 {
                     UserName = "ROGELIAWC",
                     Email = "rogelia.alhuirca@gmail.com",
@@ -67,7 +67,7 @@ namespace SoftWC.Data
                     DNI = "41155258"
                 }),
 
-                ("julia.calachua@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("julia.calachua@gmail.com", "Empleado125*@", "Empleado", new Usuario
                 {
                     UserName = "JULIAWC",
                     Email = "julia.calachua@gmail.com",
@@ -79,7 +79,7 @@ namespace SoftWC.Data
                     DNI = "42430147"
                 }),
 
-                ("celia.huamani@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("celia.huamani@gmail.com", "Empleado126*@", "Empleado", new Usuario
                 {
                     UserName = "CELIAWC",
                     Email = "celia.huamani@gmail.com",
@@ -91,7 +91,7 @@ namespace SoftWC.Data
                     DNI = "41580899"
                 }),
 
-                ("july.tapayuri@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("july.tapayuri@gmail.com", "Empleado127*@", "Empleado", new Usuario
                 {
                     UserName = "JULYWC",
                     Email = "july.tapayuri@gmail.com",
@@ -103,7 +103,7 @@ namespace SoftWC.Data
                     DNI = "43526049"
                 }),
 
-                ("carla.taco@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("carla.taco@gmail.com", "Empleado128*@", "Empleado", new Usuario
                 {
                     UserName = "CARLAWC",
                     Email = "carla.taco@gmail.com",
@@ -115,7 +115,7 @@ namespace SoftWC.Data
                     DNI = "40216288"
                 }),
 
-                ("alisson.mendoza@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("alisson.mendoza@gmail.com", "Empleado129*@", "Empleado", new Usuario
                 {
                     UserName = "ALISSONWC",
                     Email = "alisson.mendoza@gmail.com",
@@ -127,7 +127,7 @@ namespace SoftWC.Data
                     DNI = "76772867"
                 }),
 
-                ("nancy.condori@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("nancy.condori@gmail.com", "Empleado131@", "Empleado", new Usuario
                 {
                     UserName = "NANCYWC",
                     Email = "nancy.condori@gmail.com",
@@ -139,7 +139,7 @@ namespace SoftWC.Data
                     DNI = "73492235"
                 }),
 
-                ("reyna.acero@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("reyna.acero@gmail.com", "Empleado132*@", "Empleado", new Usuario
                 {
                     UserName = "REYNAWC",
                     Email = "reyna.acero@gmail.com",
@@ -151,7 +151,7 @@ namespace SoftWC.Data
                     DNI = "41821304"
                 }),
 
-                ("delia.acero@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("delia.acero@gmail.com", "Empleado133*@", "Empleado", new Usuario
                 {
                     UserName = "DELIAWC",
                     Email = "delia.acero@gmail.com",
@@ -163,7 +163,7 @@ namespace SoftWC.Data
                     DNI = "42500840"
                 }),
 
-                ("mercedes.rojas@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("mercedes.rojas@gmail.com", "Empleado134*@", "Empleado", new Usuario
                 {
                     UserName = "MERCEDESWC",
                     Email = "mercedes.rojas@gmail.com",
@@ -175,7 +175,7 @@ namespace SoftWC.Data
                     DNI = "OO102716"
                 }),
 
-                ("shirley.nina@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("shirley.nina@gmail.com", "Empleado135*@", "Empleado", new Usuario
                 {
                     UserName = "SHIRLEYWC",
                     Email = "shirley.nina@gmail.com",
@@ -187,7 +187,7 @@ namespace SoftWC.Data
                     DNI = "60062615"
                 }),
 
-                ("marlene.santos@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("marlene.santos@gmail.com", "Empleado136*@", "Empleado", new Usuario
                 {
                     UserName = "MARLENEWC",
                     Email = "marlene.santos@gmail.com",
@@ -199,7 +199,7 @@ namespace SoftWC.Data
                     DNI = "42686571"
                 }),
 
-                ("roxana.chavez@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("roxana.chavez@gmail.com", "Empleado137*@", "Empleado", new Usuario
                 {
                     UserName = "ROXANAWC",
                     Email = "roxana.chavez@gmail.com",
@@ -211,7 +211,7 @@ namespace SoftWC.Data
                     DNI = "46516695"
                 }),
 
-                ("maryori.montenegro@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("maryori.montenegro@gmail.com", "Empleado138*@", "Empleado", new Usuario
                 {
                     UserName = "MARYORIWC",
                     Email = "maryori.montenegro@gmail.com",
@@ -223,7 +223,7 @@ namespace SoftWC.Data
                     DNI = "76819477"
                 }),
 
-                ("reyna.sanca@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("reyna.sanca@gmail.com", "Empleado139*@", "Empleado", new Usuario
                 {
                     UserName = "REYNASCWC",
                     Email = "reyna.sanca@gmail.com",
@@ -235,7 +235,7 @@ namespace SoftWC.Data
                     DNI = "42531143"
                 }),
 
-                ("delia.quispe@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("delia.quispe@gmail.com", "Empleado141*@", "Empleado", new Usuario
                 {
                     UserName = "DELIAQUISPE",
                     Email = "delia.quispe@gmail.com",
@@ -247,7 +247,7 @@ namespace SoftWC.Data
                     DNI = "44997761"
                 }),
 
-                ("victoria.mendizabal@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("victoria.mendizabal@gmail.com", "Empleado142*@", "Empleado", new Usuario
                 {
                     UserName = "VICTORIAMAMANI",
                     Email = "victoria.mendizabal@gmail.com",
@@ -259,7 +259,7 @@ namespace SoftWC.Data
                     DNI = "29724067"
                 }),
 
-                ("nadia.nina@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("nadia.nina@gmail.com", "Empleado143*@", "Empleado", new Usuario
                 {
                     UserName = "NADIANINA",
                     Email = "nadia.nina@gmail.com",
@@ -271,7 +271,7 @@ namespace SoftWC.Data
                     DNI = "43507545"
                 }),
 
-                ("brigida.diaz@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("brigida.diaz@gmail.com", "Empleado144*@", "Empleado", new Usuario
                 {
                     UserName = "BRIGIDADIAZ",
                     Email = "brigida.diaz@gmail.com",
@@ -283,7 +283,7 @@ namespace SoftWC.Data
                     DNI = "01552993"
                 }),
 
-                ("chela.diaz@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("chela.diaz@gmail.com", "Empleado145*@", "Empleado", new Usuario
                 {
                     UserName = "CHELAHUANCA",
                     Email = "chela.diaz@gmail.com",
@@ -295,7 +295,7 @@ namespace SoftWC.Data
                     DNI = "01499534"
                 }),
 
-                ("gino.arias@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("gino.arias@gmail.com", "Empleado146*@", "Empleado", new Usuario
                 {
                     UserName = "GINOARIAS",
                     Email = "gino.arias@gmail.com",
@@ -307,7 +307,7 @@ namespace SoftWC.Data
                     DNI = "75970809"
                 }),
 
-                ("yani.huayna@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("yani.huayna@gmail.com", "Empleado147*@", "Empleado", new Usuario
                 {
                     UserName = "YANIHUAYNA",
                     Email = "yani.huayna@gmail.com",
@@ -319,7 +319,7 @@ namespace SoftWC.Data
                     DNI = "46355025"
                 }),
 
-                ("edith.panihuara@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("edith.panihuara@gmail.com", "Empleado148*@", "Empleado", new Usuario
                 {
                     UserName = "EDITHPANIHUARA",
                     Email = "edith.panihuara@gmail.com",
@@ -331,7 +331,7 @@ namespace SoftWC.Data
                     DNI = "84317651"
                 }),
 
-                ("reyna.sanca@gmail.com", "Empleado123*@", "Empleado", new Usuario
+                ("reyna.sanca@gmail.com", "Empleado149*@", "Empleado", new Usuario
                 {
                     UserName = "REYNASCWC",
                     Email = "reyna.sanca@gmail.com",

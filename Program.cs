@@ -80,8 +80,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    // await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
-    // await UserDataInitializer.SeedData2(services); //Método para iniciar la base de datos y crear tablas
+    //await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
+    //await UserDataInitializer.SeedData2(services); //Método para iniciar la base de datos y crear tablas
     // await newRolesDataInitializer.SeedData4(services);
 }
 
