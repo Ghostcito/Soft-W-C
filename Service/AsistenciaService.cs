@@ -232,6 +232,18 @@ namespace SoftWC.Service
             }
         }
 
+        public async Task<bool> VerificarTiempoPermanencia(DateTime horaEntrada, DateTime horaSalida)
+        {
+            // Definir el tiempo mínimo requerido
+            var tiempoMinimo = TimeSpan.FromMinutes(10);
+
+            // Calcular la diferencia entre la hora de entrada y la hora de salida
+            var diferencia = horaSalida - horaEntrada;
+
+            // Verificar si la diferencia es mayor o igual al tiempo mínimo requerido
+            return diferencia >= tiempoMinimo;
+        }
+
 
 
     }
