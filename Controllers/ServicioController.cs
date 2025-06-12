@@ -59,6 +59,7 @@ namespace SoftWC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ServicioId,NombreServicio,TipoServicio,Descripcion,PrecioBase,DuracionEstimada")] Servicio servicio)
         {
+            ModelState.Remove("Usuarios"); // Excluir Usuarios de la validación
             if (ModelState.IsValid)
             {
                 _context.Add(servicio);
@@ -95,7 +96,7 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
-
+            ModelState.Remove("Usuarios"); // Excluir Usuarios de la validación
             if (ModelState.IsValid)
             {
                 try
@@ -116,6 +117,7 @@ namespace SoftWC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             return View(servicio);
         }
 
