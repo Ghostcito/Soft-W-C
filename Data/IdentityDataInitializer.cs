@@ -44,8 +44,8 @@ namespace SoftWC.Data
                     UserName = "Supervisorwc",
                     Email = "supervisor@gmail.com",
                     EmailConfirmed = true,
-                    Nombre = "Supervisor",
-                    Apellido = "NaN",
+                    Nombre = "OSCAR ANDRE",
+                    Apellido = "FEBRES DELGADO",
                     NivelAcceso = "2",
                     Estado = "activo",
                     DNI = "87654321"
