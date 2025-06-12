@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace SoftWC.Data.Migrations
+namespace SoftWC.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class MigraciónInicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -24,39 +24,6 @@ namespace SoftWC.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Nombre = table.Column<string>(type: "text", nullable: true),
-                    Apellido = table.Column<string>(type: "text", nullable: true),
-                    DNI = table.Column<string>(type: "text", nullable: true),
-                    FechaIngreso = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    FechaNacimiento = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    NivelAcceso = table.Column<string>(type: "text", nullable: true),
-                    Estado = table.Column<string>(type: "text", nullable: true),
-                    Salario = table.Column<decimal>(type: "numeric", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,6 +96,72 @@ namespace SoftWC.Data.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Sede",
+                columns: table => new
+                {
+                    SedeId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ClienteId = table.Column<int>(type: "integer", nullable: false),
+                    Nombre_local = table.Column<string>(type: "text", nullable: true),
+                    Direccion_local = table.Column<string>(type: "text", nullable: true),
+                    Ciudad = table.Column<string>(type: "text", nullable: true),
+                    Provincia = table.Column<string>(type: "text", nullable: true),
+                    Latitud = table.Column<decimal>(type: "numeric(9,6)", nullable: false),
+                    Longitud = table.Column<decimal>(type: "numeric(9,6)", nullable: false),
+                    Radio = table.Column<decimal>(type: "numeric", nullable: false),
+                    estadoSede = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sede", x => x.SedeId);
+                    table.ForeignKey(
+                        name: "FK_Sede_Cliente_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Cliente",
+                        principalColumn: "ClienteId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "text", nullable: false),
+                    Nombre = table.Column<string>(type: "text", nullable: true),
+                    Apellido = table.Column<string>(type: "text", nullable: true),
+                    DNI = table.Column<string>(type: "text", nullable: true),
+                    FechaIngreso = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    FechaNacimiento = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NivelAcceso = table.Column<string>(type: "text", nullable: true),
+                    Estado = table.Column<string>(type: "text", nullable: true),
+                    Salario = table.Column<decimal>(type: "numeric", nullable: true),
+                    ServicioId = table.Column<int>(type: "integer", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Servicio_ServicioId",
+                        column: x => x.ServicioId,
+                        principalTable: "Servicio",
+                        principalColumn: "ServicioId");
                 });
 
             migrationBuilder.CreateTable(
@@ -324,68 +357,27 @@ namespace SoftWC.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sede",
+                name: "UsuarioSede",
                 columns: table => new
                 {
-                    SedeId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    ClienteId = table.Column<int>(type: "integer", nullable: false),
-                    Nombre_local = table.Column<string>(type: "text", nullable: true),
-                    Direccion_local = table.Column<string>(type: "text", nullable: true),
-                    Ciudad = table.Column<string>(type: "text", nullable: true),
-                    Provincia = table.Column<string>(type: "text", nullable: true),
-                    Latitud = table.Column<decimal>(type: "numeric(9,6)", nullable: false),
-                    Longitud = table.Column<decimal>(type: "numeric(9,6)", nullable: false),
-                    Radio = table.Column<decimal>(type: "numeric", nullable: false),
-                    estadoSede = table.Column<int>(type: "integer", nullable: false)
+                    SedesSedeId = table.Column<int>(type: "integer", nullable: false),
+                    UsuariosId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sede", x => x.SedeId);
+                    table.PrimaryKey("PK_UsuarioSede", x => new { x.SedesSedeId, x.UsuariosId });
                     table.ForeignKey(
-                        name: "FK_Sede_Cliente_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Cliente",
-                        principalColumn: "ClienteId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tareo",
-                columns: table => new
-                {
-                    IdTareo = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IdEmpleado = table.Column<string>(type: "text", nullable: false),
-                    Fecha = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    ServicioId = table.Column<int>(type: "integer", nullable: false),
-                    HorasTrabajadas = table.Column<decimal>(type: "numeric(5,2)", nullable: false),
-                    PagoPorHora = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    TotalGanado = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    Observacion = table.Column<string>(type: "text", nullable: true),
-                    TurnoId = table.Column<int>(type: "integer", nullable: true),
-                    Estado = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tareo", x => x.IdTareo);
-                    table.ForeignKey(
-                        name: "FK_Tareo_AspNetUsers_IdEmpleado",
-                        column: x => x.IdEmpleado,
+                        name: "FK_UsuarioSede_AspNetUsers_UsuariosId",
+                        column: x => x.UsuariosId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Tareo_Servicio_ServicioId",
-                        column: x => x.ServicioId,
-                        principalTable: "Servicio",
-                        principalColumn: "ServicioId",
+                        name: "FK_UsuarioSede_Sede_SedesSedeId",
+                        column: x => x.SedesSedeId,
+                        principalTable: "Sede",
+                        principalColumn: "SedeId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tareo_Turno_TurnoId",
-                        column: x => x.TurnoId,
-                        principalTable: "Turno",
-                        principalColumn: "TurnoId");
                 });
 
             migrationBuilder.CreateTable(
@@ -414,30 +406,6 @@ namespace SoftWC.Data.Migrations
                         column: x => x.TurnoId,
                         principalTable: "Turno",
                         principalColumn: "TurnoId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UsuarioSede",
-                columns: table => new
-                {
-                    SedesSedeId = table.Column<int>(type: "integer", nullable: false),
-                    UsuariosId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UsuarioSede", x => new { x.SedesSedeId, x.UsuariosId });
-                    table.ForeignKey(
-                        name: "FK_UsuarioSede_AspNetUsers_UsuariosId",
-                        column: x => x.UsuariosId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UsuarioSede_Sede_SedesSedeId",
-                        column: x => x.SedesSedeId,
-                        principalTable: "Sede",
-                        principalColumn: "SedeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -478,6 +446,11 @@ namespace SoftWC.Data.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ServicioId",
+                table: "AspNetUsers",
+                column: "ServicioId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -512,21 +485,6 @@ namespace SoftWC.Data.Migrations
                 name: "IX_Supervision_SupervisorId",
                 table: "Supervision",
                 column: "SupervisorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tareo_IdEmpleado",
-                table: "Tareo",
-                column: "IdEmpleado");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tareo_ServicioId",
-                table: "Tareo",
-                column: "ServicioId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tareo_TurnoId",
-                table: "Tareo",
-                column: "TurnoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UsuarioSede_UsuariosId",
@@ -575,9 +533,6 @@ namespace SoftWC.Data.Migrations
                 name: "Supervision");
 
             migrationBuilder.DropTable(
-                name: "Tareo");
-
-            migrationBuilder.DropTable(
                 name: "UsuarioSede");
 
             migrationBuilder.DropTable(
@@ -585,9 +540,6 @@ namespace SoftWC.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Servicio");
 
             migrationBuilder.DropTable(
                 name: "Sede");
@@ -600,6 +552,9 @@ namespace SoftWC.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Cliente");
+
+            migrationBuilder.DropTable(
+                name: "Servicio");
         }
     }
 }

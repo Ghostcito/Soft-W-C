@@ -2,21 +2,18 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SoftWC.Data;
 
 #nullable disable
 
-namespace SoftWC.Data.Migrations
+namespace SoftWC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250606012452_RelacionUsuarioServicio")]
-    partial class RelacionUsuarioServicio
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -519,6 +516,9 @@ namespace SoftWC.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<int?>("ServicioId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -535,31 +535,9 @@ namespace SoftWC.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("SoftWC.Models.UsuarioServicio", b =>
-                {
-                    b.Property<int>("UsuarioServicioId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UsuarioServicioId"));
-
-                    b.Property<int>("ServicioId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("UsuarioServicioId");
-
                     b.HasIndex("ServicioId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("usuarioServicio");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("SoftWC.Models.UsuarioTurno", b =>
@@ -726,23 +704,13 @@ namespace SoftWC.Data.Migrations
                     b.Navigation("Supervisor");
                 });
 
-            modelBuilder.Entity("SoftWC.Models.UsuarioServicio", b =>
+            modelBuilder.Entity("SoftWC.Models.Usuario", b =>
                 {
                     b.HasOne("SoftWC.Models.Servicio", "Servicio")
                         .WithMany("Usuarios")
-                        .HasForeignKey("ServicioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoftWC.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ServicioId");
 
                     b.Navigation("Servicio");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("SoftWC.Models.UsuarioTurno", b =>

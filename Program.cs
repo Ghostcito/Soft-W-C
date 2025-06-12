@@ -20,7 +20,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //Conexion PostgreSQL
 
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");     
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
 
 // Agregar DbContext con soporte para PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -58,7 +58,7 @@ builder.Services.AddScoped<EmpleadoService>();
 // Servicios de exportación (pueden ser Transient)
 builder.Services.AddTransient<IExcelExportService, ExcelExportService>();
 
-builder.Services.AddTransient<IPdfExportService,PdfExportService>();
+builder.Services.AddTransient<IPdfExportService, PdfExportService>();
 
 // Configuración de DinkToPdf (si lo usas)
 builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
@@ -80,9 +80,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    //await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
-    // await UserDataInitializer.Seed33Data2(services); //Método para iniciar la base de datos y crear tablas
-    //await newRolesDataInitializer.SeedData4(services);
+    // await IdentityDataInitializer.SeedData(services); //Método para iniciar usuarios admin y clientes iniciales
+    // await UserDataInitializer.SeedData2(services); //Método para iniciar la base de datos y crear tablas
+    // await newRolesDataInitializer.SeedData4(services);
 }
 
 // Configure the HTTP request pipeline.
@@ -100,9 +100,9 @@ else
 //evitan que el navegador sirva la vista desde su caché.
 app.Use(async (context, next) =>
 {
-        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-        context.Response.Headers["Pragma"] = "no-cache";
-        context.Response.Headers["Expires"] = "0";
+    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+    context.Response.Headers["Pragma"] = "no-cache";
+    context.Response.Headers["Expires"] = "0";
     await next();
 });
 

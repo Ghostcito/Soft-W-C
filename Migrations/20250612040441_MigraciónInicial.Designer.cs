@@ -9,11 +9,11 @@ using SoftWC.Data;
 
 #nullable disable
 
-namespace SoftWC.Data.Migrations
+namespace SoftWC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250601015009_CreateServicioEmpleado")]
-    partial class CreateServicioEmpleado
+    [Migration("20250612040441_MigraciónInicial")]
+    partial class MigraciónInicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,21 +239,6 @@ namespace SoftWC.Data.Migrations
                     b.ToTable("Cliente");
                 });
 
-            modelBuilder.Entity("SoftWC.Models.EmpleadoServicio", b =>
-                {
-                    b.Property<string>("EmpleadoId")
-                        .HasColumnType("text");
-
-                    b.Property<int>("ServicioId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("EmpleadoId", "ServicioId");
-
-                    b.HasIndex("ServicioId");
-
-                    b.ToTable("EmpleadoServicio");
-                });
-
             modelBuilder.Entity("SoftWC.Models.Evaluaciones", b =>
                 {
                     b.Property<int>("IdEvaluacion")
@@ -438,53 +423,6 @@ namespace SoftWC.Data.Migrations
                     b.ToTable("Supervision");
                 });
 
-            modelBuilder.Entity("SoftWC.Models.Tareo", b =>
-                {
-                    b.Property<int>("IdTareo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("IdTareo"));
-
-                    b.Property<int>("Estado")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<decimal>("HorasTrabajadas")
-                        .HasColumnType("decimal(5,2)");
-
-                    b.Property<string>("IdEmpleado")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Observacion")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("PagoPorHora")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("ServicioId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal>("TotalGanado")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int?>("TurnoId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("IdTareo");
-
-                    b.HasIndex("IdEmpleado");
-
-                    b.HasIndex("ServicioId");
-
-                    b.HasIndex("TurnoId");
-
-                    b.ToTable("Tareo");
-                });
-
             modelBuilder.Entity("SoftWC.Models.Turno", b =>
                 {
                     b.Property<int>("TurnoId")
@@ -581,6 +519,9 @@ namespace SoftWC.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<int?>("ServicioId")
+                        .HasColumnType("integer");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
@@ -596,6 +537,8 @@ namespace SoftWC.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("ServicioId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -708,25 +651,6 @@ namespace SoftWC.Data.Migrations
                     b.Navigation("Empleado");
                 });
 
-            modelBuilder.Entity("SoftWC.Models.EmpleadoServicio", b =>
-                {
-                    b.HasOne("SoftWC.Models.Usuario", "Empleado")
-                        .WithMany("EmpleadosServicios")
-                        .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoftWC.Models.Servicio", "Servicio")
-                        .WithMany("EmpleadosServicios")
-                        .HasForeignKey("ServicioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Empleado");
-
-                    b.Navigation("Servicio");
-                });
-
             modelBuilder.Entity("SoftWC.Models.Evaluaciones", b =>
                 {
                     b.HasOne("SoftWC.Models.Usuario", "Evaluador")
@@ -783,29 +707,13 @@ namespace SoftWC.Data.Migrations
                     b.Navigation("Supervisor");
                 });
 
-            modelBuilder.Entity("SoftWC.Models.Tareo", b =>
+            modelBuilder.Entity("SoftWC.Models.Usuario", b =>
                 {
-                    b.HasOne("SoftWC.Models.Usuario", "Empleado")
-                        .WithMany()
-                        .HasForeignKey("IdEmpleado")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("SoftWC.Models.Servicio", "Servicio")
-                        .WithMany()
-                        .HasForeignKey("ServicioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SoftWC.Models.Turno", "Turno")
-                        .WithMany()
-                        .HasForeignKey("TurnoId");
-
-                    b.Navigation("Empleado");
+                        .WithMany("Usuarios")
+                        .HasForeignKey("ServicioId");
 
                     b.Navigation("Servicio");
-
-                    b.Navigation("Turno");
                 });
 
             modelBuilder.Entity("SoftWC.Models.UsuarioTurno", b =>
@@ -829,7 +737,7 @@ namespace SoftWC.Data.Migrations
 
             modelBuilder.Entity("SoftWC.Models.Servicio", b =>
                 {
-                    b.Navigation("EmpleadosServicios");
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("SoftWC.Models.Turno", b =>
@@ -839,8 +747,6 @@ namespace SoftWC.Data.Migrations
 
             modelBuilder.Entity("SoftWC.Models.Usuario", b =>
                 {
-                    b.Navigation("EmpleadosServicios");
-
                     b.Navigation("EmpleadosSupervisados");
 
                     b.Navigation("SupervisoresAsignados");
