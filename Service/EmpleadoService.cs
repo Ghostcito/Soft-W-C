@@ -51,6 +51,15 @@ namespace SoftWC.Service
             return empleados;
         }
 
-
+        public async Task<List<Usuario>> ObtenerEmpleadosAsync()
+        {
+            return await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .OrderBy(u => u.Apellido)
+                .ThenBy(u => u.Nombre)
+                .ToListAsync();
+        }
     }
 }

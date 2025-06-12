@@ -13,6 +13,9 @@ namespace SoftWC.Models
     {
         [Key]
         public int SedeId { get; set; }
+
+        [Display(Name = "Cliente")]
+        [Required(ErrorMessage = "El ID del cliente es obligatorio")]
         public int ClienteId { get; set; }
 
         [ValidateNever]
@@ -20,12 +23,14 @@ namespace SoftWC.Models
         public Cliente Cliente { get; set; }
 
         [Display(Name = "Nombre local")]
+        [Required(ErrorMessage = "El nombre del local es obligatorio")]
         public string? Nombre_local { get; set; } //para que puedan ubicar en caso la empresa tenga un local con nombre
 
-        [Display(Name = "Direccion local")]
+        [Display(Name = "Dirección local")]
         public string? Direccion_local { get; set; }
         public string? Ciudad { get; set; }
         public string? Provincia { get; set; }
+
 
         [Column(TypeName = "decimal(9,6)")]
         public decimal Latitud { get; set; }

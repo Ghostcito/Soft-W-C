@@ -12,17 +12,20 @@ namespace SoftWC.Models
         [Key]
         public int UsuarioTurnoId { get; set; }
 
+        [Required(ErrorMessage = "El ID del usuario es obligatorio")]
+        [Display(Name = "Usuario")]
         public string UsuarioId { get; set; }
 
         [ForeignKey("UsuarioId")]
         public Usuario Usuario { get; set; }
 
+        [Display(Name = "Turno")]
         public int TurnoId { get; set; }
 
         [ForeignKey("TurnoId")]
         public Turno Turno { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
         [Display(Name = "Fecha de inicio")]
         public DateTime? FechaInicio { get; set; }
 

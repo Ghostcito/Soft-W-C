@@ -27,6 +27,7 @@ namespace SoftWC.Models
         public decimal? Salario { get; set; }
 
         //un usuario puede tener varias sedes
+        [Display(Name = "Sedes asignadas")]
         public ICollection<Sede> Sedes { get; set; } = new List<Sede>();
 
         public int? ServicioId { get; set; }

@@ -11,17 +11,24 @@ namespace SoftWC.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [Display(Name = "Supervisor")]
+        [Required(ErrorMessage = "Se debe seleccionar un supervisor es obligatorio")]
         public string SupervisorId { get; set; }
         [ForeignKey("SupervisorId")]
         public Usuario Supervisor { get; set; }
 
+        [Display(Name = "Empleado asignado")]
+        [Required(ErrorMessage = "Se debe seleccionar un empleado asignado es obligatorio")]
         public string EmpleadoId { get; set; }
         [ForeignKey("EmpleadoId")]
-
+        
         [Display(Name = "Empleados asignados")]
+        [Required(ErrorMessage = "Se debe seleccionar un empleado asignado es obligatorio")]
         public Usuario Empleado { get; set; }
 
         [Display(Name = "Fecha Inicio actividades")]
+        [Required(ErrorMessage = "La fecha de inicio es obligatoria")]
         public DateTime FechaInicio { get; set; }
 
         [Display(Name = "Fecha de fin actividades")]

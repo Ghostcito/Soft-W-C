@@ -12,21 +12,23 @@ namespace SoftWC.Models
         [Key]
         public int ServicioId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El nombre del servicio es obligatorio")]
         [StringLength(100)]
         [Display(Name = "Nombre de servicio")]
         public string NombreServicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Debe ingresar un tipo de servicio")]
         [Display(Name = "Tipo de servicio")]
         public string TipoServicio { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "La descripción es requerida")]
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
 
         [Column(TypeName = "decimal(10,2)")]
         [Display(Name = "Precio base por hora de trabajo")]
+        [Required(ErrorMessage = "El precio base es obligatorio")]
+        [Range(0.1, double.MaxValue, ErrorMessage = "El precio debe ser un número válido mayor a 0")]
         public decimal PrecioBase { get; set; }
 
         // Duración estimada del servicio

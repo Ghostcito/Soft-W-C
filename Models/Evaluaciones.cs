@@ -13,35 +13,53 @@ namespace SoftWC.Models
     [Key]
     public int IdEvaluacion { get; set; }
 
-    [Required]
+    [Display(Name = "ID Empleado")]
+    [Required(ErrorMessage = "El ID del empleado es obligatorio")]
     public string IdEmpleado { get; set; }
 
+    [Display(Name = "Empleado")]
     [ForeignKey("IdEmpleado")]
     public Usuario Empleado { get; set; }
 
-    [Required]
+    [Display(Name = "Tipo de empleado")]
+    [Required(ErrorMessage = "El tipo de empleado es obligatorio")]
     public string TipoEmpleado { get; set; } // Ej: "Limpieza", "Supervisor"
 
-    [Required]
+    [Display(Name = "Fecha de evaluación")]
+    [Required(ErrorMessage = "La fecha de evaluación es obligatoria")]
     public DateTime FechaEvaluacion { get; set; }
 
+    [Display(Name = "Descripción")]
     public string? Descripcion { get; set; }
 
-    // --- Indicadores de evaluación (usando el enum Calificacion) --- //
+    // --- Indicadores de evaluación --- //
+    [Display(Name = "Responsabilidad")]
     public Calificacion Responsabilidad { get; set; }
+
+    [Display(Name = "Puntualidad")]
     public Calificacion Puntualidad { get; set; }
+
+    [Display(Name = "Calidad de trabajo")]
     public Calificacion CalidadTrabajo { get; set; }
+
+    [Display(Name = "Uso de materiales")]
     public Calificacion UsoMateriales { get; set; }
+
+    [Display(Name = "Actitud")]
     public Calificacion Actitud { get; set; }
 
     // Calificación global calculada (no se almacena en DB)
+    [Display(Name = "Puntaje global")]
     [NotMapped]
     public decimal PuntajeGlobal => 
         ((int)Responsabilidad + (int)Puntualidad + (int)CalidadTrabajo + 
         (int)UsoMateriales + (int)Actitud) / 5.0m;
 
     // Relación con el supervisor que evaluó
+    [Display(Name = "Evaluador")]
     public string? EvaluadorId { get; set; }
+
+    [Display(Name = "Evaluado por")]
     [ForeignKey("EvaluadorId")]
     public Usuario? Evaluador { get; set; }
 }
