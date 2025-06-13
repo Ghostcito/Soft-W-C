@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SoftWC.Data;
 using SoftWC.Models;
+using SoftWC.Service;
 
 namespace SoftWC.Controllers
 {
@@ -15,9 +16,11 @@ namespace SoftWC.Controllers
     public class UsuarioTurnoController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly EmpleadoService _empleadoService;
 
-        public UsuarioTurnoController(ApplicationDbContext context)
+        public UsuarioTurnoController(ApplicationDbContext context, EmpleadoService empleadoService)
         {
+            _empleadoService = empleadoService;
             _context = context;
         }
 
@@ -49,10 +52,21 @@ namespace SoftWC.Controllers
         }
 
         // GET: UsuarioTurno/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno");
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName");
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["UsuarioId"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View();
         }
 
@@ -106,7 +120,18 @@ namespace SoftWC.Controllers
                 ModelState.AddModelError("", "Error al crear el Usuario Turno. Verifique los datos ingresados.");
             }
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno", usuarioTurno.TurnoId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName", usuarioTurno.UsuarioId);
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["UsuarioId"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View(usuarioTurno);
         }
 
@@ -124,7 +149,18 @@ namespace SoftWC.Controllers
                 return NotFound();
             }
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno", usuarioTurno.TurnoId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName", usuarioTurno.UsuarioId);
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["UsuarioId"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View(usuarioTurno);
         }
 
@@ -186,7 +222,18 @@ namespace SoftWC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["TurnoId"] = new SelectList(_context.Turno, "TurnoId", "NombreTurno", usuarioTurno.TurnoId);
-            ViewData["UsuarioId"] = new SelectList(_context.Usuario, "Id", "UserName", usuarioTurno.UsuarioId);
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["UsuarioId"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View(usuarioTurno);
         }
 

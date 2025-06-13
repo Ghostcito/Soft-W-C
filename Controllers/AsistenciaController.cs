@@ -59,9 +59,21 @@ namespace SoftWC.Controllers
         }
 
         // GET: Asitencia/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName");
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["IdEmpleado"] = new SelectList(empleados, "Id", "NombreCompleto");
+            
             return View();
         }
 
@@ -114,7 +126,18 @@ namespace SoftWC.Controllers
                         Console.WriteLine($"Error en {key}: {error.ErrorMessage}");
                     }
                 }
-                ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
+                var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+                ViewData["IdEmpleado"] = new SelectList(empleados, "Id", "NombreCompleto");
                 return View(asistencia);
             }
         }
@@ -132,7 +155,18 @@ namespace SoftWC.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["IdEmpleado"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View(asistencia);
         }
 
@@ -190,7 +224,18 @@ namespace SoftWC.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["IdEmpleado"] = new SelectList(_context.Usuario, "Id", "UserName", asistencia.IdEmpleado);
+            var empleados = await _context.Usuario
+                .Where(u => _context.UserRoles.Any(ur => 
+                    ur.UserId == u.Id && 
+                    _context.Roles.Any(r => r.Id == ur.RoleId && r.Name == "Empleado")))
+                .Select(u => new 
+                {
+                    Id = u.Id,
+                    NombreCompleto = $"{u.Nombre} {u.Apellido}"  // Combina Nombre + Apellido
+                })
+                .ToListAsync();
+
+            ViewData["IdEmpleado"] = new SelectList(empleados, "Id", "NombreCompleto");
             return View(asistencia);
         }
 

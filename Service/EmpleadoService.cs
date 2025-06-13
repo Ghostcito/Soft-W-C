@@ -26,11 +26,19 @@ namespace SoftWC.Service
 
         public async Task<IEnumerable<Usuario>> GetEmpleados()
         {
-            var userPrincipal = _userService.GetCurrentUserAsync().Result;
+            var userPrincipal = await _userService.GetCurrentUserAsync();
             var usuarios = await _userManager.Users.ToListAsync();
-            if (_userManager.GetRolesAsync(userPrincipal).Result.Contains("Administrador"))
+            
+            var rolesUsuarioActual = await _userManager.GetRolesAsync(userPrincipal);
+
+            if (rolesUsuarioActual.Contains("Administrador"))
             {
-                return usuarios.Where(u => !_userManager.GetRolesAsync(u).Result.Contains("Administrador")).ToList();
+                return await FiltrarUsuariosPorRoles(usuarios, ["Administrador", "Controltotal"]);
+            }
+            else if (rolesUsuarioActual.Contains("Controltotal"))
+            {
+                // Si es Controltotal, devuelve todos excepto Administradores
+                return usuarios;
             }
             else
             {
@@ -49,6 +57,23 @@ namespace SoftWC.Service
                 .Where(u => empleadosIds.Contains(u.Id))
                 .ToListAsync();
             return empleados;
+        }
+
+        // Método auxiliar para filtrar usuarios por roles a excluir
+        private async Task<List<Usuario>> FiltrarUsuariosPorRoles(List<Usuario> usuarios, string[] rolesExcluir)
+        {
+            var usuariosFiltrados = new List<Usuario>();
+            
+            foreach (var usuario in usuarios)
+            {
+                var roles = await _userManager.GetRolesAsync(usuario);
+                if (!roles.Any(r => rolesExcluir.Contains(r)))
+                {
+                    usuariosFiltrados.Add(usuario);
+                }
+            }
+            
+            return usuariosFiltrados;
         }
 
         public async Task<List<Usuario>> ObtenerEmpleadosAsync()
