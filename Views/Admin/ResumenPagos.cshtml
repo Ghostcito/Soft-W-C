@@ -255,7 +255,7 @@
                                     </td>
                                     <td>
                                         <span class="badge bg-success px-3 py-2">
-                                            @item.TotalPago.ToString("N2")
+                                            S/. @item.TotalPago.ToString("N2")
                                         </span>
                                     </td>
                                     <td>
@@ -293,15 +293,15 @@
                                                                 <td>@detalle.Fecha.ToString("dd/MM/yyyy")</td>
                                                                 <td>@detalle.Servicio</td>
                                                                 <td>@detalle.Horas.ToString("N2")</td>
-                                                                <td>@detalle.PagoHora.ToString("C2")</td>
-                                                                <td>@detalle.TotalDia.ToString("C2")</td>
+                                                                <td>@detalle.PagoHora.ToString("'S/.' 0.00")</td>
+                                                                <td>@detalle.TotalDia.ToString("'S/.' 0.00")</td>
                                                             </tr>
                                                         }
                                                         <tr class="table-secondary fw-bold">
                                                             <td colspan="2">TOTAL</td>
                                                             <td>@item.TotalHoras.ToString("N2")</td>
-                                                            <td>@item.PrecioBase.ToString("N2")</td>
-                                                            <td>@item.TotalPago.ToString("N2")</td>
+                                                            <td>@item.PrecioBase.ToString("'S/.' 0.00")</td>
+                                                            <td>S/. @item.TotalPago.ToString("N2")</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -320,7 +320,7 @@
                                 </td>
                                 <td colspan="3">
                                     <span class="badge bg-success px-3 py-2">
-                                        @Model.Sum(m => m.TotalPago).ToString("N2")
+                                        S/. @Model.Sum(m => m.TotalPago).ToString("N2")
                                     </span>
                                 </td>
                             </tr>
