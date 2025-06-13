@@ -237,6 +237,17 @@ document.addEventListener("DOMContentLoaded", function () {
               padding: { top: 10, bottom: 20 },
             },
           },
+          scales: {
+            x: {
+              ...commonOptions.scales.x,
+              title: { display: false },
+              ticks: { display: false }, // Oculta las letras debajo del gráfico
+            },
+            y: {
+              ...commonOptions.scales.y,
+              ticks: { display: false }, // Oculta los números a la izquierda
+            },
+          },
         },
       });
     }
