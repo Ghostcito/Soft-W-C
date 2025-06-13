@@ -283,15 +283,10 @@ public class AdminController : Controller
                 .CountAsync();
             _logger.LogInformation($"Cantidad de asistencias en el rango: {cantidadAsistencias}");
 
-            if (cantidadAsistencias == 0)
-            {
-                _logger.LogWarning("No se encontraron asistencias en el rango de fechas indicado.");
-            }
-
             // Consulta optimizada para agrupar correctamente
             var resumen = await _context.Asistencia
-                .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
                 .Where(a => a.HorasTrabajadas != null && a.Empleado.Servicio.PrecioBase != null)
+                .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
                 .Include(a => a.Empleado)
                 .Include(a => a.Empleado.Servicio)
                 .GroupBy(a => new
@@ -332,7 +327,6 @@ public class AdminController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al generar el resumen de pagos");
             return View(new List<ResumenPagoVM>());
         }
     }
