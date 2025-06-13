@@ -49,6 +49,85 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   // === 1. Horas trabajadas por empleado ===
+  function crearGraficoHorasTrabajadas(ctx, labels, data) {
+    const palette = [
+      "#4b5cbf",
+      "#36A2EB",
+      "#FFCE56",
+      "#FF6384",
+      "#4BC0C0",
+      "#9966FF",
+      "#FF9F40",
+      "#2d357a",
+      "#bfc3f7",
+    ];
+    const commonOptions = {
+      plugins: {
+        legend: {
+          labels: {
+            font: { size: 15, family: "'Segoe UI', Arial, sans-serif" },
+            color: "#2d357a",
+          },
+        },
+        title: { display: false },
+        tooltip: {
+          backgroundColor: "#4b5cbf",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          borderColor: "#fff",
+          borderWidth: 1,
+          padding: 12,
+        },
+      },
+      layout: { padding: { left: 16, right: 16, top: 16, bottom: 16 } },
+      scales: {
+        x: {
+          grid: { color: "#e7e9fb" },
+          ticks: { font: { size: 14 }, color: "#2d357a" },
+        },
+        y: {
+          grid: { color: "#e7e9fb" },
+          ticks: { font: { size: 14 }, color: "#2d357a" },
+        },
+      },
+    };
+    return new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Horas trabajadas",
+            data: data,
+            backgroundColor: palette,
+            borderRadius: 10,
+            borderSkipped: false,
+          },
+        ],
+      },
+      options: {
+        ...commonOptions,
+        plugins: {
+          ...commonOptions.plugins,
+          title: {
+            display: true,
+            text: "Horas trabajadas por empleado",
+            font: { size: 20, weight: "bold" },
+            color: "#4b5cbf",
+            padding: { top: 10, bottom: 20 },
+          },
+          legend: { display: false },
+          tooltip: commonOptions.plugins.tooltip,
+        },
+        scales: {
+          x: { display: false },
+          y: commonOptions.scales.y,
+        },
+      },
+    });
+  }
+  window.crearGraficoHorasTrabajadas = crearGraficoHorasTrabajadas;
+
   try {
     const chartElement = document.getElementById("chartAsistencia");
     if (
@@ -56,44 +135,12 @@ document.addEventListener("DOMContentLoaded", function () {
       window.horasTrabajadasLabels &&
       window.horasTrabajadasData
     ) {
-      new Chart(chartElement, {
-        type: "bar",
-        data: {
-          labels: window.horasTrabajadasLabels,
-          datasets: [
-            {
-              label: "Horas trabajadas",
-              data: window.horasTrabajadasData,
-              backgroundColor: palette,
-              borderRadius: 10,
-              borderSkipped: false,
-            },
-          ],
-        },
-        options: {
-          ...commonOptions,
-          plugins: {
-            ...commonOptions.plugins,
-            title: {
-              display: true,
-              text: "Horas trabajadas por empleado",
-              font: { size: 20, weight: "bold" },
-              color: "#4b5cbf",
-              padding: { top: 10, bottom: 20 },
-            },
-            legend: {
-              display: false,
-            },
-            tooltip: commonOptions.plugins.tooltip,
-          },
-          scales: {
-            x: {
-              display: false,
-            },
-            y: commonOptions.scales.y,
-          },
-        },
-      });
+      // Usar la función global y guardar la instancia
+      window.chartAsistenciaInstance = crearGraficoHorasTrabajadas(
+        chartElement.getContext("2d"),
+        window.horasTrabajadasLabels,
+        window.horasTrabajadasData
+      );
     }
   } catch (error) {
     console.error("Error al crear gráfica de horas trabajadas:", error);

@@ -407,3 +407,127 @@ body {
     display: block;
   }
 }
+
+/* Panel flotante filtro empleados */
+.floating-panel {
+  position: fixed;
+  top: 60px;
+  right: 40px;
+  z-index: 1080;
+  width: 370px;
+  max-width: 95vw;
+  background: #d5d9ff;
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 36px rgba(75, 92, 191, 0.22),
+    0 2px 24px rgba(75, 92, 191, 0.13);
+  border: 2px solid #bfc3f7;
+  overflow: hidden;
+  animation: floatingPanelFadeIn 0.22s;
+  transition: box-shadow 0.18s, border 0.18s;
+  min-height: 340px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 600px) {
+  .floating-panel {
+    right: 0;
+    left: 0;
+    top: 0;
+    border-radius: 0;
+    width: 100vw;
+    min-height: 0;
+    max-height: 100vh;
+  }
+}
+@keyframes floatingPanelFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.floating-panel-header {
+  background: linear-gradient(90deg, #4b5cbf 60%, #bfc3f7 100%);
+  padding: 1rem 1.2rem 1rem 1.2rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  box-shadow: 0 2px 12px rgba(75, 92, 191, 0.07);
+  cursor: move;
+  user-select: none;
+}
+.floating-panel-body {
+  background: #f6f7ff;
+  padding: 1.2rem 1.2rem 1rem 1.2rem;
+  border-radius: 0 0 1.5rem 1.5rem;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+.floating-panel .btn-close {
+  filter: invert(1) grayscale(1) brightness(2);
+  opacity: 0.8;
+  transition: opacity 0.13s;
+}
+.floating-panel .btn-close:hover {
+  opacity: 1;
+}
+
+/* Filtro empleados visual */
+.filtro-empleados-box {
+  background: linear-gradient(90deg, #f6f7ff 80%, #e7e9fb 100%);
+  border-radius: 1.3rem;
+  box-shadow: 0 2px 12px rgba(75, 92, 191, 0.07);
+  padding: 1.2rem 1.2rem 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+  border: 1.5px solid #e7e9fb;
+  transition: box-shadow 0.18s, border 0.18s;
+}
+.filtro-btn-anim {
+  transition: transform 0.13s, box-shadow 0.13s;
+}
+.filtro-btn-anim:active {
+  transform: scale(0.96);
+  box-shadow: 0 1px 4px rgba(75, 92, 191, 0.13);
+}
+.filtro-select-wrapper {
+  position: relative;
+  margin-bottom: 0.2rem;
+}
+.filtro-select-mult {
+  background: #f6f7ff;
+  border: 1.5px solid #bfc3f7;
+  font-size: 1.05rem;
+  color: #2d357a;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(75, 92, 191, 0.07);
+  padding-right: 2.2rem;
+  min-height: 120px;
+  transition: border 0.18s, box-shadow 0.18s;
+}
+.filtro-select-wrapper.filtro-select-focus .filtro-select-mult {
+  border-color: #4b5cbf;
+  box-shadow: 0 0 0 2px #bfc3f7;
+}
+.filtro-select-arrow {
+  position: absolute;
+  right: 0.7rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #bfc3f7;
+  pointer-events: none;
+  font-size: 1.25rem;
+}
+#empleadosSeleccionadosBadge {
+  background: #4b5cbf !important;
+  color: #fff !important;
+  border-radius: 1rem;
+  padding: 0.3em 0.9em;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  box-shadow: 0 2px 8px rgba(75, 92, 191, 0.07);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  transition: background 0.18s;
+}
