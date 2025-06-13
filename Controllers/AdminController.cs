@@ -265,46 +265,64 @@ public class AdminController : Controller
             mes = mes ?? DateTime.Now.Month;
             quincena = quincena ?? (DateTime.Now.Day <= 15 ? 1 : 2);
 
+            _logger.LogInformation($"Parámetros recibidos: Año={año}, Mes={mes}, Quincena={quincena}");
+
             // Validar quincena
             if (quincena != 1 && quincena != 2)
             {
+                _logger.LogWarning("Quincena inválida, usando valor por defecto.");
                 quincena = DateTime.Now.Day <= 15 ? 1 : 2;
             }
 
             var (inicio, fin) = CalcularRangoQuincena(año.Value, mes.Value, quincena.Value);
+            _logger.LogInformation($"Rango calculado: Inicio={inicio}, Fin={fin}");
+
+            // Verificar si hay asistencias en el rango antes de hacer todo el resumen
+            var cantidadAsistencias = await _context.Asistencia
+                .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
+                .CountAsync();
+            _logger.LogInformation($"Cantidad de asistencias en el rango: {cantidadAsistencias}");
+
+            if (cantidadAsistencias == 0)
+            {
+                _logger.LogWarning("No se encontraron asistencias en el rango de fechas indicado.");
+            }
 
             // Consulta optimizada para agrupar correctamente
             var resumen = await _context.Asistencia
-            .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
-            .Include(a => a.Empleado)  // Añadir Include para evitar problemas de carga perezosa
-            .Include(a => a.Empleado.Servicio)
-            .GroupBy(a => new
-            {
-                a.IdEmpleado,
-                NombreCompleto = a.Empleado.Nombre + " " + a.Empleado.Apellido,
-                a.Empleado.DNI,
-                NombreServicio = a.Empleado.Servicio.NombreServicio,
-                a.Empleado.Servicio.PrecioBase
-            })
-            .Select(g => new ResumenPagoVM
-            {
-                Empleado = g.Key.NombreCompleto,
-                DNI = g.Key.DNI,
-                TotalHoras = g.Sum(a => a.HorasTrabajadas),
-                PrecioBase = g.Key.PrecioBase,
-                TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
-                Servicios = new List<string> { g.Key.NombreServicio },
-                Detalles = g.OrderBy(a => a.Fecha).Select(a => new DetallePagoVM  // Ordenar por fecha
+                .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
+                .Where(a => a.HorasTrabajadas != null && a.Empleado.Servicio.PrecioBase != null)
+                .Include(a => a.Empleado)
+                .Include(a => a.Empleado.Servicio)
+                .GroupBy(a => new
                 {
-                    Fecha = a.Fecha,
-                    Servicio = g.Key.NombreServicio,
-                    Horas = a.HorasTrabajadas,
-                    PagoHora = g.Key.PrecioBase,
-                    TotalDia = a.HorasTrabajadas * g.Key.PrecioBase
-                }).ToList()
-            })
-            .OrderBy(r => r.Empleado)  // Ordenar alfabéticamente por empleado
-            .ToListAsync();
+                    a.IdEmpleado,
+                    NombreCompleto = a.Empleado.Nombre + " " + a.Empleado.Apellido,
+                    a.Empleado.DNI,
+                    NombreServicio = a.Empleado.Servicio.NombreServicio,
+                    a.Empleado.Servicio.PrecioBase
+                })
+                .Select(g => new ResumenPagoVM
+                {
+                    Empleado = g.Key.NombreCompleto,
+                    DNI = g.Key.DNI,
+                    TotalHoras = g.Sum(a => a.HorasTrabajadas),
+                    PrecioBase = g.Key.PrecioBase,
+                    TotalPago = g.Sum(a => a.HorasTrabajadas) * g.Key.PrecioBase,
+                    Servicios = new List<string> { g.Key.NombreServicio },
+                    Detalles = g.OrderBy(a => a.Fecha).Select(a => new DetallePagoVM
+                    {
+                        Fecha = a.Fecha,
+                        Servicio = g.Key.NombreServicio,
+                        Horas = a.HorasTrabajadas,
+                        PagoHora = g.Key.PrecioBase,
+                        TotalDia = a.HorasTrabajadas * g.Key.PrecioBase
+                    }).ToList()
+                })
+                .OrderBy(r => r.Empleado)
+                .ToListAsync();
+
+            _logger.LogInformation($"Resumen de pagos generado con {resumen.Count} registros");
 
             ViewBag.AñoSeleccionado = año;
             ViewBag.MesSeleccionado = mes;
@@ -318,6 +336,7 @@ public class AdminController : Controller
             return View(new List<ResumenPagoVM>());
         }
     }
+
 
     [HttpGet("exportar")]
     public async Task<IActionResult> Exportar(
