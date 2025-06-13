@@ -361,6 +361,7 @@ public class AdminController : Controller
         var (inicio, fin) = CalcularRangoQuincena(año, mes, quincena);
 
         return await _context.Asistencia
+        .Where(a => a.HorasTrabajadas != null && a.Empleado.Servicio.PrecioBase != null)
         .Where(a => a.Fecha >= inicio && a.Fecha <= fin)
         .GroupBy(a => new
         {
