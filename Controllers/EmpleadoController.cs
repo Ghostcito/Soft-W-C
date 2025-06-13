@@ -43,6 +43,7 @@ namespace SoftWC.Controllers
         {
             //Obtener Fecha y Hora Actual
             var fecha = await _asistenciaService.GetFechaHoraActual(DateTime.Now);
+            Console.WriteLine("Fecha y hora actual: " + fecha);
 
             //Validar entrada unica por empleado
             if (!await _asistenciaService.VerificarUnicaEntrada(fecha))
@@ -77,7 +78,7 @@ namespace SoftWC.Controllers
                     icon = "warning"
                 });
             }
-            if (estado.Equals("ANTICIPADO"))
+            if (estado.Item1.Equals("ANTICIPADO"))
             {
                 return View("FueraDeHora");
             }
@@ -88,8 +89,8 @@ namespace SoftWC.Controllers
             {
                 NombreSede = verificacion.Item1.Nombre_local,
                 horaActual = fecha.ToString("HH:mm"),
-                HoraEntradaEsperada = estado.Item2?.HoraInicio.ToString(@"hh\:mm"),
                 fechaActual = fecha.ToString("dd/MM/yyyy"),
+                HoraEntradaEsperada = estado.Item2?.HoraInicio.ToString(@"hh\:mm"),
                 localizacionExitosa = verificacion.Item2
             };
 
@@ -195,9 +196,9 @@ namespace SoftWC.Controllers
 
             var asistencia = await _asistenciaService.GetAsistenciaByDate(fecha);
 
-            asistencia = await _asistenciaService.AddSalida(asistencia, TempData["EstadoSalida"]?.ToString(), TempData["HoraEsperada"]?.ToString());
+            asistencia = await _asistenciaService.AddSalida(asistencia);
             _asistenciaService.UpdateAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = TempData["HoraEsperada"];
+            ViewData["HoraRegistrada"] = asistencia.HoraSalida.Value.ToString(@"hh\:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
             return View("Confirmacion");
         }

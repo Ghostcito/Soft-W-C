@@ -52,12 +52,12 @@ namespace SoftWC.Service
             return asistencia;
         }
 
-        public async Task<Asistencia?> AddSalida(Asistencia asistencia, string horaEsp, string estado)
+        public async Task<Asistencia?> AddSalida(Asistencia asistencia)
         {
             var limaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SA Pacific Standard Time");
             var horaPeru = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, limaTimeZone);
             horaPeru = DateTime.SpecifyKind(horaPeru, DateTimeKind.Utc);
-            if (estado.Equals("TARDANZA")) horaPeru = DateTime.Parse(horaEsp);
+
             asistencia.HoraSalida = horaPeru;
             asistencia.HorasTrabajadas = await CalcularHorasTrabajadas((DateTime)asistencia.HoraEntrada, (DateTime)asistencia.HoraSalida);
             return asistencia;
