@@ -105,7 +105,7 @@ namespace SoftWC.Controllers
             //Generar Asistencia
             Asistencia asistencia = await _asistenciaService.AddEntrada();
             await _asistenciaService.AddAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString(@"hh\:mm");
+            ViewData["HoraRegistrada"] = asistencia.HoraEntrada.Value.ToString(@"HH\:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
 
             return View("Confirmacion");
@@ -175,7 +175,7 @@ namespace SoftWC.Controllers
                 NombreSede = verificacion.Item1.Nombre_local,
                 horaActual = fecha.ToString("HH:mm"),
                 fechaActual = fecha.ToString("dd/MM/yyyy"),
-                HoraEntrada = asistencia.HoraEntrada?.ToString(@"hh\:mm"),
+                HoraEntrada = asistencia.HoraEntrada?.ToString(@"HH\:mm"),
                 //HoraSalidaEsperada = estado.Item2?.HoraFin.ToString(@"hh\:mm"),
                 HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, fecha),
                 //HorasDescontadas = horasPerdidas,
@@ -198,7 +198,7 @@ namespace SoftWC.Controllers
 
             asistencia = await _asistenciaService.AddSalida(asistencia);
             _asistenciaService.UpdateAsistencia(asistencia);
-            ViewData["HoraRegistrada"] = asistencia.HoraSalida.Value.ToString(@"hh\:mm");
+            ViewData["HoraRegistrada"] = asistencia.HoraSalida.Value.ToString(@"HH\:mm");
             ViewData["FechaRegistrada"] = asistencia.Fecha.ToString("dd 'de' MM 'del' yyyy");
             return View("Confirmacion");
         }
