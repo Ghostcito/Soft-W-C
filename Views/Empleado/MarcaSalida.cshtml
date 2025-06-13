@@ -12,12 +12,12 @@
     string horaActual = Model.horaActual;
     string fechaActual = Model.fechaActual;
     string sede = Model.NombreSede;
-    string horaSalidaEsp = Model.HoraSalidaEsperada;
+    //string horaSalidaEsp = Model.HoraSalidaEsperada;
     bool locVerificado = Model.localizacionExitosa.Value;
     string horaEntrada = Model.HoraEntrada;
     string horasTrabajadas = Model.HorasTrabajadas.ToString();
-    string horasDescontadas = Model.HorasDescontadas.ToString();
-    string estado = ViewBag.Estado;
+    //string horasDescontadas = Model.HorasDescontadas.ToString();
+    //string estado = ViewBag.Estado;
 
 }
 
@@ -33,10 +33,6 @@
         <p style="font-size: 16px; margin-bottom: 20px;">@fechaActual</p>
 
         <div style="font-size: 18px; margin-bottom: 20px;">
-
-            <strong>Hora Salida Esperada:</strong> @horaSalidaEsp <br>
-            <strong>Estado de Hora:</strong> @estado
-
             <p style="color: gray; font-size: 18px;">📍 </p>
 
 
@@ -91,10 +87,6 @@
                     <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo trabajado:</strong></p>
                     <p style="font-size: 16px; margin: 2px 0; text-align: right;">
                         @horasTrabajadas
-                    </p>
-                    <p style="font-size: 16px; margin: 2px 0;"><strong>Tiempo descontado:</strong></p>
-                    <p style="font-size: 16px; margin: 2px 0; text-align: right;">
-                        @horasDescontadas
                     </p>
                 </div>
                 <a asp-controller="Asistencia" asp-action="Index" @*asp-route-id=@Model.asistencia.IdEmpleado*@

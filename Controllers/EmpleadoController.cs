@@ -143,7 +143,7 @@ namespace SoftWC.Controllers
             }
 
             // Verificar si el empleado tiene un turno asignado
-            var estado = await _asistenciaService.VerificarHoraSalida(fecha.TimeOfDay);
+            /*var estado = await _asistenciaService.VerificarHoraSalida(fecha.TimeOfDay);
             if (estado.Item1.Equals("NO_ASIGNADO"))
             {
                 return Json(new
@@ -153,21 +153,21 @@ namespace SoftWC.Controllers
                     text = "No tienes un turno asignado para hoy.",
                     icon = "warning"
                 });
-            }
-            if (estado.Item1.Equals("ANTICIPADO"))
+            }*/
+            /*if (estado.Item1.Equals("ANTICIPADO"))
             {
                 ViewData["TIPO"] = "Salida";
                 return View("FueraDeHora");
-            }
+            }*/
 
-            var horasPerdidas = Decimal.Zero;
+            /*var horasPerdidas = Decimal.Zero;
 
             if (estado.Item1.Equals("TARDANZA"))
             {
                 DateTime horaSalidaEsperada = DateTime.Parse(estado.Item2.HoraFin.ToString(@"hh\:mm"));
                 horasPerdidas = await _asistenciaService.CalcularHorasTrabajadas(horaSalidaEsperada, fecha);
 
-            }
+            }*/
 
             MarcaViewModel viewModel = new MarcaViewModel
             {
@@ -175,15 +175,15 @@ namespace SoftWC.Controllers
                 horaActual = fecha.ToString("HH:mm"),
                 fechaActual = fecha.ToString("dd/MM/yyyy"),
                 HoraEntrada = asistencia.HoraEntrada?.ToString(@"hh\:mm"),
-                HoraSalidaEsperada = estado.Item2?.HoraFin.ToString(@"hh\:mm"),
+                //HoraSalidaEsperada = estado.Item2?.HoraFin.ToString(@"hh\:mm"),
                 HorasTrabajadas = await _asistenciaService.CalcularHorasTrabajadas(asistencia.HoraEntrada.Value, fecha),
-                HorasDescontadas = horasPerdidas,
+                //HorasDescontadas = horasPerdidas,
                 localizacionExitosa = verificacion.Item2
             };
 
-            ViewData["Estado"] = estado.Item1;
+            /*ViewData["Estado"] = estado.Item1;
             TempData["EstadoSalida"] = estado.Item1;
-            TempData["HoraEsperada"] = estado.Item2?.HoraFin.ToString(@"hh\:mm");
+            TempData["HoraEsperada"] = estado.Item2?.HoraFin.ToString(@"hh\:mm");*/
 
             return View(viewModel);
         }
