@@ -131,3 +131,6 @@ app.MapRazorPages()
 
 app.Run();
 
+// Hacer Program accesible para pruebas
+public partial class Program { }
+

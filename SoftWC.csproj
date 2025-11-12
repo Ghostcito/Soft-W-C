@@ -13,6 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="SoftWC.Tests\**" />
+    <Content Remove="SoftWC.Tests\**" />
+    <EmbeddedResource Remove="SoftWC.Tests\**" />
+    <None Remove="SoftWC.Tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="DinkToPdf" Version="1.0.8" />
     <PackageReference Include="DinkToPdfAll" Version="1.0.6-b" />

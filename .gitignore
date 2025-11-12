@@ -1,7 +1,68 @@
+# Build results
 /bin
 /obj
+*.sln
+
+# Visual Studio / VS Code
 .vscode
-.sln
+.vs
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Database files
 *.db-shm
 *.db-wal
 appdata.db
+
+# Test Results and Coverage Reports
+## Test Results
+**/TestResults/
+**/test-results/
+*.trx
+*.log
+TestResults.xml
+TestResult.xml
+
+## Coverage Reports
+**/coverage/
+**/coverage.*/
+*.coverage
+*.coveragexml
+*.opencover.xml
+*.lcov
+coverage.json
+coverage.info
+
+## HTML Reports
+**/TestResults.html
+**/TestResults/*.html
+**/coverage/index.html
+**/coverage/**/*.html
+
+## Test Output Files
+**/TestOutput/
+**/test-output/
+*.testlog
+*.test-result
+
+# Test-specific temporary files
+**/SoftWC.Tests/bin/
+**/SoftWC.Tests/obj/
+**/SoftWC.Tests/TestResults/
+**/SoftWC.Tests/coverage/
+
+# Performance test results
+**/performance-results/
+**/benchmark-results/
+
+# Test data files (if any)
+**/test-data/
+**/TestData/
+*.testdata
+
+# Postman test results (if using Newman)
+**/newman/
+newman-report.html
+newman-report.json

@@ -1,0 +1,373 @@
+{
+	"info": {
+		"_postman_id": "work-and-cleaning-collection",
+		"name": "Work and Cleaning Services - API Tests",
+		"description": "Colección de pruebas para la API de Work and Cleaning Services SAC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Login Exitoso",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response time is less than 500ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);",
+									"});",
+									"",
+									"pm.test(\"Response has user data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('user');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dni\": \"{{test_dni}}\",\n    \"password\": \"{{test_password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/Identity/Account/Login",
+							"host": ["{{base_url}}"],
+							"path": ["Identity", "Account", "Login"]
+						}
+					}
+				},
+				{
+					"name": "Login con Credenciales Inválidas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 400 or 401\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([400, 401]);",
+									"});",
+									"",
+									"pm.test(\"Response contains error message\", function () {",
+									"    pm.expect(pm.response.text()).to.include('invalid');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"dni\": \"00000000\",\n    \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/Identity/Account/Login",
+							"host": ["{{base_url}}"],
+							"path": ["Identity", "Account", "Login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Asistencia",
+			"item": [
+				{
+					"name": "Registrar Entrada",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200 or 201\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test(\"Response contains asistencia data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('idAsistencia');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitud\": -12.0464,\n    \"longitud\": -77.0428\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asistencia/entrada",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asistencia", "entrada"]
+						}
+					}
+				},
+				{
+					"name": "Registrar Salida",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains horas trabajadas\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('horasTrabajadas');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitud\": -12.0464,\n    \"longitud\": -77.0428\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asistencia/salida",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asistencia", "salida"]
+						}
+					}
+				},
+				{
+					"name": "Obtener Asistencias",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response is an array\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/asistencia",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asistencia"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Validación GPS",
+			"item": [
+				{
+					"name": "Validar Ubicación Dentro del Radio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Location is valid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('dentroDelRadio', true);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitud\": -12.0464,\n    \"longitud\": -77.0428,\n    \"empleadoId\": \"{{test_user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asistencia/validar-ubicacion",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asistencia", "validar-ubicacion"]
+						}
+					}
+				},
+				{
+					"name": "Validar Ubicación Fuera del Radio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Location is invalid\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('dentroDelRadio', false);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"latitud\": -12.1554,\n    \"longitud\": -77.1528,\n    \"empleadoId\": \"{{test_user_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/asistencia/validar-ubicacion",
+							"host": ["{{base_url}}"],
+							"path": ["api", "asistencia", "validar-ubicacion"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Reportes",
+			"item": [
+				{
+					"name": "Obtener Reporte de Asistencias",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains report data\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('asistencias');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/reportes/asistencias?fechaInicio={{fecha_inicio}}&fechaFin={{fecha_fin}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "reportes", "asistencias"],
+							"query": [
+								{
+									"key": "fechaInicio",
+									"value": "{{fecha_inicio}}"
+								},
+								{
+									"key": "fechaFin",
+									"value": "{{fecha_fin}}"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://localhost:5001",
+			"type": "string"
+		}
+	]
+}
+
