@@ -1,20 +1,56 @@
 # Script para ejecutar pruebas en .NET 9
-# Uso: .\scripts\run-tests.ps1
+param(
+    [switch]$Coverage,
+    [switch]$HtmlReport
+)
+
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$TestProjectDir = Split-Path -Parent $ScriptDir
+Set-Location $TestProjectDir
 
 Write-Host "🧪 Ejecutando pruebas de SoftWC..." -ForegroundColor Cyan
+Write-Host "📁 Directorio: $TestProjectDir" -ForegroundColor Gray
+Write-Host ""
 
-# Ejecutar todas las pruebas
-Write-Host "`n📋 Ejecutando todas las pruebas..." -ForegroundColor Yellow
-dotnet test --verbosity normal
+$resultsDir = Join-Path $TestProjectDir "TestResults"
+if (-not (Test-Path $resultsDir)) {
+    New-Item -ItemType Directory -Path $resultsDir -Force | Out-Null
+}
 
-# Ejecutar pruebas con cobertura (requiere coverlet)
-Write-Host "`n📊 Generando reporte de cobertura..." -ForegroundColor Yellow
-dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/
+$testCommand = "dotnet test --verbosity normal --logger `"trx;LogFileName=TestResults.trx`" --results-directory:`"$resultsDir`""
 
-# Ejecutar pruebas y generar reporte HTML
-Write-Host "`n📄 Generando reporte HTML..." -ForegroundColor Yellow
-dotnet test --logger "html;LogFileName=TestResults.html" --results-directory:./TestResults/
+if ($HtmlReport) {
+    $testCommand += " --logger `"html;LogFileName=TestResults.html`""
+}
 
-Write-Host "`n✅ Pruebas completadas!" -ForegroundColor Green
-Write-Host "📁 Reportes guardados en: ./TestResults/" -ForegroundColor Cyan
+if ($Coverage) {
+    $testCommand += " /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=`"$resultsDir/`""
+}
 
+Write-Host "📋 Ejecutando todas las pruebas..." -ForegroundColor Yellow
+Invoke-Expression $testCommand
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Host ""
+    Write-Host "⚠️  Algunas pruebas fallaron" -ForegroundColor Yellow
+} else {
+    Write-Host ""
+    Write-Host "✅ Todas las pruebas pasaron" -ForegroundColor Green
+}
+
+Write-Host ""
+Write-Host "✅ Pruebas completadas!" -ForegroundColor Green
+Write-Host "📁 Reportes guardados en: $resultsDir" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "💡 Tip: Usa -Coverage para generar reporte de cobertura" -ForegroundColor Gray
+Write-Host "💡 Tip: Usa -HtmlReport para generar reporte HTML" -ForegroundColor Gray
+
+if ($HtmlReport) {
+    $htmlPath = Join-Path $resultsDir "TestResults.html"
+    $exists = Test-Path $htmlPath
+    if ($exists) {
+        Write-Host ""
+        Write-Host "📊 Abriendo reporte HTML..." -ForegroundColor Cyan
+        Start-Process $htmlPath
+    }
+}

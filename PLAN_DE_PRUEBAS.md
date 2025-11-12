@@ -9,7 +9,7 @@
 | **Total de Pruebas** | 43 | ✅ Completo |
 | **Pruebas Unitarias** | 21 (48.8%) | ✅ Completo |
 | **Pruebas de Integración** | 15 (34.9%) | ✅ Completo |
-| **Pruebas de Rendimiento** | 7 (16.3%) | ✅ Completo |
+| **Pruebas de Rendimiento (xUnit)** | 7 (16.3%) | ✅ Completo |
 | **Cobertura General** | **~82%** | ✅ Muy Bueno |
 | **Errores de Compilación** | 0 | ✅ Corregido |
 | **Archivos de Prueba** | 14 | ✅ Documentado |
@@ -36,9 +36,8 @@ COBERTURA GENERAL   82%          ✅ Muy Bueno
 - **Pruebas Unitarias**: 21 pruebas (48.8%) - Validan lógica de negocio aislada
 - **Pruebas de Integración BD**: 4 pruebas (9.3%) - Validan operaciones con base de datos
 - **Pruebas de Integración API**: 11 pruebas (25.6%) - Validan endpoints HTTP
-- **Pruebas de Rendimiento**: 7 pruebas (16.3%) - Validan tiempos de ejecución y rendimiento
-
-**Total: 43 pruebas automatizadas** cubriendo los módulos críticos del sistema, incluyendo validación de rendimiento.
+- **Pruebas de Rendimiento (xUnit)**: 7 pruebas (16.3%) - Validan tiempos de ejecución y rendimiento
+**Total: 43 pruebas automatizadas (xUnit)** cubriendo los módulos críticos del sistema, incluyendo validación de rendimiento.
 
 ### 📊 Resultados de Ejecución Actual
 
@@ -137,15 +136,30 @@ El proyecto **SoftWC.Tests** se encuentra en un **estado de producción**, con t
 - **Validación GPS**: Verificación de ubicaciones
 - **Reportes**: Generación de reportes
 
-### 4. Pruebas de Rendimiento
-- **AdminController**: Validación de tiempos de ejecución de endpoints críticos
-- **Métricas**: Tiempos de respuesta, consistencia en múltiples ejecuciones
-- **Umbrales**: 
-  - `Index`: < 2000ms
-  - `ResumenPagos`: < 3000ms
-  - `Exportar` (Excel/PDF): < 5000ms
+### 4. Pruebas de Rendimiento (xUnit)
 
-### 5. Pruebas con Postman
+Las pruebas de rendimiento miden el tiempo de ejecución de los endpoints críticos del `AdminController` bajo condiciones normales de uso. Utilizan `Stopwatch` para medir tiempos de ejecución y validan que los endpoints cumplan con umbrales de rendimiento predefinidos.
+
+**Tecnología**: xUnit, `Stopwatch`, Entity Framework Core InMemory
+
+**Archivo**: `AdminControllerPerformanceTests.cs`
+
+**Pruebas Implementadas**:
+1. `Index_DeberiaEjecutarseEnMenosDe2Segundos` - Dashboard principal
+2. `ResumenPagos_ConDatosCompletos_DeberiaEjecutarseEnMenosDe3Segundos` - Resumen de pagos
+3. `ResumenPagos_ConParametrosPorDefecto_DeberiaEjecutarseRapido` - Resumen con parámetros por defecto
+4. `Exportar_Excel_DeberiaGenerarArchivoEnMenosDe5Segundos` - Exportación a Excel
+5. `Exportar_PDF_DeberiaGenerarArchivoEnMenosDe5Segundos` - Exportación a PDF
+6. `Index_ConMultiplesConsultas_DeberiaMantenerRendimiento` - Múltiples ejecuciones
+7. `ResumenPagos_ConDiferentesQuincenas_DeberiaMantenerRendimiento` - Diferentes quincenas
+
+**Umbrales de Rendimiento**:
+- `Index`: < 2000ms (promedio), < 3000ms (máximo)
+- `ResumenPagos`: < 3000ms (promedio), < 4000ms (máximo)
+- `Exportar`: < 5000ms (Excel y PDF)
+
+
+### 8. Pruebas con Postman
 - **Colección automatizada**: Ejecución con Newman
 - **Validaciones**: Status codes, tiempos de respuesta, estructura de datos
 
@@ -187,29 +201,51 @@ SoftWC.Tests/
 │   ├── AsistenciaServiceAdditionalTests.cs # 4 pruebas - Pruebas adicionales de Asistencia
 │   ├── UserServiceTests.cs                 # 4 pruebas - Servicio de Usuario
 │   ├── EmpleadoServiceTests.cs             # 3 pruebas - Servicio de Empleado
-│   └── ExcelExportServiceTests.cs          # 3 pruebas - Servicio de Exportación Excel
-│
-├── Integration/                             # Pruebas de Integración
-│   ├── AsistenciaIntegrationTests.cs       # 4 pruebas - Integración con BD
-│   ├── AsistenciaApiTests.cs               # 2 pruebas - API de Asistencia
-│   ├── UsuarioApiTests.cs                  # 2 pruebas - API de Usuario
-│   ├── ClienteApiTests.cs                  # 3 pruebas - API de Cliente
-│   ├── SedeApiTests.cs                     # 2 pruebas - API de Sede
-│   ├── TurnoApiTests.cs                    # 2 pruebas - API de Turno
-│   ├── AdminControllerPerformanceTests.cs  # 8 pruebas - Rendimiento de AdminController
-│   └── WebApplicationFactory.cs            # Factory para pruebas de API
-│
+│   └── ExcelExportServiceTests.cs         # 3 pruebas - Exportación a Excel
+├── Integration/                            # Pruebas de Integración
+│   ├── AsistenciaIntegrationTests.cs       # 4 pruebas - Integración BD Asistencia
+│   ├── AsistenciaApiTests.cs               # 2 pruebas - API Asistencia
+│   ├── UsuarioApiTests.cs                  # 2 pruebas - API Usuario
+│   ├── ClienteApiTests.cs                  # 3 pruebas - API Cliente
+│   ├── SedeApiTests.cs                     # 2 pruebas - API Sede
+│   ├── TurnoApiTests.cs                    # 2 pruebas - API Turno
+│   ├── AdminControllerPerformanceTests.cs  # 7 pruebas - Rendimiento AdminController
+│   └── WebApplicationFactory.cs            # Factory para pruebas API
 ├── Helpers/                                 # Clases Helper para Pruebas
-│   ├── TestDbContextFactory.cs            # Factory para crear DbContext en memoria
-│   ├── MockHelpers.cs                      # Helpers para crear mocks (UserManager, etc.)
-│   └── TestUserService.cs                  # Wrapper de UserService para pruebas
-│
-├── scripts/                                 # Scripts de Ejecución
-│   ├── run-tests.ps1                      # Script PowerShell para Windows
-│   └── run-tests.sh                        # Script Bash para Linux/Mac
-│
-├── appsettings.Test.json                   # Configuración para pruebas
-└── SoftWC.Tests.csproj                     # Archivo de proyecto
+│   ├── MockHelpers.cs                      # Helpers para mocks
+│   ├── TestDbContextFactory.cs            # Factory para DbContext en memoria
+│   └── TestUserService.cs                 # Mock de UserService
+└── scripts/                                 # Scripts de Ejecución
+    ├── run-tests.ps1                        # Script PowerShell para pruebas unitarias/integración
+    └── run-tests.sh                         # Script Bash para pruebas unitarias/integración
+
+tests/                                       # Pruebas de Rendimiento y Seguridad
+├── k6/                                      # Pruebas de Rendimiento con K6
+│   ├── load_test.js                        # Prueba de carga estándar
+│   ├── stress_test.js                      # Prueba de estrés (punto de quiebre)
+│   ├── spike_test.js                       # Prueba de picos de tráfico
+│   └── api_endpoints_test.js                # Prueba de endpoints API REST
+├── zap/                                     # Pruebas de Seguridad con OWASP ZAP
+│   ├── zap_baseline.sh                     # Baseline scan (Linux/Mac)
+│   ├── zap_baseline.ps1                    # Baseline scan (Windows)
+│   └── zap_full_scan.sh                    # Full scan (exhaustivo)
+└── README.md                                # Documentación de pruebas K6/ZAP
+
+scripts/                                     # Scripts Maestros de Ejecución
+├── run-performance-tests.ps1                # Ejecutar pruebas K6 (Windows)
+├── run-performance-tests.sh                # Ejecutar pruebas K6 (Linux/Mac)
+├── run-security-tests.ps1                  # Ejecutar pruebas ZAP (Windows)
+├── run-security-tests.sh                   # Ejecutar pruebas ZAP (Linux/Mac)
+├── run-all-tests.ps1                       # Ejecutar todas las pruebas (Windows)
+└── run-all-tests.sh                        # Ejecutar todas las pruebas (Linux/Mac)
+
+results/                                     # Directorio de Resultados (gitignored)
+├── k6_load_report.json / .html             # Reportes K6
+├── k6_stress_report.json / .html
+├── k6_spike_report.json / .html
+├── k6_api_report.json / .html
+├── zap_report.html                         # Reportes OWASP ZAP
+└── zap_full_report.html
 ```
 
 ### 📄 Documentación Detallada de Archivos

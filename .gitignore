@@ -25,6 +25,10 @@ appdata.db
 TestResults.xml
 TestResult.xml
 
+## Performance and Security Test Results
+results/
+!results/README.md
+
 ## Coverage Reports
 **/coverage/
 **/coverage.*/
